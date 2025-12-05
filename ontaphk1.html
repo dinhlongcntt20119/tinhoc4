@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn tập Học kì 1 - Tin học 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Source+Code+Pro:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --accent-color: #ff9800; /* Màu cam cho ôn tập */
+            --bg-color: #fdfbf7;
+            --text-color: #333;
+            --correct: #28a745;
+            --wrong: #dc3545;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+
+        /* Header */
+        header { background: linear-gradient(135deg, var(--primary-color), #004494); color: white; padding: 20px 40px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 4px solid var(--accent-color); }
+        .header-content { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo-area { font-family: 'Source Code Pro', monospace; font-size: 1.8rem; font-weight: bold; }
+        .sub-title { font-size: 1rem; opacity: 0.9; margin-top: 5px; }
+
+        /* Main */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Question Card */
+        .quiz-card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary-color); }
+        .q-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; color: var(--primary-color); }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .option-label { 
+            display: block; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative;
+        }
+        .option-label:hover { background-color: #f0f8ff; border-color: var(--primary-color); }
+        .option-label input { margin-right: 10px; }
+
+        /* Result styles */
+        .correct-answer { background-color: #d4edda !important; border-color: var(--correct) !important; color: #155724; font-weight: bold; }
+        .wrong-answer { background-color: #f8d7da !important; border-color: var(--wrong) !important; color: #721c24; opacity: 0.8; }
+        
+        /* Footer Bar */
+        .footer-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white; 
+            padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 20px; z-index: 100;
+        }
+        
+        .btn { padding: 12px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+        .btn-submit { background-color: var(--primary-color); color: white; }
+        .btn-submit:hover { background-color: #003d82; }
+        .btn-reset { background-color: #6c757d; color: white; }
+        .btn-home { background-color: var(--accent-color); color: white; text-decoration: none; display: flex; align-items: center; }
+
+        /* Score Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 200; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; width: 400px; animation: popUp 0.3s ease; }
+        @keyframes popUp { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .score-circle { width: 120px; height: 120px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: bold; margin: 20px auto; }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div>
+                <div class="logo-area"><i class="fas fa-laptop-code"></i> TIN HỌC 4</div>
+                <div class="sub-title">Ôn tập kiểm tra Học kì 1</div>
+            </div>
+            <a href="index.html" style="color: white; text-decoration: none; font-weight: bold;"><i class="fas fa-home"></i> Trang chủ</a>
+        </div>
+    </header>
+
+    <main class="container" id="quiz-container">
+        </main>
+
+    <div style="height: 80px;"></div> <div class="footer-bar">
+        <button class="btn btn-reset" onclick="resetQuiz()"><i class="fas fa-redo"></i> Làm lại</button>
+        <button class="btn btn-submit" onclick="submitQuiz()"><i class="fas fa-check-circle"></i> Nộp bài</button>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: var(--primary-color);">Kết quả của em</h2>
+            <div class="score-circle" id="scoreDisplay">0/30</div>
+            <p id="feedbackText">Hãy cố gắng hơn nhé!</p>
+            <button class="btn btn-submit" onclick="closeModal()">Xem chi tiết</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // --- CHỦ ĐỀ A: MÁY TÍNH VÀ EM (Bài 1, 2) ---
+            {
+                q: "Câu 1: Thiết bị nào sau đây là phần cứng máy tính?",
+                a: ["Trò chơi Mario", "Bàn phím", "Phần mềm Word", "Hệ điều hành Windows"],
+                correct: 1
+            },
+            {
+                q: "Câu 2: Phần mềm máy tính là gì?",
+                a: ["Là các thiết bị có thể cầm nắm được", "Là các chương trình bên trong máy tính", "Là chuột và bàn phím", "Là màn hình máy tính"],
+                correct: 1
+            },
+            {
+                q: "Câu 3: Để máy tính hoạt động được, chúng ta cần gì?",
+                a: ["Chỉ cần phần cứng", "Chỉ cần phần mềm", "Cần cả phần cứng và phần mềm", "Chỉ cần bàn phím"],
+                correct: 2
+            },
+            {
+                q: "Câu 4: Khi sử dụng máy tính xong, em nên làm gì?",
+                a: ["Rút phích cắm điện ngay lập tức", "Tắt màn hình rồi bỏ đi", "Thoát các phần mềm và tắt máy bằng lệnh Shut down", "Để máy tính tự tắt"],
+                correct: 2
+            },
+            {
+                q: "Câu 5: Hàng phím nào có chứa hai phím có gai F và J?",
+                a: ["Hàng phím số", "Hàng phím trên", "Hàng phím cơ sở", "Hàng phím dưới"],
+                correct: 2
+            },
+            {
+                q: "Câu 6: Khi gõ bàn phím, hai ngón trỏ đặt lên phím nào?",
+                a: ["Phím G và H", "Phím F và J", "Phím A và ;", "Phím T và Y"],
+                correct: 1
+            },
+            {
+                q: "Câu 7: Lợi ích của việc gõ bàn phím đúng cách là gì?",
+                a: ["Gõ nhanh và chính xác hơn", "Giúp máy tính chạy nhanh hơn", "Không bị đau mắt", "Không cần dùng chuột"],
+                correct: 0
+            },
+            
+            // --- CHỦ ĐỀ B: MẠNG MÁY TÍNH & INTERNET (Bài 3) ---
+            {
+                q: "Câu 8: Trang web có thể chứa những loại thông tin nào?",
+                a: ["Chỉ có văn bản", "Chỉ có hình ảnh", "Văn bản, hình ảnh, âm thanh, video, siêu liên kết", "Chỉ có video"],
+                correct: 2
+            },
+            {
+                q: "Câu 9: Làm thế nào để nhận biết một siêu liên kết (Hyperlink) trên trang web?",
+                a: ["Con trỏ chuột biến mất", "Con trỏ chuột chuyển thành hình bàn tay", "Văn bản có màu đen", "Hình ảnh bị mờ đi"],
+                correct: 1
+            },
+            {
+                q: "Câu 10: Em có nên truy cập vào các trang web có nội dung xấu, bạo lực không?",
+                a: ["Có, để biết thêm", "Không, vì có thể gây hại cho máy tính và bản thân", "Có, nếu bạn bè rủ", "Có, nếu trang web đó đẹp"],
+                correct: 1
+            },
+
+            // --- CHỦ ĐỀ C: TỔ CHỨC LƯU TRỮ & TÌM KIẾM (Bài 4, 5) ---
+            {
+                q: "Câu 11: Địa chỉ trang web máy tìm kiếm phổ biến của Google là gì?",
+                a: ["google.com.vn", "youtube.com", "facebook.com", "vtv.vn"],
+                correct: 0
+            },
+            {
+                q: "Câu 12: 'Từ khóa' khi tìm kiếm thông tin là gì?",
+                a: ["Tên của người sử dụng", "Một từ hoặc cụm từ miêu tả nội dung cần tìm", "Mật khẩu máy tính", "Tên của máy tính"],
+                correct: 1
+            },
+            {
+                q: "Câu 13: Để tìm kiếm thông tin về 'Hoa sen', em nhập từ khóa vào đâu?",
+                a: ["Thanh địa chỉ", "Ô tìm kiếm", "Nút Start", "Màn hình nền"],
+                correct: 1
+            },
+            {
+                q: "Câu 14: Cấu trúc lưu trữ trong máy tính được tổ chức giống hình ảnh gì?",
+                a: ["Hình tròn", "Hình cây (Cây thư mục)", "Hình vuông", "Hình ngôi sao"],
+                correct: 1
+            },
+            {
+                q: "Câu 15: Thư mục có thể chứa gì?",
+                a: ["Chỉ chứa các tệp tin", "Chỉ chứa các thư mục con", "Chứa cả tệp tin và các thư mục con", "Không chứa gì cả"],
+                correct: 2
+            },
+            {
+                q: "Câu 16: Để tạo một thư mục mới, em chọn lệnh nào?",
+                a: ["New Folder", "Rename", "Delete", "Copy"],
+                correct: 0
+            },
+            {
+                q: "Câu 17: Lệnh nào dùng để Đổi tên thư mục hoặc tệp?",
+                a: ["Delete", "Paste", "Rename", "Cut"],
+                correct: 2
+            },
+            {
+                q: "Câu 18: Điều gì xảy ra khi em xóa một thư mục?",
+                a: ["Thư mục đó biến mất nhưng các tệp bên trong vẫn còn", "Cả thư mục và mọi thứ bên trong đều bị xóa", "Thư mục đổi tên", "Máy tính sẽ bị hỏng"],
+                correct: 1
+            },
+            {
+                q: "Câu 19: Tổ hợp phím nào dùng để Sao chép (Copy)?",
+                a: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + S"],
+                correct: 2
+            },
+            {
+                q: "Câu 20: Tổ hợp phím nào dùng để Dán (Paste)?",
+                a: ["Ctrl + V", "Ctrl + P", "Ctrl + C", "Ctrl + A"],
+                correct: 0
+            },
+
+            // --- CHỦ ĐỀ D: ĐẠO ĐỨC PHÁP LUẬT (Bài 6) ---
+            {
+                q: "Câu 21: Thế nào là phần mềm miễn phí?",
+                a: ["Phần mềm phải trả tiền mới dùng được", "Phần mềm được dùng không mất phí và có thể chia sẻ", "Phần mềm bị khóa", "Phần mềm do em tự viết"],
+                correct: 1
+            },
+            {
+                q: "Câu 22: Em có được phép sử dụng phần mềm có bản quyền mà không xin phép không?",
+                a: ["Được, nếu không ai biết", "Được, nếu bạn cho mượn", "Không, đó là vi phạm bản quyền", "Được, nếu chỉ dùng một lần"],
+                correct: 2
+            },
+            {
+                q: "Câu 23: Tác giả của phần mềm có quyền gì?",
+                a: ["Cho phép hoặc không cho phép người khác sử dụng", "Bắt mọi người phải mua máy tính", "Cấm mọi người dùng Internet", "Không có quyền gì cả"],
+                correct: 0
+            },
+
+            // --- CHỦ ĐỀ E: ỨNG DỤNG TIN HỌC (Bài 7 - Soạn thảo) ---
+            {
+                q: "Câu 24: Để gõ chữ tiếng Việt, em cần bật phần mềm nào?",
+                a: ["Mario", "Unikey", "Scratch", "Paint"],
+                correct: 1
+            },
+            {
+                q: "Câu 25: Trong kiểu gõ Telex, để gõ dấu Sắc, em dùng phím nào?",
+                a: ["S", "F", "R", "X"],
+                correct: 0
+            },
+            {
+                q: "Câu 26: Trong kiểu gõ Telex, để gõ dấu Huyền, em dùng phím nào?",
+                a: ["S", "F", "J", "R"],
+                correct: 1
+            },
+            {
+                q: "Câu 27: Trong kiểu gõ Telex, để gõ chữ 'â', em gõ như thế nào?",
+                a: ["aw", "aa", "ee", "dd"],
+                correct: 1
+            },
+            {
+                q: "Câu 28: Phím Backspace dùng để làm gì?",
+                a: ["Xuống dòng", "Xóa kí tự bên trái con trỏ", "Xóa kí tự bên phải con trỏ", "Viết hoa"],
+                correct: 1
+            },
+            {
+                q: "Câu 29: Phím Delete dùng để làm gì?",
+                a: ["Xóa kí tự bên trái con trỏ", "Xóa kí tự bên phải con trỏ", "Cách đoạn", "Lưu bài"],
+                correct: 1
+            },
+            {
+                q: "Câu 30: Để lưu văn bản vào máy tính, em nhấn tổ hợp phím nào?",
+                a: ["Ctrl + C", "Ctrl + O", "Ctrl + S", "Ctrl + N"],
+                correct: 2
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            questions.forEach((q, index) => {
+                let html = `<div class="quiz-card" id="card-${index}">
+                    <div class="q-title">${q.q}</div>
+                    <div class="options-grid">`;
+                
+                q.a.forEach((opt, i) => {
+                    html += `<label class="option-label" id="opt-${index}-${i}">
+                                <input type="radio" name="q${index}" value="${i}"> ${opt}
+                             </label>`;
+                });
+
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let unanswer = 0;
+
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const card = document.getElementById(`card-${index}`);
+                
+                // Reset style
+                card.querySelectorAll('.option-label').forEach(el => {
+                    el.classList.remove('correct-answer', 'wrong-answer');
+                });
+
+                if (selected) {
+                    const val = parseInt(selected.value);
+                    if (val === q.correct) {
+                        score++;
+                        document.getElementById(`opt-${index}-${val}`).classList.add('correct-answer');
+                    } else {
+                        document.getElementById(`opt-${index}-${val}`).classList.add('wrong-answer');
+                        // Show correct answer
+                        document.getElementById(`opt-${index}-${q.correct}`).classList.add('correct-answer');
+                    }
+                } else {
+                    unanswer++;
+                    // Show correct answer for unanswered
+                    document.getElementById(`opt-${index}-${q.correct}`).classList.add('correct-answer');
+                }
+            });
+
+            // Show Modal
+            document.getElementById('scoreDisplay').innerText = `${score}/${questions.length}`;
+            
+            let msg = "";
+            if(score >= 28) msg = "Xuất sắc! Em nắm rất vững kiến thức.";
+            else if(score >= 20) msg = "Khá lắm! Em đã hiểu bài tốt.";
+            else if(score >= 15) msg = "Đạt yêu cầu. Cố gắng ôn thêm nhé.";
+            else msg = "Em cần ôn lại bài kỹ hơn nhé!";
+            
+            document.getElementById('feedbackText').innerText = msg;
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function resetQuiz() {
+            if(confirm("Em có chắc muốn làm lại từ đầu không?")) {
+                renderQuiz();
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // Init
+        renderQuiz();
+    </script>
+
+</body>
+</html>
