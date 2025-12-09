@@ -22,15 +22,31 @@
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; display: none; }
         
         .quiz-card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary-color); page-break-inside: avoid; }
-        .q-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; color: var(--primary-color); }
+        
+        .q-header { display: flex; align-items: flex-start; margin-bottom: 15px; }
+        .q-icon { 
+            font-size: 1.5rem; color: var(--primary-color); margin-right: 15px; 
+            background: #e3f2fd; padding: 10px; border-radius: 50%; width: 45px; height: 45px; 
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+        }
+        .q-title { font-weight: bold; font-size: 1.1rem; color: var(--primary-color); flex: 1; align-self: center; }
+
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
         .unanswered-card { border: 2px solid red !important; box-shadow: 0 0 10px rgba(255,0,0,0.2); animation: shake 0.5s; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 100% { transform: translateX(0); } }
 
-        .option-label { display: block; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative; }
+        /* Style cho đáp án */
+        .option-label { display: flex; align-items: center; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; background: #fff; }
         .option-label:hover { background-color: #f0f8ff; border-color: var(--primary-color); }
-        .option-label input { margin-right: 10px; }
+        .option-label input { margin-right: 15px; transform: scale(1.2); flex-shrink: 0; }
+        
+        /* Style riêng cho các Icon trong đáp án */
+        .opt-icon { font-size: 1.4rem; margin-right: 10px; width: 30px; text-align: center; display: inline-block; color: #555; }
+        .fa-bold { font-weight: bold; }
+        .fa-italic { font-style: italic; }
+        .fa-underline { text-decoration: underline; }
+
         .disabled-card { pointer-events: none; opacity: 1; }
         
         .correct-answer { background-color: #d4edda !important; border-color: var(--correct) !important; color: #155724; font-weight: bold; }
@@ -57,7 +73,7 @@
         .score-circle { width: 120px; height: 120px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: bold; margin: 20px auto; }
         
         #pdf-header { display: none; }
-        @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } .header-content { flex-direction: column; text-align: center; } }
+        @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } .header-content { flex-direction: column; text-align: center; } .q-header {flex-direction: column; text-align: center;} .q-icon {margin-bottom: 10px; margin-right: 0;} }
     </style>
 </head>
 <body>
@@ -108,54 +124,158 @@
     </div>
 
     <script>
-        // --- !!! CẤU HÌNH LIÊN KẾT GOOGLE SCRIPT !!! ---
-        // Dán URL Web App bạn vừa tạo ở Bước 1 vào đây
+        // --- ĐÃ ĐIỀN LINK GOOGLE SCRIPT TỪ ẢNH CỦA BẠN ---
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf47ydfDHEthLPpB1UXgdGNp-K6vJU4Azp5T_AVTZr-fhrWsu3h8QPDWC0bEOoWaJ9/exec";
 
         let info = { name: "", class: "" };
         
-        // --- BỘ CÂU HỎI TIN HỌC 4 ---
+        // --- BỘ CÂU HỎI (ĐÃ THÊM ICON VÀO ĐÁP ÁN) ---
         const questions = [
-            { q: "Câu 1: Thiết bị nào sau đây là Phần cứng của máy tính?", a: ["Phần mềm Word", "Chuột máy tính", "Phần mềm Paint", "Hệ điều hành Windows"], correct: 1 }, 
-            { q: "Câu 2: Khi gõ bàn phím bằng 10 ngón, việc đặt tay lên hàng cơ sở (ASDF JKL;) giúp em điều gì?", a: ["Gõ nhanh, chính xác không cần nhìn phím", "Giúp máy tính khởi động nhanh hơn", "Giúp ngón tay nghỉ ngơi", "Giúp màn hình đẹp hơn"], correct: 0 }, 
-            { q: "Câu 3: Tập hợp các trang thông tin trên mạng Internet, được truy cập bằng một địa chỉ chung được gọi là gì?", a: ["Email", "Website", "Tệp tin", "Thư mục"], correct: 1 }, 
-            { q: "Câu 4: Khi tìm kiếm thông tin trên Internet, từ khóa nên được chọn như thế nào?", a: ["Càng dài càng tốt", "Ngắn gọn, chính xác, liên quan chủ đề", "Chung chung", "Dạng câu hỏi dài"], correct: 1 }, 
-            { q: "Câu 5: Thao tác nào sẽ giúp em tạo ra một bản sao của tệp tin tại vị trí mới?", a: ["Sao chép (Copy) và Dán (Paste)", "Di chuyển (Cut) và Dán (Paste)", "Đổi tên (Rename)", "Xóa (Delete)"], correct: 0 }, 
-            { q: "Câu 6: Để quản lí các tệp tin trong máy tính, em nên tạo thành phần nào để sắp xếp chúng ngăn nắp?", a: ["Thư mục (Folder)", "Website", "Tệp tin (File)", "Siêu liên kết"], correct: 0 }, 
-            { q: "Câu 7: Khi em mở Thư mục A, bên trong đó thấy có Thư mục B. Vậy B được gọi là gì đối với A?", a: ["Thư mục cha", "Thư mục con", "Tệp tin", "Website"], correct: 1 }, 
-            { q: "Câu 8: Để thể hiện sự tôn trọng bản quyền khi sử dụng hình ảnh từ Internet, em nên làm gì?", a: ["Tự ý sử dụng", "Ghi rõ nguồn hoặc tác giả (nếu có)", "Thay đổi màu sắc", "Nói dối là mình chụp"], correct: 1 }, 
-            { q: "Câu 9: Tổ hợp phím tắt nào được sử dụng để làm chữ In đậm (Bold) trong Word?", a: ["Ctrl + I", "Ctrl + B", "Ctrl + U", "Ctrl + S"], correct: 1 }, 
-            { q: "Câu 10: Trong Word, muốn làm chữ In nghiêng (Italic), em sử dụng lệnh nào trong nhóm Font?", a: ["I", "B", "U", "S"], correct: 0 }, 
-            { q: "Câu 11: Trong các thành phần sau, thành phần nào của máy tính có chức năng lưu trữ dữ liệu lâu dài?", a: ["Màn hình", "Chuột", "Ổ đĩa cứng (Hard drive)", "Bàn phím"], correct: 2 }, 
-            { q: "Câu 12: Quy tắc cơ bản và quan trọng nhất khi đặt tay ở Hàng cơ sở là gì?", a: ["Đặt ngón cái lên phím Enter", "Đặt hai ngón trỏ lên phím F và J", "Đặt 10 ngón lên hàng trên", "Đặt tùy ý"], correct: 1 }, 
-            { q: "Câu 13: Hành động nào sau đây là SAI về mặt đạo đức khi sử dụng thông tin trên Internet?", a: ["Ghi nguồn tài liệu", "Tự ý sao chép và nhận là của mình", "Truy cập web lành mạnh", "Xin phép người lớn"], correct: 1 }, 
-            { q: "Câu 14: Khi sử dụng máy tìm kiếm, chọn từ khóa thế nào là hiệu quả nhất?", a: ["Câu dài phức tạp", "Ngắn gọn, chính xác", "Rất chung chung", "Không cần từ khóa"], correct: 1 }, 
-            { q: "Câu 15: Muốn làm cho chữ trong Word trở nên In đậm (Bold), em cần sử dụng lệnh nào trong nhóm Font?", a: ["U", "I", "B", "Căn giữa"], correct: 2 }, 
-            { q: "Câu 16: Để Di chuyển (Cut và Paste) một tệp tin, kết quả cuối cùng là gì?", a: ["Tạo bản sao mới", "Bị xóa hoàn toàn", "Mất khỏi vị trí cũ, xuất hiện ở vị trí mới", "Được đổi tên"], correct: 2 }, 
-            { q: "Câu 17: Thư mục (Folder) có chức năng chính là gì?", a: ["Vẽ hình", "Kết nối Internet", "Tổ chức và sắp xếp tệp tin", "In tài liệu"], correct: 2 }, 
-            { q: "Câu 18: Trang web (Webpage) là gì?", a: ["Trò chơi máy tính", "Thư điện tử", "Trang thông tin hiển thị trên trình duyệt", "Bức ảnh"], correct: 2 }, 
-            { q: "Câu 19: Để gạch chân (Underline) một từ trong Word, em sử dụng tổ hợp phím nào?", a: ["Ctrl + B", "Ctrl + U", "Ctrl + I", "Ctrl + Z"], correct: 1 }, 
-            { q: "Câu 20: Trong hai thành phần dưới đây, thành phần nào là Phần mềm?", a: ["Bàn phím", "Chuột", "Ổ đĩa USB", "Phần mềm Word"], correct: 3 }, 
-            { q: "Câu 21: Trong nguyên tắc gõ 10 ngón, ngón út tay phải gõ phím nào trên hàng cơ sở?", a: ["Phím J", "Phím F", "Phím A", "Phím ; (chấm phẩy)"], correct: 3 }, 
-            { q: "Câu 22: Thiết bị nào sau đây là thiết bị Đầu vào (Input)?", a: ["Máy in", "Màn hình", "Bàn phím", "Loa"], correct: 2 }, 
-            { q: "Câu 23: Website là gì?", a: ["Phần mềm vẽ", "Tập hợp các trang web liên quan trên mạng", "Tệp văn bản", "Địa chỉ email"], correct: 1 }, 
-            { q: "Câu 24: Để đảm bảo an toàn khi tìm kiếm thông tin, em nên làm gì?", a: ["Chia sẻ địa chỉ nhà", "Truy cập web bất kì", "Không chia sẻ thông tin cá nhân với người lạ", "Tải phần mềm lạ"], correct: 2 }, 
-            { q: "Câu 25: Để quản lí các tệp tin môn Toán, em nên tạo thành phần nào?", a: ["Siêu liên kết", "Thư mục (Folder)", "Trang web", "Bản in"], correct: 1 }, 
-            { q: "Câu 26: Muốn chữ In nghiêng (Italic) bằng phím tắt, em nhấn tổ hợp nào?", a: ["Ctrl + I", "Ctrl + B", "Ctrl + U", "Ctrl + S"], correct: 0 }, 
-            { q: "Câu 27: Thao tác nào tạo ra bản sao nhưng vẫn giữ lại tệp gốc?", a: ["Di chuyển (Cut)", "Đổi tên (Rename)", "Xóa (Delete)", "Sao chép (Copy)"], correct: 3 }, 
-            { q: "Câu 28: Thành phần nào sau đây là Phần cứng (Hardware)?", a: ["Windows", "Word", "Máy in", "Paint"], correct: 2 }, 
-            { q: "Câu 29: Nội dung nào đúng về bản quyền?", a: ["Không cần ghi nguồn", "Phải xin phép hoặc ghi nguồn rõ ràng", "Được bán ảnh trên mạng", "Chỉ cần ghi tên mình"], correct: 1 }, 
-            { q: "Câu 30: Để tìm kiếm về 'bảo vệ môi trường', từ khóa nào hiệu quả nhất?", a: ["Bảo vệ môi trường như thế nào?", "Bảo vệ môi trường", "Môi trường", "Trái đất"], correct: 1 }, 
-            { q: "Câu 31: Để tạo một thư mục mới trên màn hình nền, em thực hiện thao tác nào?", a: ["Nháy chuột phải -> New -> Folder", "Nháy chuột phải -> Delete", "Nháy đúp chuột", "Nhấn nút nguồn"], correct: 0 }, 
-            { q: "Câu 32: Để đổi tên thư mục 'TapVe' thành 'ThucHanh_Ve', em chọn lệnh nào?", a: ["Copy", "Paste", "Rename", "Delete"], correct: 2 }, 
-            { q: "Câu 33: Để xóa một thư mục (ví dụ 'DapAn'), em chọn lệnh nào?", a: ["New", "Delete", "Rename", "Cut"], correct: 1 }, 
-            { q: "Câu 34: Nếu muốn tạo thư mục con 'BaiTap' nằm bên trong thư mục 'Lop_4B', em phải làm gì?", a: ["Tạo ở ngoài Desktop", "Mở thư mục Lop_4B ra rồi mới tạo", "Xóa thư mục Lop_4B", "Đổi tên Lop_4B"], correct: 1 }, 
-            { q: "Câu 35: Lệnh Căn giữa trong Word có biểu tượng hoặc tên tiếng Anh là gì?", a: ["Align Left", "Center", "Align Right", "Justify"], correct: 1 }, 
-            { q: "Câu 36: Để thay đổi cỡ chữ lên 16, em tìm ô nào trên thanh công cụ?", a: ["Font Size (Cỡ chữ)", "Font Color (Màu chữ)", "Bold (In đậm)", "Italic (In nghiêng)"], correct: 0 }, 
-            { q: "Câu 37: Khi soạn thảo văn bản, để xuống dòng em nhấn phím nào?", a: ["Space (Cách)", "Shift", "Enter", "Caps Lock"], correct: 2 }, 
-            { q: "Câu 38: Phím Backspace dùng để làm gì khi soạn thảo?", a: ["Xóa kí tự bên trái con trỏ", "Xóa kí tự bên phải con trỏ", "Xuống dòng", "Viết hoa"], correct: 0 }, 
-            { q: "Câu 39: Để gõ được tiếng Việt có dấu (như â, ê, ô), em cần phần mềm hỗ trợ nào?", a: ["Unikey / Evkey", "Paint", "Zalo", "Chrome"], correct: 0 }, 
-            { q: "Câu 40: Để lưu bài văn bản đang soạn thảo vào máy tính, em nhấn tổ hợp phím nào?", a: ["Ctrl + C", "Ctrl + V", "Ctrl + S", "Ctrl + P"], correct: 2 } 
+            { 
+                q: "Câu 1: Thiết bị nào sau đây là Phần cứng của máy tính?", 
+                icon: "fa-hdd", 
+                a: [
+                    '<i class="fas fa-file-word opt-icon"></i> Phần mềm Word', 
+                    '<i class="fas fa-mouse opt-icon"></i> Chuột máy tính', 
+                    '<i class="fas fa-palette opt-icon"></i> Phần mềm Paint', 
+                    '<i class="fab fa-windows opt-icon"></i> Hệ điều hành Windows'
+                ], 
+                correct: 1 
+            }, 
+            { 
+                q: "Câu 2: Khi gõ bàn phím bằng 10 ngón, việc đặt tay lên hàng cơ sở (ASDF JKL;) giúp em điều gì?", 
+                icon: "fa-keyboard", 
+                a: ["Gõ nhanh, chính xác không cần nhìn phím", "Giúp máy tính khởi động nhanh hơn", "Giúp ngón tay nghỉ ngơi", "Giúp màn hình đẹp hơn"], 
+                correct: 0 
+            }, 
+            { 
+                q: "Câu 3: Tập hợp các trang thông tin trên mạng Internet, được truy cập bằng một địa chỉ chung được gọi là gì?", 
+                icon: "fa-globe", 
+                a: [
+                    '<i class="fas fa-envelope opt-icon"></i> Email', 
+                    '<i class="fas fa-globe opt-icon"></i> Website', 
+                    '<i class="fas fa-file opt-icon"></i> Tệp tin', 
+                    '<i class="fas fa-folder opt-icon"></i> Thư mục'
+                ], 
+                correct: 1 
+            }, 
+            { q: "Câu 4: Khi tìm kiếm thông tin trên Internet, từ khóa nên được chọn như thế nào?", icon: "fa-search", a: ["Càng dài càng tốt", "Ngắn gọn, chính xác, liên quan chủ đề", "Chung chung", "Dạng câu hỏi dài"], correct: 1 }, 
+            { q: "Câu 5: Thao tác nào sẽ giúp em tạo ra một bản sao của tệp tin tại vị trí mới?", icon: "fa-copy", a: ["Sao chép (Copy) và Dán (Paste)", "Di chuyển (Cut) và Dán (Paste)", "Đổi tên (Rename)", "Xóa (Delete)"], correct: 0 }, 
+            { 
+                q: "Câu 6: Để quản lí các tệp tin trong máy tính, em nên tạo thành phần nào để sắp xếp chúng ngăn nắp?", 
+                icon: "fa-folder-open", 
+                a: [
+                    '<i class="fas fa-folder opt-icon"></i> Thư mục (Folder)', 
+                    '<i class="fas fa-globe opt-icon"></i> Website', 
+                    '<i class="fas fa-file opt-icon"></i> Tệp tin (File)', 
+                    '<i class="fas fa-link opt-icon"></i> Siêu liên kết'
+                ], 
+                correct: 0 
+            }, 
+            { q: "Câu 7: Khi em mở Thư mục A, bên trong đó thấy có Thư mục B. Vậy B được gọi là gì đối với A?", icon: "fa-folder-tree", a: ["Thư mục cha", "Thư mục con", "Tệp tin", "Website"], correct: 1 }, 
+            { q: "Câu 8: Để thể hiện sự tôn trọng bản quyền khi sử dụng hình ảnh từ Internet, em nên làm gì?", icon: "fa-copyright", a: ["Tự ý sử dụng", "Ghi rõ nguồn hoặc tác giả (nếu có)", "Thay đổi màu sắc", "Nói dối là mình chụp"], correct: 1 }, 
+            { 
+                q: "Câu 9: Tổ hợp phím tắt nào được sử dụng để làm chữ In đậm (Bold) trong Word?", 
+                icon: "fa-bold", 
+                a: ["Ctrl + I", "Ctrl + B", "Ctrl + U", "Ctrl + S"], 
+                correct: 1 
+            }, 
+            { 
+                q: "Câu 10: Trong Word, muốn làm chữ In nghiêng (Italic), em sử dụng lệnh nào trong nhóm Font?", 
+                icon: "fa-italic", 
+                a: [
+                    '<i class="fas fa-italic opt-icon"></i> Chữ I (Italic)', 
+                    '<i class="fas fa-bold opt-icon"></i> Chữ B (Bold)', 
+                    '<i class="fas fa-underline opt-icon"></i> Chữ U (Underline)', 
+                    'Chữ S'
+                ], 
+                correct: 0 
+            }, 
+            { 
+                q: "Câu 11: Trong các thành phần sau, thành phần nào của máy tính có chức năng lưu trữ dữ liệu lâu dài?", 
+                icon: "fa-database", 
+                a: [
+                    '<i class="fas fa-desktop opt-icon"></i> Màn hình', 
+                    '<i class="fas fa-mouse opt-icon"></i> Chuột', 
+                    '<i class="fas fa-hdd opt-icon"></i> Ổ đĩa cứng (Hard drive)', 
+                    '<i class="fas fa-keyboard opt-icon"></i> Bàn phím'
+                ], 
+                correct: 2 
+            }, 
+            { q: "Câu 12: Quy tắc cơ bản và quan trọng nhất khi đặt tay ở Hàng cơ sở là gì?", icon: "fa-hand-paper", a: ["Đặt ngón cái lên phím Enter", "Đặt hai ngón trỏ lên phím F và J", "Đặt 10 ngón lên hàng trên", "Đặt tùy ý"], correct: 1 }, 
+            { q: "Câu 13: Hành động nào sau đây là SAI về mặt đạo đức khi sử dụng thông tin trên Internet?", icon: "fa-user-secret", a: ["Ghi nguồn tài liệu", "Tự ý sao chép và nhận là của mình", "Truy cập web lành mạnh", "Xin phép người lớn"], correct: 1 }, 
+            { q: "Câu 14: Khi sử dụng máy tìm kiếm, chọn từ khóa thế nào là hiệu quả nhất?", icon: "fa-search-plus", a: ["Câu dài phức tạp", "Ngắn gọn, chính xác", "Rất chung chung", "Không cần từ khóa"], correct: 1 }, 
+            { 
+                q: "Câu 15: Muốn làm cho chữ trong Word trở nên In đậm (Bold), em cần sử dụng lệnh nào trong nhóm Font?", 
+                icon: "fa-font", 
+                a: [
+                    '<i class="fas fa-underline opt-icon"></i> Chữ U', 
+                    '<i class="fas fa-italic opt-icon"></i> Chữ I', 
+                    '<i class="fas fa-bold opt-icon"></i> Chữ B', 
+                    '<i class="fas fa-align-center opt-icon"></i> Căn giữa'
+                ], 
+                correct: 2 
+            }, 
+            { q: "Câu 16: Để Di chuyển (Cut và Paste) một tệp tin, kết quả cuối cùng là gì?", icon: "fa-cut", a: ["Tạo bản sao mới", "Bị xóa hoàn toàn", "Mất khỏi vị trí cũ, xuất hiện ở vị trí mới", "Được đổi tên"], correct: 2 }, 
+            { q: "Câu 17: Thư mục (Folder) có chức năng chính là gì?", icon: "fa-folder", a: ["Vẽ hình", "Kết nối Internet", "Tổ chức và sắp xếp tệp tin", "In tài liệu"], correct: 2 }, 
+            { q: "Câu 18: Trang web (Webpage) là gì?", icon: "fa-window-maximize", a: ["Trò chơi máy tính", "Thư điện tử", "Trang thông tin hiển thị trên trình duyệt", "Bức ảnh"], correct: 2 }, 
+            { 
+                q: "Câu 19: Để gạch chân (Underline) một từ trong Word, em sử dụng tổ hợp phím nào?", 
+                icon: "fa-underline", 
+                a: ["Ctrl + B", "Ctrl + U", "Ctrl + I", "Ctrl + Z"], 
+                correct: 1 
+            }, 
+            { 
+                q: "Câu 20: Trong hai thành phần dưới đây, thành phần nào là Phần mềm?", 
+                icon: "fa-compact-disc", 
+                a: [
+                    '<i class="fas fa-keyboard opt-icon"></i> Bàn phím', 
+                    '<i class="fas fa-mouse opt-icon"></i> Chuột', 
+                    '<i class="fas fa-usb opt-icon"></i> Ổ đĩa USB', 
+                    '<i class="fas fa-file-word opt-icon"></i> Phần mềm Word'
+                ], 
+                correct: 3 
+            }, 
+            { q: "Câu 21: Trong nguyên tắc gõ 10 ngón, ngón út tay phải gõ phím nào trên hàng cơ sở?", icon: "fa-hand-point-right", a: ["Phím J", "Phím F", "Phím A", "Phím ; (chấm phẩy)"], correct: 3 }, 
+            { 
+                q: "Câu 22: Thiết bị nào sau đây là thiết bị Đầu vào (Input)?", 
+                icon: "fa-arrow-right-to-bracket", 
+                a: [
+                    '<i class="fas fa-print opt-icon"></i> Máy in', 
+                    '<i class="fas fa-desktop opt-icon"></i> Màn hình', 
+                    '<i class="fas fa-keyboard opt-icon"></i> Bàn phím', 
+                    '<i class="fas fa-volume-up opt-icon"></i> Loa'
+                ], 
+                correct: 2 
+            }, 
+            { q: "Câu 23: Website là gì?", icon: "fa-network-wired", a: ["Phần mềm vẽ", "Tập hợp các trang web liên quan trên mạng", "Tệp văn bản", "Địa chỉ email"], correct: 1 }, 
+            { q: "Câu 24: Để đảm bảo an toàn khi tìm kiếm thông tin, em nên làm gì?", icon: "fa-shield-alt", a: ["Chia sẻ địa chỉ nhà", "Truy cập web bất kì", "Không chia sẻ thông tin cá nhân với người lạ", "Tải phần mềm lạ"], correct: 2 }, 
+            { q: "Câu 25: Để quản lí các tệp tin môn Toán, em nên tạo thành phần nào?", icon: "fa-folder-plus", a: ["Siêu liên kết", "Thư mục (Folder)", "Trang web", "Bản in"], correct: 1 }, 
+            { q: "Câu 26: Muốn chữ In nghiêng (Italic) bằng phím tắt, em nhấn tổ hợp nào?", icon: "fa-italic", a: ["Ctrl + I", "Ctrl + B", "Ctrl + U", "Ctrl + S"], correct: 0 }, 
+            { q: "Câu 27: Thao tác nào tạo ra bản sao nhưng vẫn giữ lại tệp gốc?", icon: "fa-clone", a: ["Di chuyển (Cut)", "Đổi tên (Rename)", "Xóa (Delete)", "Sao chép (Copy)"], correct: 3 }, 
+            { q: "Câu 28: Thành phần nào sau đây là Phần cứng (Hardware)?", icon: "fa-print", a: ["Windows", "Word", "Máy in", "Paint"], correct: 2 }, 
+            { q: "Câu 29: Nội dung nào đúng về bản quyền?", icon: "fa-file-signature", a: ["Không cần ghi nguồn", "Phải xin phép hoặc ghi nguồn rõ ràng", "Được bán ảnh trên mạng", "Chỉ cần ghi tên mình"], correct: 1 }, 
+            { q: "Câu 30: Để tìm kiếm về 'bảo vệ môi trường', từ khóa nào hiệu quả nhất?", icon: "fa-leaf", a: ["Bảo vệ môi trường như thế nào?", "Bảo vệ môi trường", "Môi trường", "Trái đất"], correct: 1 }, 
+            { q: "Câu 31: Để tạo một thư mục mới trên màn hình nền, em thực hiện thao tác nào?", icon: "fa-mouse-pointer", a: ["Nháy chuột phải -> New -> Folder", "Nháy chuột phải -> Delete", "Nháy đúp chuột", "Nhấn nút nguồn"], correct: 0 }, 
+            { q: "Câu 32: Để đổi tên thư mục 'TapVe' thành 'ThucHanh_Ve', em chọn lệnh nào?", icon: "fa-edit", a: ["Copy", "Paste", "Rename", "Delete"], correct: 2 }, 
+            { q: "Câu 33: Để xóa một thư mục (ví dụ 'DapAn'), em chọn lệnh nào?", icon: "fa-trash-alt", a: ["New", "Delete", "Rename", "Cut"], correct: 1 }, 
+            { q: "Câu 34: Nếu muốn tạo thư mục con 'BaiTap' nằm bên trong thư mục 'Lop_4B', em phải làm gì?", icon: "fa-folder-open", a: ["Tạo ở ngoài Desktop", "Mở thư mục Lop_4B ra rồi mới tạo", "Xóa thư mục Lop_4B", "Đổi tên Lop_4B"], correct: 1 }, 
+            { 
+                q: "Câu 35: Lệnh Căn giữa trong Word có biểu tượng hoặc tên tiếng Anh là gì?", 
+                icon: "fa-align-center", 
+                a: [
+                    '<i class="fas fa-align-left opt-icon"></i> Align Left', 
+                    '<i class="fas fa-align-center opt-icon"></i> Center', 
+                    '<i class="fas fa-align-right opt-icon"></i> Align Right', 
+                    '<i class="fas fa-align-justify opt-icon"></i> Justify'
+                ], 
+                correct: 1 
+            }, 
+            { q: "Câu 36: Để thay đổi cỡ chữ lên 16, em tìm ô nào trên thanh công cụ?", icon: "fa-text-height", a: ["Font Size (Cỡ chữ)", "Font Color (Màu chữ)", "Bold (In đậm)", "Italic (In nghiêng)"], correct: 0 }, 
+            { q: "Câu 37: Khi soạn thảo văn bản, để xuống dòng em nhấn phím nào?", icon: "fa-level-down-alt", a: ["Space (Cách)", "Shift", "Enter", "Caps Lock"], correct: 2 }, 
+            { q: "Câu 38: Phím Backspace dùng để làm gì khi soạn thảo?", icon: "fa-backspace", a: ["Xóa kí tự bên trái con trỏ", "Xóa kí tự bên phải con trỏ", "Xuống dòng", "Viết hoa"], correct: 0 }, 
+            { q: "Câu 39: Để gõ được tiếng Việt có dấu (như â, ê, ô), em cần phần mềm hỗ trợ nào?", icon: "fa-language", a: ["Unikey / Evkey", "Paint", "Zalo", "Chrome"], correct: 0 }, 
+            { q: "Câu 40: Để lưu bài văn bản đang soạn thảo vào máy tính, em nhấn tổ hợp phím nào?", icon: "fa-save", a: ["Ctrl + C", "Ctrl + V", "Ctrl + S", "Ctrl + P"], correct: 2 } 
         ];
 
         function startQuiz() {
@@ -175,7 +295,14 @@
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
             questions.forEach((q, index) => {
-                let html = `<div class="quiz-card" id="card-${index}"><div class="q-title">${q.q}</div><div class="options-grid">`;
+                let html = `
+                <div class="quiz-card" id="card-${index}">
+                    <div class="q-header">
+                        <div class="q-icon"><i class="fas ${q.icon}"></i></div>
+                        <div class="q-title">${q.q}</div>
+                    </div>
+                    <div class="options-grid">`;
+                
                 q.a.forEach((opt, i) => {
                     html += `<label class="option-label" id="opt-${index}-${i}"><input type="radio" name="q${index}" value="${i}"> ${opt}</label>`;
                 });
