@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn tập Tin học 1 - Cuối kì 1</title>
+    <title>Ôn tập Tin học 2 - Cuối kì 1</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Roboto:wght@400;500;700&family=Source+Code+Pro:wght@600&display=swap" rel="stylesheet">
@@ -15,6 +15,7 @@
             --bg-color: #f4f7f6;
             --text-color: #333;
             --card-bg: #ffffff;
+            /* Màu sắc cho bài trắc nghiệm */
             --primary: #009688; 
             --secondary: #ff9800; 
             --bg: #e0f2f1; 
@@ -26,53 +27,28 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
 
+        /* HEADER */
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border-bottom: 5px solid #ffcc00;
-            position: sticky; top: 0; z-index: 100;
+            color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-bottom: 5px solid #ffcc00; position: sticky; top: 0; z-index: 100;
         }
-
-        .header-left h1 {
-            font-family: 'Source Code Pro', monospace;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
+        .header-left h1 { font-family: 'Source Code Pro', monospace; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .header-left h2 { font-size: 1rem; font-weight: 400; opacity: 0.9; }
-
-        .header-right {
-            text-align: right;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
+        .header-right { text-align: right; background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); }
         .teacher-name { font-size: 1rem; font-weight: bold; color: #fff; }
         .student-info-display { color: #ffeb3b; font-weight: bold; margin-top: 5px; font-size: 1.1rem; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 5px; }
 
-        footer {
-            text-align: center; padding: 20px; margin-top: 50px;
-            color: #777; font-size: 0.9rem; border-top: 1px solid #ddd;
-            background-color: white;
-        }
-
+        /* LOGIN SCREEN */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 86, 179, 0.98); display: flex; justify-content: center; align-items: center; z-index: 2000; }
         .login-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; background: white; }
-        
-        .btn-start { background: var(--secondary); color: white; border: none; padding: 12px 40px; border-radius: 30px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; }
-        
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; background-color: #fff; }
+        .btn-start { background: var(--secondary); color: white; border: none; padding: 12px 40px; border-radius: 30px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-start:hover { transform: scale(1.05); }
+
+        /* QUIZ CONTAINER */
         .container { max-width: 800px; margin: 40px auto; padding: 0 15px; display: none; }
         .question-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-bottom: 5px solid #ccc; page-break-inside: avoid; }
         .q-header { display: flex; align-items: flex-start; margin-bottom: 15px; }
@@ -83,7 +59,7 @@
         .answer-opt { display: flex; align-items: center; padding: 12px; border: 2px solid #eee; border-radius: 12px; cursor: pointer; transition: all 0.2s; background: #fafafa; }
         .answer-opt:hover { border-color: var(--primary-color); background: #e0f2f1; }
         .answer-opt input { margin-right: 10px; transform: scale(1.3); accent-color: var(--primary-color); flex-shrink: 0; }
-        .ans-icon { font-size: 1.2rem; margin-right: 8px; color: #555; width: 25px; text-align: center; }
+        .ans-icon { font-size: 1.2rem; margin-right: 10px; color: #555; width: 25px; text-align: center; }
         .ans-text { font-weight: 500; }
 
         .correct { background-color: var(--correct) !important; border-color: #4caf50 !important; color: #1b5e20; }
@@ -91,9 +67,9 @@
         .unanswered { border: 2px solid red; animation: shake 0.4s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
+        /* FOOTER & OVERLAY */
         .footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 20px; z-index: 1000; display: none; }
         .btn-submit { background: var(--primary-color); color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .btn-submit:hover { background: #004494; transform: translateY(-3px); }
         
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; flex-direction: column; color: white; }
         .spinner { border: 6px solid #f3f3f3; border-top: 6px solid var(--secondary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
@@ -103,36 +79,35 @@
         .score-circle { width: 100px; height: 100px; background: var(--primary-color); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; margin: 20px auto; }
         #pdf-header-info { display: none; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
         
-        @media (max-width: 768px) {
-            header { flex-direction: column; text-align: center; gap: 15px; }
-            .header-right { text-align: center; width: 100%; }
-        }
+        footer { text-align: center; padding: 20px; margin-top: 50px; color: #777; font-size: 0.9rem; border-top: 1px solid #ddd; background-color: white; }
+        @media (max-width: 768px) { header { flex-direction: column; text-align: center; gap: 15px; } .header-right { text-align: center; width: 100%; } }
     </style>
 </head>
 <body>
 
     <div id="loginScreen">
         <div class="login-box">
-            <i class="fas fa-laptop-code" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 15px;"></i>
-            <h2 style="color: var(--primary-color); margin-bottom: 20px;">ÔN TẬP TIN HỌC 1</h2>
-            
-            <div class="input-group"><label>Họ và tên:</label><input type="text" id="sName" placeholder="Nhập tên..."></div>
+            <i class="fas fa-desktop" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 15px;"></i>
+            <h2 style="color: var(--primary-color); margin-bottom: 20px;">ÔN TẬP TIN HỌC 2</h2>
+            <div class="input-group">
+                <label>Họ và tên:</label>
+                <input type="text" id="sName" placeholder="Nhập tên...">
+            </div>
             <div class="input-group">
                 <label>Lớp:</label>
                 <select id="sClass">
                     <option value="">-- Chọn lớp --</option>
-                    <option value="1A">1A</option>
-                    <option value="1B">1B</option>
+                    <option value="2A">2A</option>
+                    <option value="2D">2D</option>
                 </select>
             </div>
-           
             <button class="btn-start" onclick="startQuiz()">BẮT ĐẦU</button>
         </div>
     </div>
 
     <header id="mainHeader" style="display: none;">
         <div class="header-left">
-            <h1><i class="fas fa-laptop-code"></i> TIN HỌC 1</h1>
+            <h1><i class="fas fa-laptop-code"></i> TIN HỌC 2</h1>
             <h2>Bộ sách: Luyện tập Tin học</h2>
         </div>
         <div class="header-right">
@@ -155,13 +130,13 @@
     </div>
 
     <footer id="mainFooter" style="display: none;">
-        &copy; 2025 - Website hỗ trợ học tập Tin học 1 | GV Nguyễn Đình Bạch Long
+        &copy; 2025 - Website hỗ trợ học tập Tin học 2 | GV Nguyễn Đình Bạch Long
         <div>Email: dinhlongcntt20119@gmail.com  |  SĐT: 0937438939</div>
         <div>STK: 0937438939  |  Ngân hàng: Vietinbank</div>
     </footer>
 
     <div class="footer-bar" id="footerBar">
-        <button class="btn-submit" onclick="submitExam()"><i class="fas fa-paper-plane"></i> NỘP BÀI</button>
+        <button class="btn-submit" onclick="submitExam()"><i class="fas fa-paper-plane"></i> NỘP BÀI & LƯU DRIVE</button>
     </div>
 
     <div id="loadingOverlay" class="overlay">
@@ -173,219 +148,221 @@
     <div id="resultModal" class="overlay">
         <div class="result-box">
             <h2 style="color: var(--primary-color);">Hoàn thành!</h2>
-            <div class="score-circle" id="scoreDisplay">0/30</div>
+            <div class="score-circle" id="scoreDisplay">0/0</div>
             <p id="msg" style="font-weight: bold; margin-bottom: 10px;"></p>
             <div id="driveMsg" style="background: #eee; padding: 10px; border-radius: 8px; font-size: 0.85rem;"></div>
-            
             <button class="btn-start" style="margin-top: 15px; background: #757575;" onclick="location.reload()">Làm lại</button>
-            <button class="btn-start" style="margin-top: 10px; background: #d32f2f; color: white;" onclick="closeWindow()">Thoát</button>
+            <a href="../index.html" class="btn-start" style="margin-top: 10px; background: var(--primary-color); display: inline-block; text-decoration: none; padding: 12px 0;">Về trang chủ</a>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNfaBH5mDRDyUbwXgexVCT52w1laD5BQP7H5nvmePW1tQKzYbrkByBLnWu1rCr9PTK/exec"
+        // URL SCRIPT ĐÃ CẬP NHẬT
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyB6B0L1FYp30uvyyW0Q4aiKWE-jSEGxDdwqsI6YolgO2SEE-7Jlg5ddUS8Fdx6c67tAQ/exec"
         let student = { name: "", class: "" };
 
-        // --- CẤU HÌNH CÂU HỎI ĐÃ CHỈNH SỬA (Xóa chữ "Câu X:" trong nội dung) ---
-        const questions = [
-            // CÂU 1
-            {
-                q: "Bộ phận nào được ví như 'bộ não' của máy tính?",
-                a: [{ t: "Màn hình", i: "fa-desktop" }, { t: "Thùng điều khiển (CPU)", i: "fa-server" }, { t: "Bàn phím", i: "fa-keyboard" }],
-                c: 1
-            },
-            // CÂU 2
-            {
-                q: "Thiết bị nào giúp em gõ chữ cái và số vào máy tính?",
-                a: [{ t: "Chuột", i: "fa-mouse" }, { t: "Bàn phím", i: "fa-keyboard" }, { t: "Loa", i: "fa-volume-up" }],
-                c: 1
-            },
-            // CÂU 3
-            {
-                q: "Chuột máy tính thông thường có mấy nút bấm chính?",
-                a: [{ t: "1 nút" }, { t: "2 nút (Trái, Phải)" }, { t: "5 nút" }],
-                c: 1
-            },
-            // CÂU 4
-            {
-                q: "Để nghe nhạc từ máy tính mà không làm phiền người khác, em dùng gì?",
-                a: [{ t: "Tai nghe", i: "fa-headphones" }, { t: "Loa ngoài", i: "fa-volume-up" }, { t: "Máy in", i: "fa-print" }],
-                c: 0
-            },
-            // CÂU 5
-            {
-                q: "Máy tính xách tay (Laptop) có bộ phận nào thay thế chuột?",
-                a: [{ t: "Vùng cảm ứng (Touchpad)", i: "fa-hand-pointer" }, { t: "Bàn phím", i: "fa-keyboard" }, { t: "Màn hình", i: "fa-desktop" }],
-                c: 0
-            },
-            // CÂU 6
-            {
-                q: "Tư thế ngồi máy tính nào là đúng?",
-                a: [{ t: "Ngồi cong lưng, cúi sát" }, { t: "Ngồi thẳng lưng, mắt ngang tầm màn hình" }, { t: "Nằm ra bàn" }],
-                c: 1
-            },
-            // CÂU 7
-            {
-                q: "Khoảng cách từ mắt đến màn hình nên là bao nhiêu?",
-                a: [{ t: "Rất gần (10cm)" }, { t: "Vừa phải (50-80cm)" }, { t: "Rất xa (2 mét)" }],
-                c: 1
-            },
-            // CÂU 8
-            {
-                q: "Ánh sáng trong phòng khi dùng máy tính cần thế nào?",
-                a: [{ t: "Tối om" }, { t: "Đủ sáng, không chói" }, { t: "Chiếu thẳng vào mắt" }],
-                c: 1
-            },
-            // CÂU 9
-            {
-                q: "Ngón trỏ tay phải đặt lên nút nào của chuột?",
-                a: [{ t: "Nút Trái" }, { t: "Nút Phải" }, { t: "Bánh lăn" }],
-                c: 0
-            },
-            // CÂU 10
-            {
-                q: "Thao tác 'Nhấp đúp chuột' là nhấn nút trái mấy lần?",
-                a: [{ t: "1 lần" }, { t: "2 lần liên tiếp nhanh" }, { t: "3 lần" }],
-                c: 1
-            },
-            // CÂU 11
-            {
-                q: "Để mở một biểu tượng trên màn hình (ví dụ Game), em thường dùng thao tác gì?",
-                a: [{ t: "Nhấp đúp chuột" }, { t: "Kéo thả chuột" }, { t: "Nhấp chuột phải" }],
-                c: 0
-            },
-            // CÂU 12
-            {
-                q: "Phím dài nhất trên bàn phím tên là gì?",
-                a: [{ t: "Phím Enter" }, { t: "Phím Cách (Space)" }, { t: "Phím Shift" }],
-                c: 1
-            },
-            // CÂU 13
-            {
-                q: "Phím Enter dùng để làm gì?",
+        // --- DỮ LIỆU CÂU HỎI ---
+        let questions = [
+            // --- 5 CÂU TỪ FILE ĐỀ K2 HK1 (Đã bỏ Icon theo yêu cầu) ---
+            { 
+                q: "Em hãy chỉ ra biểu tượng của phần mềm Paint (Vẽ)?", 
                 a: [
-                    { t: "Xóa chữ", i: "fa-backspace" },
-                    { t: "Xuống dòng", i: "fa-arrow-down" }, 
-                    { t: "Viết hoa", i: "fa-font" }
-                ],
-                c: 1
+                    {t: "Cái lều rạp xiếc"}, 
+                    {t: "Bảng màu và cây cọ"}, 
+                    {t: "Máy tính cầm tay"}
+                ], 
+                c: 1 
             },
-            // CÂU 14
-            {
-                q: "Phím Backspace (mũi tên sang trái) dùng để làm gì?",
-                a: [{ t: "Xóa chữ bên trái" }, { t: "Cách một khoảng" }, { t: "Viết số" }],
-                c: 0
-            },
-            // CÂU 15
-            {
-                q: "Khu vực phím số thường nằm ở đâu trên bàn phím máy tính để bàn?",
-                a: [{ t: "Bên trái" }, { t: "Bên phải" }, { t: "Ở giữa" }],
-                c: 1
-            },
-            // CÂU 16
-            {
-                q: "Biểu tượng dấu X góc trên cửa sổ dùng để làm gì?",
+            { 
+                q: "Công cụ Text (có biểu tượng chữ A) trong Paint giúp em làm gì?", 
                 a: [
-                    { t: "Phóng to", i: "fa-window-maximize" },
-                    { t: "Thu nhỏ", i: "fa-window-minimize" },
-                    { t: "Đóng (Thoát)", i: "fa-window-close" } 
-                ],
-                c: 2
+                    {t: "Vẽ đường cong"}, 
+                    {t: "Tô màu hình vẽ"}, 
+                    {t: "Gõ chữ vào khung vẽ"}
+                ], 
+                c: 2 
             },
-            // CÂU 17
-            {
-                q: "Phần mềm Paint (hoặc Art) dùng để làm gì?",
-                a: [{ t: "Vẽ tranh", i: "fa-palette" }, { t: "Soạn thảo văn bản", i: "fa-file-word" }, { t: "Nghe nhạc", i: "fa-music" }],
-                c: 0
-            },
-            // CÂU 18
-            {
-                q: "Công cụ 'Thùng sơn' trong phần mềm vẽ giúp em làm gì?",
+            { 
+                q: "Để vẽ được hình vuông hoặc hình tròn chuẩn xác, em cần nhấn giữ phím nào?", 
                 a: [
-                    { t: "Vẽ nét thẳng", i: "fa-pencil-alt" },
-                    { t: "Tô màu vùng khép kín", i: "fa-fill-drip" },
-                    { t: "Tẩy xóa", i: "fa-eraser" }
-                ],
-                c: 1
+                    {t: "Phím Shift"}, 
+                    {t: "Phím Ctrl"}, 
+                    {t: "Phím Alt"}
+                ], 
+                c: 0 
             },
-            // CÂU 19
-            {
-                q: "Để vẽ hình tròn, hình vuông, em chọn công cụ nào?",
-                a: [{ t: "Công cụ Hình mẫu", i: "fa-shapes" }, { t: "Bút chì", i: "fa-pencil-alt" }, { t: "Cục tẩy", i: "fa-eraser" }],
-                c: 0
+            { 
+                q: "Để sao chép một mẫu vẽ đã chọn trong Paint, em thực hiện thao tác nào?", 
+                a: [
+                    {t: "Giữ phím Shift + Kéo chuột"}, 
+                    {t: "Giữ phím Ctrl + Kéo chuột"}, 
+                    {t: "Giữ phím Alt + Kéo chuột"}
+                ], 
+                c: 1 
             },
-            // CÂU 20
-            {
-                q: "Khi vẽ sai, em dùng công cụ gì để sửa?",
-                a: [{ t: "Bút chì", i: "fa-pencil-alt" }, { t: "Cục tẩy (Gôm)", i: "fa-eraser" }, { t: "Thùng sơn", i: "fa-fill-drip" }],
-                c: 1
+            { 
+                q: "Để đóng tiện ích đồng hồ đang mở trên màn hình, em nhấp chuột vào biểu tượng nào?", 
+                a: [
+                    {t: "Dấu tích xanh"}, 
+                    {t: "Cài đặt (Cờ lê)"}, 
+                    {t: "Dấu X màu đỏ"}
+                ], 
+                c: 2 
             },
-            // CÂU 21
-            {
-                q: "Trong trò chơi Clickomania, em nhấp chuột vào đâu để ghi điểm?",
-                a: [{ t: "Nhóm bóng cùng màu" }, { t: "Bất kỳ bóng nào" }, { t: "Khoảng trống" }],
-                c: 0
+
+            // --- CÁC CÂU BỔ SUNG (Bỏ Icon cho danh sách yêu cầu) ---
+            { 
+                q: "Trong trò chơi 'Circus 1', để bắt đầu trò chơi mới em chọn lệnh nào?", 
+                a: [
+                    {t: "Play Game"}, 
+                    {t: "Start new circus"}, 
+                    {t: "Next Puzzle"}
+                ], 
+                c: 1 
             },
-            // CÂU 22
-            {
-                q: "Biểu tượng trình duyệt web (Google Chrome) dùng để làm gì?",
-                a: [{ t: "Vào mạng Internet", i: "fa-globe" }, { t: "Vẽ tranh", i: "fa-palette" }, { t: "Tắt máy", i: "fa-power-off" }],
-                c: 0
+            { 
+                q: "Công cụ 'Kính lúp' (Magnifier) dùng chuột trái để làm gì?", 
+                a: [
+                    {t: "Phóng to hình"}, 
+                    {t: "Thu nhỏ hình"}, 
+                    {t: "Thoát"}
+                ], 
+                c: 0 
             },
-            // CÂU 23
-            {
-                q: "Nút 'Quay lại' (Mũi tên trái) trên trình duyệt dùng để làm gì?",
-                a: [{ t: "Về trang trước đó", i: "fa-arrow-left" }, { t: "Đóng trình duyệt", i: "fa-times" }, { t: "Tải lại trang", i: "fa-redo" }],
-                c: 0
+            { 
+                q: "Công cụ 'Thùng sơn' (Fill with color) dùng để làm gì?", 
+                a: [
+                    {t: "Chọn màu vẽ", i: "fa-eye-dropper"}, 
+                    {t: "Tô màu vùng khép kín", i: "fa-fill"}, /* Đã sửa đáp án */
+                    {t: "Tẩy xóa", i: "fa-eraser"}
+                ], 
+                c: 1 
             },
-            // CÂU 24
-            {
-                q: "Em có nên vừa ăn bánh vừa gõ bàn phím không?",
-                a: [{ t: "Có" }, { t: "Không (Dễ bẩn, hỏng máy)" }, { t: "Thỉnh thoảng" }],
-                c: 1
+            { 
+                q: "Công cụ Oval dùng để vẽ hình gì?", 
+                a: [
+                    {t: "Hình chữ nhật", i: "fa-square"}, 
+                    {t: "Hình tròn / Bầu dục", i: "fa-circle"}, 
+                    {t: "Hình tam giác", i: "fa-play"}
+                ], 
+                c: 1 
             },
-            // CÂU 25
-            {
-                q: "Khi tay ướt, em có được chạm vào ổ cắm điện máy tính không?",
-                a: [{ t: "Tuyệt đối không", i: "fa-exclamation-triangle" }, { t: "Được", i: "fa-check" }, { t: "Chạm nhẹ thôi", i: "fa-hand-sparkles" }],
-                c: 0
+            { 
+                q: "Trong công cụ Text, nút chữ B dùng để làm gì?", 
+                a: [
+                    {t: "Chữ nghiêng", i: "fa-italic"}, 
+                    {t: "Chữ đậm", i: "fa-bold"}, 
+                    {t: "Gạch chân", i: "fa-underline"}
+                ], 
+                c: 1 
             },
-            // CÂU 26
-            {
-                q: "Để máy tính bền đẹp, khi dùng xong em nên làm gì?",
-                a: [{ t: "Rút dây điện ngay", i: "fa-plug" }, { t: "Tắt máy đúng cách (Shut down)", i: "fa-power-off" }, { t: "Để nguyên đó", i: "fa-clock" }],
-                c: 1
+            { 
+                q: "Trong công cụ Text, nút chữ I dùng để làm gì?", 
+                a: [
+                    {t: "Gạch chân", i: "fa-underline"}, 
+                    {t: "Chữ đậm", i: "fa-bold"}, 
+                    {t: "Chữ nghiêng", i: "fa-italic"}
+                ], 
+                c: 2 
             },
-            // CÂU 27
-            {
-                q: "Máy in giúp em làm công việc gì?",
-                a: [{ t: "In hình ảnh ra giấy", i: "fa-print" }, { t: "Chụp ảnh", i: "fa-camera" }, { t: "Quay phim", i: "fa-video" }],
-                c: 0
+            { 
+                q: "Trong công cụ Text, nút chữ U dùng để làm gì?", 
+                a: [
+                    {t: "Chữ đậm", i: "fa-bold"}, 
+                    {t: "Chữ nghiêng", i: "fa-italic"}, 
+                    {t: "Gạch chân", i: "fa-underline"}
+                ], 
+                c: 2 
             },
-            // CÂU 28
-            {
-                q: "Thiết bị nào dùng để thu âm giọng nói của em?",
-                a: [{ t: "Loa", i: "fa-volume-up" }, { t: "Micro", i: "fa-microphone" }, { t: "Màn hình", i: "fa-desktop" }],
-                c: 1
+            { 
+                q: "Công cụ Đường cong (Curve) cần mấy lần nhấp chuột để hoàn thành một nét vẽ?", 
+                a: [
+                    {t: "1 lần"}, 
+                    {t: "2 lần"}, 
+                    {t: "3 lần"}
+                ], 
+                c: 2 
             },
-            // CÂU 29
-            {
-                q: "Nếu máy tính bị hỏng hoặc có khói, em nên làm gì?",
-                a: [{ t: "Tự sửa", i: "fa-tools" }, { t: "Báo ngay cho người lớn", i: "fa-user-shield" }, { t: "Đổ nước vào", i: "fa-tint" }],
-                c: 1
+            { 
+                q: "Để vẽ Cờ Tổ quốc, em dùng công cụ nào để vẽ ngôi sao?", 
+                a: [
+                    {t: "Ngôi sao 5 cánh", i: "fa-star"}, 
+                    {t: "Hình tròn", i: "fa-circle"}, 
+                    {t: "Hình vuông", i: "fa-square"}
+                ], 
+                c: 0 
             },
-            // CÂU 30
-            {
-                q: "Học Tin học giúp em điều gì?",
-                a: [{ t: "Chỉ để chơi game", i: "fa-gamepad" }, { t: "Biết sử dụng máy tính hỗ trợ học tập", i: "fa-graduation-cap" }, { t: "Không giúp gì cả", i: "fa-times" }],
-                c: 1
+            { 
+                q: "Để lật hình nằm ngang (như soi gương), em chọn lệnh nào?", 
+                a: [
+                    {t: "Xoay phải 90 độ", i: "fa-redo"}, 
+                    {t: "Lật dọc", i: "fa-arrows-alt-v"}, 
+                    {t: "Lật ngang (Flip horizontal)", i: "fa-arrows-alt-h"}
+                ], 
+                c: 2 
+            },
+            { 
+                q: "Để hình không bị che khuất khi di chuyển, em chọn chế độ nào?", 
+                a: [
+                    {t: "Chọn bình thường"}, 
+                    {t: "Chọn trong suốt (Transparent)"}, 
+                    {t: "Chọn tự do"}
+                ], 
+                c: 1 
+            },
+            { 
+                q: "Công cụ chọn hình chữ nhật tên là gì?", 
+                a: [
+                    {t: "Rectangular selection"}, 
+                    {t: "Free-form selection"}, 
+                    {t: "Select all"}
+                ], 
+                c: 0 
+            },
+            { 
+                q: "Để tắt máy tính đúng cách, em chọn lệnh nào?", 
+                a: [
+                    {t: "Sleep", i: "fa-moon"}, 
+                    {t: "Restart", i: "fa-sync"}, 
+                    {t: "Shut down", i: "fa-power-off"}
+                ], 
+                c: 2 
+            },
+            { 
+                q: "Để vẽ thân cây trong bài tập vẽ cây ăn quả, em nên sử dụng công cụ nào?", 
+                a: [
+                    {t: "Công cụ Oval", i: "fa-circle"}, 
+                    {t: "Công cụ Polygon (Đa giác)", i: "fa-draw-polygon"}, 
+                    {t: "Công cụ Line (Đường thẳng)", i: "fa-minus"}
+                ], 
+                c: 1 // Đáp án B (Polygon) theo tài liệu
+            },
+            { 
+                q: "Trong hoạt động vẽ 4 chiếc lá, sau khi vẽ đường cong nằm nghiêng, em cần thực hiện thao tác gì tiếp theo?", 
+                a: [
+                    {t: "Vẽ gân lá", i: "fa-pencil-alt"}, 
+                    {t: "Sao chép và xoay 180°", i: "fa-sync-alt"}, 
+                    {t: "Tô màu", i: "fa-fill-drip"}
+                ], 
+                c: 1 
             }
         ];
 
+        // --- HÀM TRỘN MẢNG (SHUFFLE) ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
         function startQuiz() {
             const name = document.getElementById('sName').value.trim();
-            const cls = document.getElementById('sClass').value.trim();
-            if(!name || !cls) { alert("Con nhớ nhờ ba mẹ điền tên và lớp nhé!"); return; }
+            const cls = document.getElementById('sClass').value;
+            
+            if(!name) { alert("Con nhớ điền tên nhé!"); return; }
+            if(!cls) { alert("Con nhớ chọn lớp nhé!"); return; }
+            
             student.name = name; student.class = cls;
             document.getElementById('displayInfo').innerText = `${name} - Lớp ${cls}`;
             document.getElementById('loginScreen').style.display = 'none';
@@ -394,6 +371,9 @@
             document.getElementById('backButtonArea').style.display = 'block';
             document.getElementById('quizContainer').style.display = 'block';
             document.getElementById('footerBar').style.display = 'flex';
+            
+            // TRỘN CÂU HỎI TRƯỚC KHI HIỂN THỊ
+            shuffleArray(questions);
             renderQuiz();
         }
 
@@ -404,8 +384,7 @@
                 let html = `
                 <div class="question-card" id="card-${idx}">
                     <div class="q-header">
-                        <div class="q-number">${idx + 1}</div>
-                        <div class="q-text">${q.q}</div>
+                        <div class="q-number">${idx + 1}</div> <div class="q-text">${q.q}</div>
                     </div>
                     <div class="answers-grid">
                         ${q.a.map((opt, optIdx) => `
@@ -471,7 +450,7 @@
 
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', 
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         fileName: fileName,
@@ -490,17 +469,8 @@
             document.getElementById('loadingOverlay').style.display = 'none';
             pdfHeader.style.display = 'none';
             document.getElementById('scoreDisplay').innerText = scoreText;
-            document.getElementById('msg').innerText = score >= 25 ? "Con làm bài rất xuất sắc!" : "Con làm tốt lắm!";
+            document.getElementById('msg').innerText = score >= 15 ? "Con làm bài rất xuất sắc!" : "Con làm tốt lắm, cố gắng thêm nhé!";
             document.getElementById('resultModal').style.display = 'flex';
-        }
-
-        // --- Hàm đóng cửa sổ ---
-        function closeWindow() {
-            if(confirm("Con có muốn thoát chương trình không?")) {
-                window.close(); 
-                // Nếu trình duyệt chặn window.close(), nó sẽ chuyển sang trang trắng
-                window.location.href = "about:blank"; 
-            }
         }
     </script>
 </body>
