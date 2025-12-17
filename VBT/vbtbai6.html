@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 6 (Đã sửa lỗi)</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; user-select: none; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+        
+        h1 { font-size: 18pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #2c3e50; margin: 10px 0; }
+        h2 { font-size: 14pt; font-weight: bold; color: #2980b9; margin-top: 20px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        
+        .question-block { margin-bottom: 30px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; }
+        .question-title { font-weight: bold; font-size: 12pt; margin-bottom: 15px; color: #0056b3; line-height: 1.5; }
+        
+        .incomplete-warning { border: 2px solid #e74c3c !important; background-color: #fff5f5; }
+
+        /* --- DRAG & DROP CHUNG --- */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #bdc3c7; border-radius: 10px;
+            padding: 15px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; min-height: 50px;
+        }
+        
+        /* Item Bài 1 (Từ ngữ) */
+        .word-tile {
+            background-color: #3498db; color: white; padding: 6px 12px; border-radius: 15px; font-size: 10pt; cursor: grab;
+            box-shadow: 1px 2px 3px rgba(0,0,0,0.2); display: inline-block;
+        }
+        
+        /* Item Bài 2 (Câu trả lời) */
+        .ans-tile {
+            background: #fff; border: 1px solid #27ae60; padding: 8px; border-radius: 4px; cursor: grab;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1); width: 100%; font-size: 0.95em; margin-bottom: 5px; box-sizing: border-box;
+        }
+
+        /* Vùng thả (Drop Zone) */
+        .drop-slot {
+            display: inline-flex; min-width: 150px; height: 30px; border-bottom: 2px dashed #555; 
+            vertical-align: middle; margin: 0 5px; align-items: center; justify-content: center;
+            background-color: #fdfdfd; padding: 0 5px; color: #2c3e50; font-weight: bold; border-radius: 4px;
+        }
+        .match-drop-zone {
+            border: 2px dashed #bbb; padding: 5px; background: #fff; border-radius: 5px; min-height: 60px;
+            display: flex; align-items: center; justify-content: center; position: relative; width: 100%;
+        }
+        
+        .drag-over { background-color: #d4edda !important; border-color: #28a745 !important; }
+
+        /* --- BẢNG BIỂU --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11pt; }
+        th, td { border: 1px solid #999; padding: 8px; text-align: left; vertical-align: middle; }
+        th { background-color: #ecf0f1; text-align: center; font-weight: bold; }
+        .center-cell { text-align: center; }
+        
+        input[type="checkbox"], input[type="radio"] { transform: scale(1.4); cursor: pointer; accent-color: #0056b3; }
+
+        /* --- ICON PHẦN MỀM (CÂU 5) - SVG --- */
+        .sw-icon { width: 40px; height: 40px; vertical-align: middle; margin-right: 10px; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2)); object-fit: contain; }
+
+        /* --- KẾT QUẢ --- */
+        .user-correct { background-color: #d4edda !important; }
+        .user-wrong { background-color: #f8d7da !important; }
+        .correct-mark { color: #27ae60; font-weight: bold; margin-left: 5px; display: none; }
+        
+        .correction-overlay {
+            color: #c0392b; font-weight: bold; font-size: 10pt; background: rgba(255,255,255,0.95);
+            padding: 2px 6px; border: 1px solid #c0392b; display: none; margin-left: 5px; border-radius: 4px;
+            position: absolute; top: -20px; left: 0; white-space: nowrap; z-index: 10;
+        }
+        .drop-slot, .match-drop-zone { position: relative; }
+
+        .controls { text-align: center; margin-top: 40px; }
+        button { padding: 15px 40px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13pt; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:hover { background: #219150; transform: translateY(-2px); }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h2>CHỦ ĐỀ D. ĐẠO ĐỨC, PHÁP LUẬT VÀ VĂN HÓA TRONG MÔI TRƯỜNG SỐ</h2>
+    <h1>BÀI 6: SỬ DỤNG PHẦN MỀM KHI ĐƯỢC PHÉP</h1>
+    <hr>
+
+    <div class="question-block" id="q1">
+        <div class="question-title">1. Điền từ, cụm từ thích hợp vào chỗ chấm. (Kéo thả từ vào vị trí đúng)</div>
+        
+        <div class="drag-source-area" id="wordBank" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w1" data-val="cho hoặc không cho">cho hoặc không cho</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w2" data-val="phần mềm đó">phần mềm đó</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w3" data-val="phần mềm có bản quyền">phần mềm có bản quyền</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w4" data-val="tác giả">tác giả</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w5" data-val="sử dụng">sử dụng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w6" data-val="được sự cho phép">được sự cho phép</div>
+        </div>
+
+        <div class="fill-text">
+            a) Tác giả của phần mềm máy tính là tổ chức, cá nhân tạo ra <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="phần mềm đó"></span>. Tác giả có quyền <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="cho hoặc không cho"></span> tổ chức, cá nhân khác sử dụng, sao chép, phổ biến phần mềm của mình.<br><br>
+            b) Khi <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="sử dụng"></span> phần mềm của tác giả nào thì phải <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="được sự cho phép"></span> của <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="tác giả"></span> đó. Phần mềm đã được tác giả cho phép sử dụng gọi là <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="phần mềm có bản quyền"></span>.
+        </div>
+    </div>
+
+    <div class="question-block" id="q2">
+        <div class="question-title">2. Ghép câu hỏi ở cột bên trái với câu trả lời ở cột bên phải cho phù hợp.</div>
+        
+        <div class="drag-source-area" id="source_q2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="ans-tile" draggable="true" ondragstart="drag(event)" id="a_a" data-val="a">a) Tác giả có thể bảo vệ phần mềm của mình bằng mã khoá.</div>
+            <div class="ans-tile" draggable="true" ondragstart="drag(event)" id="a_b" data-val="b">b) Tác giả có quyền cho hoặc không cho tổ chức, cá nhân khác sử dụng...</div>
+            <div class="ans-tile" draggable="true" ondragstart="drag(event)" id="a_c" data-val="c">c) Tác giả của phần mềm máy tính là tổ chức, cá nhân tạo ra phần mềm.</div>
+            <div class="ans-tile" draggable="true" ondragstart="drag(event)" id="a_d" data-val="d">d) Phần mềm máy tính do tổ chức, cá nhân tạo ra.</div>
+            <div class="ans-tile" draggable="true" ondragstart="drag(event)" id="a_e" data-val="e">e) Phần mềm được tác giả cho phép sử dụng là phần mềm có bản quyền.</div>
+            <div class="ans-tile" draggable="true" ondragstart="drag(event)" id="a_g" data-val="g">g) Khi sử dụng phần mềm cần phải có sự cho phép của tác giả.</div>
+        </div>
+
+        <table class="check-table">
+            <tr>
+                <th width="40%">Câu hỏi</th>
+                <th width="60%">Câu trả lời (Kéo từ kho thả vào đây)</th>
+            </tr>
+            <tr>
+                <td>1. Phần mềm máy tính do đâu mà có?</td>
+                <td><div class="match-drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="d" data-label="d"></div></td>
+            </tr>
+            <tr>
+                <td>2. Em hiểu thế nào về tác giả của phần mềm máy tính?</td>
+                <td><div class="match-drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="c" data-label="c"></div></td>
+            </tr>
+            <tr>
+                <td>3. Tác giả có quyền gì đối với phần mềm của mình?</td>
+                <td><div class="match-drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="b" data-label="b"></div></td>
+            </tr>
+            <tr>
+                <td>4. Tác giả có thể bảo vệ quyền của mình đối với phần mềm bằng cách nào?</td>
+                <td><div class="match-drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="a" data-label="a"></div></td>
+            </tr>
+            <tr>
+                <td>5. Cần phải được sự cho phép của ai khi sử dụng phần mềm?</td>
+                <td><div class="match-drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="g" data-label="g"></div></td>
+            </tr>
+            <tr>
+                <td>6. Em hiểu thế nào về phần mềm có bản quyền?</td>
+                <td><div class="match-drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="e" data-label="e"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="question-block" id="q3">
+        <div class="question-title">3. Đánh dấu X vào ô trống để chỉ ra việc nên làm hoặc không nên làm.</div>
+        <table class="check-table">
+            <tr>
+                <th width="70%">Việc</th>
+                <th width="15%">Nên làm</th>
+                <th width="15%">Không nên làm</th>
+            </tr>
+            <tr data-nen="true">
+                <td>A. Chỉ sử dụng phần mềm khi được phép.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-nen"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-ko"></td>
+            </tr>
+            <tr data-nen="false">
+                <td>B. Sử dụng phần mềm bị phá khoá.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-nen"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-ko"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-nen="false">
+                <td>C. Sử dụng phần mềm trò chơi được người khác sao chép cho em mà không cần quan tâm bản quyền.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-nen"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-ko"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-nen="false">
+                <td>D. Đưa phần mềm lên mạng để những người khác có thể sử dụng mà chưa được phép.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-nen"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-ko"><span class="correct-mark">✔</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="question-block" id="q4">
+        <div class="question-title">4. Đánh dấu X vào ô trống để chỉ ra phát biểu đúng.</div>
+        <table class="check-table">
+            <tr>
+                <th width="60%">Phát biểu</th>
+                <th width="20%">Đúng với phần mềm miễn phí</th>
+                <th width="20%">Đúng với phần mềm không miễn phí</th>
+            </tr>
+            <tr data-type="free">
+                <td>A. Người dùng không phải trả phí khi sử dụng phần mềm.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="paid">
+                <td>B. Người dùng phải trả phí khi sử dụng phần mềm.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-type="free">
+                <td>C. Mọi người có thể tự do sao chép, phổ biến phần mềm.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="free">
+                <td>D. Có thể sử dụng phần mềm mà không cần xin phép tác giả.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="paid">
+                <td>E. Người dùng không được sao chép, phổ biến phần mềm.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"><span class="correct-mark">✔</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="question-block" id="q5">
+        <div class="question-title">5. Đánh dấu X vào ô trống để chỉ ra phần mềm miễn phí hoặc không miễn phí.</div>
+        <table class="check-table">
+            <tr>
+                <th width="40%">Phần mềm</th>
+                <th width="30%">Miễn phí</th>
+                <th width="30%">Không miễn phí</th>
+            </tr>
+            <tr data-type="free">
+                <td>
+                    <img src="chrome.png" alt="Google Chrome" class="sw-icon">
+                    Google Chrome
+                </td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="paid">
+                <td><img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="4" fill="%23d04423"/><text x="16" y="32" font-family="Arial" font-weight="bold" font-size="24" fill="white">P</text></svg>' class="sw-icon">PowerPoint</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-type="free">
+                <td>
+                    <img src="rapit.png" alt="RapidTyping" class="sw-icon">
+                    RapidTyping
+                </td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="paid">
+                <td><img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="4" fill="%232b579a"/><text x="14" y="32" font-family="Arial" font-weight="bold" font-size="24" fill="white">W</text></svg>' class="sw-icon">Word</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-type="free">
+                <td>
+                    <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="4" fill="black"/><circle cx="24" cy="24" r="6" fill="%23FFD700"/><ellipse cx="24" cy="24" rx="18" ry="6" fill="none" stroke="%23555" stroke-width="1.5" transform="rotate(-20 24 24)"/><ellipse cx="24" cy="24" rx="18" ry="6" fill="none" stroke="%23555" stroke-width="1.5" transform="rotate(20 24 24)"/><circle cx="10" cy="20" r="2.5" fill="%233498db"/><circle cx="36" cy="28" r="2.5" fill="%23e74c3c"/></svg>' class="sw-icon">
+                    SolarSystem
+                </td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="free">
+                <td><img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="4" fill="%23e67e22"/><text x="16" y="32" font-family="Arial" font-weight="bold" font-size="24" fill="white">V</text></svg>' class="sw-icon">UniKey</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+            <tr data-type="paid">
+                <td><img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="%230078d7" d="M4 8l18-2v17H4zm18 17v17l-18-2V25zm2-19l20-3v19H24zm20 18v19l-20-3V24z"/></svg>' class="sw-icon">Windows 10</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-type="paid">
+                <td><img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="4" fill="%23217346"/><text x="16" y="32" font-family="Arial" font-weight="bold" font-size="24" fill="white">X</text></svg>' class="sw-icon">Excel</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-type="free">
+                <td><img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="10" y="6" width="28" height="36" rx="2" fill="%237f8c8d"/><rect x="14" y="10" width="20" height="8" fill="%23bdc3c7"/></svg>' class="sw-icon">Calculator</td>
+                <td class="center-cell"><input type="checkbox" class="chk-free"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-paid"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="controls">
+        <button onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+    </div>
+</div>
+
+<script>
+    /* --- DRAG & DROP LOGIC --- */
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); ev.target.style.opacity = "0.5"; }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        if(draggedElement) draggedElement.style.opacity = "1";
+        
+        let target = ev.target.closest('.drop-slot, .match-drop-zone, .drag-source-area');
+        
+        if (target) {
+            // Logic cho drop-slot (Bài 1)
+            if (target.classList.contains('drop-slot')) {
+                if (target.children.length > 0) {
+                    document.getElementById('wordBank').appendChild(target.children[0]);
+                }
+                target.appendChild(draggedElement);
+                // Xóa overlay lỗi
+                let ov = target.querySelector('.correction-overlay');
+                if(ov) ov.remove();
+            }
+            // Logic cho match-drop-zone (Bài 2)
+            else if (target.classList.contains('match-drop-zone')) {
+                if (target.children.length > 0) {
+                    document.getElementById('source_q2').appendChild(target.children[0]);
+                }
+                target.appendChild(draggedElement);
+                let ov = target.querySelector('.correction-overlay');
+                if(ov) ov.remove();
+            }
+            // Trả về kho
+            else if (target.classList.contains('drag-source-area')) {
+                target.appendChild(draggedElement);
+            }
+        }
+    }
+
+    /* --- VALIDATE (KIỂM TRA LÀM ĐỦ) --- */
+    function validate() {
+        // Xóa cảnh báo cũ
+        document.querySelectorAll('.incomplete-warning').forEach(el => el.classList.remove('incomplete-warning'));
+        
+        let missing = [];
+
+        // Bài 1: Check các ô trống
+        let q1Slots = document.querySelectorAll('#q1 .drop-slot');
+        let q1Empty = false;
+        q1Slots.forEach(s => { if(s.children.length === 0) q1Empty = true; });
+        if(q1Empty) missing.push('q1');
+
+        // Bài 2: Check các ô ghép
+        let q2Slots = document.querySelectorAll('#q2 .match-drop-zone');
+        let q2Empty = false;
+        q2Slots.forEach(s => { if(s.children.length === 0) q2Empty = true; });
+        if(q2Empty) missing.push('q2');
+
+        // Bài 3: Check bảng
+        let q3Rows = document.querySelectorAll('#q3 tr[data-nen]');
+        let q3Inc = false;
+        q3Rows.forEach(r => { if(!r.querySelector('input:checked')) q3Inc = true; });
+        if(q3Inc) missing.push('q3');
+
+        // Bài 4, 5: Check bảng phân loại
+        ['q4', 'q5'].forEach(qid => {
+            let rows = document.querySelectorAll(`#${qid} tr[data-type]`);
+            let inc = false;
+            rows.forEach(r => { if(!r.querySelector('input:checked')) inc = true; });
+            if(inc) missing.push(qid);
+        });
+
+        return missing;
+    }
+
+    /* --- CHẤM ĐIỂM --- */
+    function chamDiem() {
+        let missing = validate();
+        if(missing.length > 0) {
+            alert("Bạn chưa hoàn thành hết các câu hỏi. Vui lòng kiểm tra lại!");
+            missing.forEach(id => document.getElementById(id).classList.add('incomplete-warning'));
+            document.getElementById(missing[0]).scrollIntoView({behavior: 'smooth', block: 'center'});
+            return;
+        }
+
+        // RESET style cũ
+        document.querySelectorAll('.user-correct, .user-wrong').forEach(el => el.classList.remove('user-correct', 'user-wrong'));
+        document.querySelectorAll('.correction-overlay').forEach(el => el.remove());
+        document.querySelectorAll('.correct-mark').forEach(el => el.style.display = 'none');
+
+        // --- BÀI 1 & 2: KÉO THẢ ---
+        // Gộp chung logic vì cấu trúc giống nhau (container -> slot -> child[data-val] vs slot[data-expect])
+        let allSlots = document.querySelectorAll('.drop-slot, .match-drop-zone');
+        allSlots.forEach(slot => {
+            let expect = slot.getAttribute('data-expect');
+            let child = slot.children[0];
+            let val = "";
+            
+            // Lấy giá trị
+            if(child.id.startsWith("w")) val = child.innerText; // Bài 1 (lấy text)
+            else if(child.id.startsWith("a")) val = child.getAttribute('data-val'); // Bài 2 (lấy data-val)
+
+            if(val === expect) {
+                child.classList.add('user-correct');
+            } else {
+                child.classList.add('user-wrong');
+                // Hiện đáp án đúng
+                let label = expect;
+                if(slot.hasAttribute('data-label')) label = "Đáp án: " + slot.getAttribute('data-label');
+                
+                let ov = document.createElement('div');
+                ov.className = 'correction-overlay';
+                ov.innerText = label;
+                ov.style.display = 'block';
+                slot.appendChild(ov);
+            }
+        });
+
+        // --- BÀI 3: NÊN / KHÔNG NÊN ---
+        document.querySelectorAll('#q3 tr[data-nen]').forEach(row => {
+            let isNen = row.getAttribute('data-nen') === "true";
+            let chkNen = row.querySelector('.chk-nen');
+            let chkKo = row.querySelector('.chk-ko');
+            
+            let userCorrect = false;
+            if (isNen && chkNen.checked && !chkKo.checked) userCorrect = true;
+            if (!isNen && !chkNen.checked && chkKo.checked) userCorrect = true;
+
+            if (userCorrect) {
+                row.classList.add('user-correct');
+            } else {
+                row.classList.add('user-wrong');
+                // Show mark
+                if(isNen) chkNen.nextElementSibling.style.display = 'inline';
+                else chkKo.nextElementSibling.style.display = 'inline';
+            }
+        });
+
+        // --- BÀI 4, 5: PHÂN LOẠI ---
+        ['q4', 'q5'].forEach(qid => {
+            document.querySelectorAll(`#${qid} tr[data-type]`).forEach(row => {
+                let type = row.getAttribute('data-type');
+                let chkFree = row.querySelector('.chk-free');
+                let chkPaid = row.querySelector('.chk-paid');
+                
+                let userCorrect = false;
+                if (type === 'free' && chkFree.checked && !chkPaid.checked) userCorrect = true;
+                if (type === 'paid' && !chkFree.checked && chkPaid.checked) userCorrect = true;
+
+                if (userCorrect) {
+                    row.classList.add('user-correct');
+                } else {
+                    row.classList.add('user-wrong');
+                    if(type === 'free') chkFree.nextElementSibling.style.display = 'inline';
+                    else chkPaid.nextElementSibling.style.display = 'inline';
+                }
+            });
+        });
+
+        alert("Đã chấm xong! Xem kết quả chi tiết.");
+    }
+</script>
+
+</body>
+</html>

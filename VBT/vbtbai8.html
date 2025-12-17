@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 8: Chèn hình ảnh, sao chép, di chuyển, xoá văn bản</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #eef2f7; margin: 0; padding: 20px; color: #333; }
+        .page { background-color: #fff; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #d35400; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+        
+        .question-block {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .question-title { 
+            font-weight: bold; font-size: 13pt; margin-bottom: 15px; color: #2c3e50; 
+            border-left: 5px solid #2980b9; padding-left: 10px; background-color: #f4f6f7; padding: 10px;
+        }
+
+        /* --- BẢNG VÀ INPUT --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; margin-bottom: 20px; }
+        th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; font-size: 12pt; vertical-align: middle; }
+        th { text-align: center; background-color: #ecf0f1; font-weight: bold; color: #2c3e50; }
+        .center-text { text-align: center; }
+        
+        /* Select Box Order */
+        select.order-select {
+            padding: 8px; font-size: 13pt; font-weight: bold; border-radius: 5px; 
+            border: 2px solid #bdc3c7; width: 60px; text-align: center; cursor: pointer; color: #2980b9;
+        }
+        
+        /* Select Box Matching */
+        select.match-select {
+            padding: 8px; font-size: 11pt; border-radius: 5px; border: 2px solid #bdc3c7; width: 100%;
+            background-color: #fff; cursor: pointer;
+        }
+
+        /* Radio Buttons */
+        .option-label { display: block; margin-bottom: 10px; cursor: pointer; padding: 8px; border-radius: 5px; transition: 0.2s; }
+        .option-label:hover { background-color: #f0f8ff; }
+        .option-label input { margin-right: 10px; transform: scale(1.2); }
+
+        /* --- DRAG & DROP Chung --- */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #3498db; border-radius: 10px;
+            padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+        }
+        .word-tile {
+            background-color: #e67e22; color: white; padding: 6px 15px; border-radius: 6px;
+            cursor: grab; font-weight: bold; font-size: 12pt; box-shadow: 0 3px 0 #d35400;
+            user-select: none; z-index: 10;
+        }
+        .drop-slot {
+            display: inline-flex; min-width: 100px; height: 35px; 
+            border-bottom: 2px dashed #333; margin: 0 5px;
+            vertical-align: middle; align-items: center; justify-content: center;
+            color: #2980b9; font-weight: bold; padding: 0 5px;
+        }
+        
+        /* Style cho kết quả đúng sai của slot */
+        .slot-correct { border: 2px solid #27ae60 !important; background-color: #eafaf1; border-radius: 4px; }
+        .slot-wrong { border: 2px solid #c0392b !important; background-color: #fdedec; border-radius: 4px; }
+
+        /* --- DRAG & DROP Bài 8 (Khung lớn) --- */
+        .group-container {
+            border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; background: #fafafa;
+        }
+        .group-drop-area {
+            min-height: 50px; border: 2px dashed #aaa; background: white; border-radius: 5px;
+            padding: 5px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
+        }
+        .group-label { font-weight: bold; margin-bottom: 5px; color: #2c3e50; display: block;}
+
+        .drag-over { background-color: #ffeaa7 !important; border-color: #f39c12 !important; }
+
+        /* --- CONTROLS --- */
+        .controls {
+            text-align: center; margin-top: 40px; padding: 20px;
+            background: #fff; border-top: 2px solid #eee; position: sticky; bottom: 0; z-index: 100; box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+        button {
+            padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #e74c3c; }
+
+        /* Feedback */
+        .correct-answer-text {
+            color: #c0392b; font-size: 11pt; font-weight: bold; margin-top: 15px; display: none; 
+            padding: 10px; background: #fff0f0; border-radius: 5px; border: 1px solid #ffcccc;
+        }
+        .missing-alert {
+            border: 2px solid red !important;
+            background-color: #fff5f5 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h3>CHỦ ĐỀ: SOẠN THẢO VĂN BẢN</h3>
+    <h1>BÀI 8: CHÈN HÌNH ẢNH, SAO CHÉP, DI CHUYỂN, XOÁ VĂN BẢN</h1>
+    <hr>
+
+    <div class="question-block" id="ex1">
+        <div class="question-title">1. Điền cụm từ thích hợp vào chỗ chấm (Kéo thả).</div>
+        <div class="drag-source-area" id="source_ex1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_minhhoa" data-val="minhhoa" data-origin="source_ex1">minh hoạ</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_sinhdong" data-val="sinhdong" data-origin="source_ex1">sinh động</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_hapdan" data-val="hapdan" data-origin="source_ex1">hấp dẫn</div>
+        </div>
+        <div style="font-size: 13pt; line-height: 2.5;">
+            Mục đích của việc chèn hình ảnh là để <span class="drop-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="minhhoa"></span> cho nội dung văn bản, giúp văn bản <span class="drop-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="sinhdong|hapdan"></span>, <span class="drop-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="hapdan|sinhdong"></span> hơn.
+        </div>
+        <div class="correct-answer-text">
+            Đáp án đúng: <b>minh hoạ</b>, <b>sinh động</b>, <b>hấp dẫn</b>.
+        </div>
+    </div>
+
+    <div class="question-block" id="ex2">
+        <div class="question-title">2. Sắp xếp thứ tự các bước để chèn hình ảnh vào văn bản.</div>
+        <table>
+            <tr><th width="15%">Thứ tự</th><th>Bước thực hiện</th></tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>A. Mở thư mục chứa tệp hình ảnh, chọn tệp hình ảnh.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>B. Chọn thẻ <b>Insert</b>, chọn nút lệnh <b>Pictures</b>.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>C. Đặt con trỏ soạn thảo vào vị trí muốn chèn hình ảnh.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="4"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>D. Chọn nút lệnh <b>Insert</b>.</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: C (1) -> B (2) -> A (3) -> D (4)</div>
+    </div>
+
+    <div class="question-block" id="ex3">
+        <div class="question-title">3. Việc nào cần thực hiện khi chèn hình ảnh vào VĂN BẢN nhưng không nhất thiết khi chèn vào TRANG CHIẾU?</div>
+        <label class="option-label"><input type="radio" name="q3" value="A" class="required-radio"> A. Đặt con trỏ soạn thảo tại vị trí muốn chèn hình ảnh vào.</label>
+        <label class="option-label"><input type="radio" name="q3" value="B" class="required-radio"> B. Chọn thẻ Insert, chọn nút lệnh Pictures.</label>
+        <label class="option-label"><input type="radio" name="q3" value="C" class="required-radio"> C. Mở thư mục chứa tệp hình ảnh, chọn tệp hình ảnh.</label>
+        <label class="option-label"><input type="radio" name="q3" value="D" class="required-radio"> D. Chọn nút lệnh Insert.</label>
+        <div class="correct-answer-text">Đáp án đúng: A</div>
+    </div>
+
+    <div class="question-block" id="ex4">
+        <div class="question-title">4. Sắp xếp thứ tự các bước thay đổi kích thước hình ảnh.</div>
+        <table>
+            <tr><th width="15%">Thứ tự</th><th>Bước thực hiện</th></tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>A. Khi con trỏ chuột chuyển thành dạng mũi tên hai chiều, kéo thả chuột để thay đổi kích thước.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>B. Di chuyển con trỏ chuột vào một nút tròn trên khung chữ nhật bao quanh hình ảnh.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>C. Chọn hình ảnh.</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: C (1) -> B (2) -> A (3)</div>
+    </div>
+
+    <div class="question-block" id="ex5">
+        <div class="question-title">5. Sắp xếp thứ tự các bước di chuyển hình ảnh.</div>
+        <table>
+            <tr><th width="15%">Thứ tự</th><th>Bước thực hiện</th></tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>A. Di chuyển con trỏ chuột vào hình ảnh để con trỏ chuột chuyển thành dạng mũi tên 4 chiều.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>B. Chọn hình ảnh.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>C. Kéo thả chuột để di chuyển hình ảnh đến vị trí mong muốn.</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: B (1) -> A (2) -> C (3)</div>
+    </div>
+
+    <div class="question-block" id="ex6">
+        <div class="question-title">6. Sắp xếp thứ tự các bước thay đổi cách bố trí hình ảnh (Layout).</div>
+        <table>
+            <tr><th width="15%">Thứ tự</th><th>Bước thực hiện</th></tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>A. Nháy chuột vào nút lệnh <b>Layout Options</b> (biểu tượng cầu vồng).</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>B. Chọn kiểu trình bày (Ví dụ: In Front of Text, Square...).</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+                </td>
+                <td>C. Chọn hình ảnh.</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: C (1) -> A (2) -> B (3)</div>
+    </div>
+
+    <div class="question-block" id="ex7">
+        <div class="question-title">7. Chọn phát biểu SAI.</div>
+        <label class="option-label"><input type="radio" name="q7" value="A" class="required-radio"> A. Để di chuyển hình ảnh đến vị trí mong muốn trong văn bản ta chỉ cần thực hiện thao tác di chuyển hình ảnh.</label>
+        <label class="option-label"><input type="radio" name="q7" value="B" class="required-radio"> B. Ta có thể thay đổi cách bố trí, sắp đặt hình ảnh với nội dung chữ trong văn bản.</label>
+        <label class="option-label"><input type="radio" name="q7" value="C" class="required-radio"> C. Để di chuyển hình ảnh tự do, ta có thể cần phải thay đổi cách bố trí hình ảnh kết hợp với di chuyển.</label>
+        <div class="correct-answer-text">Đáp án đúng: A (Sai vì thường cần đổi Layout Option mới di chuyển tự do được)</div>
+    </div>
+
+    <div class="question-block" id="ex8">
+        <div class="question-title">8. Kéo thả các bước vào khung tương ứng để tạo thành quy trình đúng.</div>
+        <div style="text-align:center; font-style:italic; margin-bottom:10px;">(Chú ý: Một số thao tác như "Chọn văn bản" được dùng chung cho cả 3 việc)</div>
+        
+        <div class="drag-source-area" id="source_ex8" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_A1" data-val="A" data-origin="source_ex8">A. Chọn văn bản</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_A2" data-val="A" data-origin="source_ex8">A. Chọn văn bản</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_A3" data-val="A" data-origin="source_ex8">A. Chọn văn bản</div>
+            
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_B" data-val="B" data-origin="source_ex8">B. Ctrl + C</div>
+            
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_C1" data-val="C" data-origin="source_ex8">C. Ctrl + V</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_C2" data-val="C" data-origin="source_ex8">C. Ctrl + V</div>
+            
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_D" data-val="D" data-origin="source_ex8">D. Ctrl + X</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_E" data-val="E" data-origin="source_ex8">E. Delete/Backspace</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_G" data-val="G" data-origin="source_ex8">G. Con trỏ đến đích (Sao chép)</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="t8_H" data-val="H" data-origin="source_ex8">H. Con trỏ đến đích (Di chuyển)</div>
+        </div>
+
+        <div class="group-container">
+            <span class="group-label">1. Sao chép:</span>
+            <div class="group-drop-area required-group" id="zone_copy" ondrop="drop(event)" ondragover="allowDrop(event)" data-answer="A,B,G,C"></div>
+        </div>
+
+        <div class="group-container">
+            <span class="group-label">2. Di chuyển:</span>
+            <div class="group-drop-area required-group" id="zone_move" ondrop="drop(event)" ondragover="allowDrop(event)" data-answer="A,D,H,C"></div>
+        </div>
+
+        <div class="group-container">
+            <span class="group-label">3. Xoá:</span>
+            <div class="group-drop-area required-group" id="zone_del" ondrop="drop(event)" ondragover="allowDrop(event)" data-answer="A,E"></div>
+        </div>
+
+        <div class="correct-answer-text">
+            Đáp án đúng:<br>
+            - Sao chép: A -> B -> G -> C<br>
+            - Di chuyển: A -> D -> H -> C<br>
+            - Xoá: A -> E
+        </div>
+    </div>
+
+    <div class="question-block" id="ex9">
+        <div class="question-title">9. Sắp xếp thứ tự để sao chép cụm từ "Núi bao nhiêu tuổi" xuống cuối văn bản.</div>
+        <table>
+            <tr><th width="15%">Thứ tự</th><th>Bước thực hiện</th></tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="4"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>A. Gõ tổ hợp phím <b>Ctrl + V</b> (Dán).</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>B. Đưa con trỏ đến cuối dòng cuối cùng của văn bản rồi gõ phím Enter.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>C. Chọn cụm từ "Núi bao nhiêu tuổi".</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+                </td>
+                <td>D. Gõ tổ hợp phím <b>Ctrl + C</b> (Sao chép).</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: C (1) -> D (2) -> B (3) -> A (4)</div>
+    </div>
+
+    <div class="question-block" id="ex11">
+        <div class="question-title">11. Nối thao tác (cột trái) với kết quả (cột phải).</div>
+        <table>
+            <tr><th width="30%">Thao tác</th><th>Chọn kết quả</th></tr>
+            <tr>
+                <td>1) Sao chép phần văn bản</td>
+                <td>
+                    <select class="match-select required-select" data-answer="c">
+                        <option value="">-- Chọn kết quả --</option>
+                        <option value="a">a) Phần văn bản được chọn sẽ xuất hiện ở vị trí mới và không còn tồn tại ở vị trí ban đầu.</option>
+                        <option value="b">b) Phần văn bản được chọn bị xoá.</option>
+                        <option value="c">c) Tại vị trí sao chép đến sẽ có thêm phần văn bản giống với phần văn bản đã chọn.</option>
+                        <option value="d">d) Phần văn bản có nền màu sẫm.</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>2) Di chuyển phần văn bản</td>
+                <td>
+                    <select class="match-select required-select" data-answer="a">
+                        <option value="">-- Chọn kết quả --</option>
+                        <option value="a">a) Phần văn bản được chọn sẽ xuất hiện ở vị trí mới và không còn tồn tại ở vị trí ban đầu.</option>
+                        <option value="b">b) Phần văn bản được chọn bị xoá.</option>
+                        <option value="c">c) Tại vị trí sao chép đến sẽ có thêm phần văn bản giống với phần văn bản đã chọn.</option>
+                        <option value="d">d) Phần văn bản có nền màu sẫm.</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>3) Xoá phần văn bản</td>
+                <td>
+                    <select class="match-select required-select" data-answer="b">
+                        <option value="">-- Chọn kết quả --</option>
+                        <option value="a">a) Phần văn bản được chọn sẽ xuất hiện ở vị trí mới và không còn tồn tại ở vị trí ban đầu.</option>
+                        <option value="b">b) Phần văn bản được chọn bị xoá.</option>
+                        <option value="c">c) Tại vị trí sao chép đến sẽ có thêm phần văn bản giống với phần văn bản đã chọn.</option>
+                        <option value="d">d) Phần văn bản có nền màu sẫm.</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>4) Chọn phần văn bản</td>
+                <td>
+                    <select class="match-select required-select" data-answer="d">
+                        <option value="">-- Chọn kết quả --</option>
+                        <option value="a">a) Phần văn bản được chọn sẽ xuất hiện ở vị trí mới và không còn tồn tại ở vị trí ban đầu.</option>
+                        <option value="b">b) Phần văn bản được chọn bị xoá.</option>
+                        <option value="c">c) Tại vị trí sao chép đến sẽ có thêm phần văn bản giống với phần văn bản đã chọn.</option>
+                        <option value="d">d) Phần văn bản có nền màu sẫm.</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">
+            Đáp án đúng: 1-c, 2-a, 3-b, 4-d
+        </div>
+    </div>
+
+    <div class="question-block" id="ex12">
+        <div class="question-title">12. Để từ tệp văn bản "5 điều Bác Hồ dạy" có được văn bản như Hình 1 (chỉ có đoạn text Ca dao), việc nào dưới đây KHÔNG cần thực hiện?</div>
+        <label class="option-label"><input type="radio" name="q12" value="A" class="required-radio"> A. Chèn hình ảnh vào văn bản.</label>
+        <label class="option-label"><input type="radio" name="q12" value="B" class="required-radio"> B. Thay đổi kích thước, bố trí hình ảnh.</label>
+        <label class="option-label"><input type="radio" name="q12" value="C" class="required-radio"> C. Sao chép văn bản.</label>
+        <div class="correct-answer-text">Đáp án đúng: A (Vì văn bản đích chỉ có chữ, không có ảnh)</div>
+    </div>
+
+    <div class="question-block" id="ex14">
+        <div class="question-title">14. Sắp xếp các bước để lưu tệp với tên khác (Save As).</div>
+        <table>
+            <tr><th width="15%">Thứ tự</th><th>Bước thực hiện</th></tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="5"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                </td>
+                <td>A. Chọn nút lệnh <b>Save</b>.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                </td>
+                <td>B. Chọn <b>Save As</b>.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                </td>
+                <td>C. Chọn <b>Browse</b>, cửa sổ Save As mở ra.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                </td>
+                <td>D. Chọn thẻ <b>File</b>.</td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <select class="order-select required-select" data-answer="4"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+                </td>
+                <td>E. Mở thư mục sẽ chứa tệp, gõ tên tệp mới.</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: D (1) -> B (2) -> C (3) -> E (4) -> A (5)</div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
+    </div>
+
+</div>
+
+<script>
+    /* --- LOGIC KÉO THẢ --- */
+    function allowDrop(ev) { ev.preventDefault(); ev.target.closest('.drop-slot, .group-drop-area, .drag-source-area').classList.add('drag-over'); }
+    
+    document.addEventListener("dragleave", function(event) { 
+        let target = event.target.closest('.drop-slot, .group-drop-area, .drag-source-area');
+        if (target) target.classList.remove("drag-over");
+    });
+    
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    
+    function drop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.drop-slot, .group-drop-area, .drag-source-area');
+        if (target) {
+            target.classList.remove("drag-over");
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            
+            if (draggedEl) {
+                // Xử lý bài 1 (1 ô 1 từ)
+                if (target.classList.contains("drop-slot")) {
+                    if (target.children.length > 0) {
+                        let oldItem = target.children[0];
+                        document.getElementById(oldItem.getAttribute('data-origin')).appendChild(oldItem);
+                    }
+                    target.appendChild(draggedEl);
+                } 
+                // Xử lý bài 8 (Ô chứa nhiều thẻ)
+                else if (target.classList.contains("group-drop-area") || target.classList.contains("drag-source-area")) {
+                    // Kiểm tra nếu thả vào kho gốc thì phải đúng kho
+                    if (target.classList.contains("drag-source-area")) {
+                         let origin = draggedEl.getAttribute('data-origin');
+                         document.getElementById(origin).appendChild(draggedEl);
+                    } else {
+                        target.appendChild(draggedEl);
+                    }
+                }
+            }
+        }
+    }
+
+    /* --- HÀM KIỂM TRA & CHẤM ĐIỂM --- */
+    function checkProgress() {
+        let allAnswered = true;
+        let firstMissing = null;
+
+        // Xóa cảnh báo cũ
+        document.querySelectorAll('.missing-alert').forEach(el => el.classList.remove('missing-alert'));
+
+        // Kiểm tra Select
+        document.querySelectorAll('.required-select').forEach(el => {
+            if(el.value === "") { allAnswered = false; el.classList.add('missing-alert'); if(!firstMissing) firstMissing = el; }
+        });
+
+        // Kiểm tra Radio
+        ['q3', 'q7', 'q12'].forEach(name => {
+            if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                allAnswered = false;
+                let block = document.querySelector(`input[name="${name}"]`).closest('.question-block');
+                block.classList.add('missing-alert');
+                if(!firstMissing) firstMissing = block;
+            }
+        });
+
+        // Kiểm tra Kéo thả Bài 1
+        document.querySelectorAll('.required-slot').forEach(el => {
+            if(el.children.length === 0) { allAnswered = false; el.classList.add('missing-alert'); if(!firstMissing) firstMissing = el; }
+        });
+
+        // Kiểm tra Kéo thả Bài 8
+        document.querySelectorAll('.required-group').forEach(el => {
+            if(el.children.length === 0) { allAnswered = false; el.parentElement.classList.add('missing-alert'); if(!firstMissing) firstMissing = el.parentElement; }
+        });
+
+        if(!allAnswered) {
+            alert("Bạn chưa hoàn thành tất cả các câu hỏi! Vui lòng kiểm tra lại các phần được bôi đỏ.");
+            if(firstMissing) firstMissing.scrollIntoView({behavior: "smooth", block: "center"});
+            return false;
+        }
+        return true;
+    }
+
+    function validateOrderUnique() {
+        let tables = document.querySelectorAll('table');
+        let isValid = true;
+        tables.forEach(table => {
+            let selects = table.querySelectorAll('.order-select');
+            if (selects.length > 0) {
+                let values = [];
+                selects.forEach(s => { if(s.value) values.push(s.value); });
+                let uniqueValues = new Set(values);
+                if (values.length !== uniqueValues.size) {
+                    isValid = false;
+                    table.closest('.question-block').classList.add('missing-alert');
+                }
+            }
+        });
+        if (!isValid) {
+            alert("Lỗi: Trong các câu hỏi sắp xếp, bạn không được chọn trùng số thứ tự!");
+            return false;
+        }
+        return true;
+    }
+
+    function chamDiem() {
+        if (!checkProgress()) return;
+        if (!validateOrderUnique()) return;
+
+        // Reset Styles
+        document.querySelectorAll('.correct-answer-text').forEach(e => e.style.display = 'none');
+        document.querySelectorAll('.slot-correct, .slot-wrong').forEach(e => {
+            e.classList.remove('slot-correct', 'slot-wrong');
+        });
+        document.querySelectorAll('div.question-block').forEach(e => {
+            e.style.border = '1px solid #eee'; 
+            e.style.backgroundColor = '#fff';
+        });
+
+        // --- BÀI 1 ---
+        let ex1Correct = true;
+        document.querySelectorAll('#ex1 .drop-slot').forEach(slot => {
+            // Logic: Kiểm tra từng slot
+            let expect = slot.getAttribute('data-expect').split('|');
+            let isSlotCorrect = false;
+            if (slot.children.length > 0 && expect.includes(slot.children[0].getAttribute('data-val'))) {
+                isSlotCorrect = true;
+            }
+            
+            // Tô màu slot
+            if (isSlotCorrect) {
+                slot.classList.add('slot-correct');
+            } else {
+                slot.classList.add('slot-wrong');
+                ex1Correct = false;
+            }
+        });
+        setResult('ex1', ex1Correct);
+
+        // --- CÁC BÀI KHÁC ---
+        ['ex2', 'ex4', 'ex5', 'ex6', 'ex9', 'ex14'].forEach(id => {
+            let correct = true;
+            document.querySelectorAll(`#${id} .order-select`).forEach(inp => {
+                if(inp.value !== inp.getAttribute('data-answer')) correct = false;
+            });
+            setResult(id, correct);
+        });
+
+        checkRadio('ex3', 'A');
+        checkRadio('ex7', 'A');
+        checkRadio('ex12', 'A');
+
+        let ex8Correct = true;
+        ['zone_copy', 'zone_move', 'zone_del'].forEach(zoneId => {
+            let zone = document.getElementById(zoneId);
+            let userVals = Array.from(zone.children).map(child => child.getAttribute('data-val')).join(',');
+            let answer = zone.getAttribute('data-answer');
+            if(userVals !== answer) ex8Correct = false;
+        });
+        setResult('ex8', ex8Correct);
+
+        let ex11Correct = true;
+        document.querySelectorAll('#ex11 .match-select').forEach(sel => {
+            if(sel.value !== sel.getAttribute('data-answer')) ex11Correct = false;
+        });
+        setResult('ex11', ex11Correct);
+
+        document.getElementById('result-msg').innerText = "Đã chấm điểm! Xem chi tiết đúng (Xanh) / sai (Đỏ) ở từng câu.";
+        document.getElementById('result-msg').scrollIntoView({behavior: "smooth"});
+    }
+
+    function checkRadio(id, correctVal) {
+        let selected = document.querySelector(`input[name="q${id.replace('ex','')}"]:checked`);
+        let isCorrect = selected && selected.value === correctVal;
+        setResult(id, isCorrect);
+    }
+
+    function setResult(id, isCorrect) {
+        let block = document.getElementById(id);
+        if(isCorrect) {
+            block.style.border = "2px solid #27ae60";
+            block.style.backgroundColor = "#eafaf1";
+        } else {
+            block.style.border = "2px solid #c0392b";
+            block.style.backgroundColor = "#fdedec";
+            let ansText = block.querySelector('.correct-answer-text');
+            if(ansText) ansText.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

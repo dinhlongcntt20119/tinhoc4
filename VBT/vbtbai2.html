@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 2 (Cập nhật Phím ~)</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; user-select: none; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #2c3e50; margin: 10px 0; }
+        h2 { font-size: 14pt; font-weight: bold; color: #2980b9; margin-top: 20px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .question-block { margin-bottom: 30px; padding: 10px; border-radius: 5px; transition: background 0.3s; }
+        .question-title { font-weight: bold; font-size: 13pt; margin-bottom: 10px; color: #0056b3; line-height: 1.6; }
+        
+        /* Highlight khi chưa làm xong */
+        .incomplete-warning { background-color: #fff3cd; border: 1px solid #ffeeba; }
+
+        /* --- STYLE HÌNH ẢNH PHÍM (SVG) --- */
+        .key-img-inline {
+            height: 30px;
+            vertical-align: middle;
+            margin: 0 2px;
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2));
+        }
+
+        .key-img-drag {
+            height: 55px;
+            width: auto;
+            cursor: grab;
+            filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.15));
+            transition: transform 0.1s;
+            margin: 5px;
+        }
+        .key-img-drag:active { transform: scale(0.95); filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.15)); }
+
+        /* --- DRAG & DROP LAYOUT --- */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #bdc3c7; border-radius: 10px;
+            padding: 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; min-height: 80px;
+        }
+
+        .finger-match-container { display: flex; gap: 20px; }
+        .finger-col { width: 48%; border: 1px solid #ccc; padding: 15px; border-radius: 8px; background: #fafafa; }
+        .finger-header { text-align: center; font-weight: bold; margin-bottom: 10px; color: #555; font-size: 13pt; }
+        
+        .drop-zone {
+            min-height: 80px; border: 2px dashed #bbb; border-radius: 8px; background-color: #fff;
+            display: flex; align-items: center; justify-content: center; position: relative; margin: 10px 0; flex-wrap: wrap; gap: 10px; padding: 5px;
+        }
+
+        /* --- CÁC THÀNH PHẦN KHÁC --- */
+        input[type="checkbox"], input[type="radio"] { transform: scale(1.3); cursor: pointer; accent-color: #0056b3; margin-right: 8px; }
+        label { display: block; margin-bottom: 8px; cursor: pointer; line-height: 1.5; font-size: 12pt; }
+        .correct-mark { color: red; font-weight: bold; margin-left: 8px; font-size: 14pt; display: none; }
+        
+        .correction-overlay {
+            color: red; font-weight: bold; font-size: 10pt; background: rgba(255,255,255,0.95);
+            padding: 3px 6px; border-radius: 3px; border: 1px solid red; display: none;
+            position: absolute; top: -15px; right: 0; z-index: 100; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .controls {
+            text-align: center; margin-top: 40px; padding: 20px;
+            background: #fff; border-top: 1px solid #eee; position: sticky; bottom: 0; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        button {
+            padding: 12px 30px; margin: 0 10px; border: none; border-radius: 25px; cursor: pointer; color: white; font-weight: bold; font-size: 12pt;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;
+        }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #c0392b; }
+
+        /* Styles bài khác */
+        .match-row { display: flex; align-items: stretch; margin-bottom: 10px; }
+        .match-label { width: 120px; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 5px 0 0 5px; border: 1px solid #ccc; }
+        .match-slot { flex: 1; border: 2px dashed #bbb; border-left: none; border-radius: 0 5px 5px 0; background: #fff; min-height: 50px; display: flex; align-items: center; padding: 5px; position: relative; }
+        .func-tile { background-color: #3498db; color: white; padding: 8px 12px; border-radius: 4px; font-size: 11pt; cursor: grab; display: inline-block; margin: 3px; max-width: 250px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; font-size: 12pt; vertical-align: middle; }
+        th { text-align: center; background-color: #ecf0f1; font-weight: bold; color: #2c3e50; }
+        .center-text { text-align: center; }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h1>BÀI 2: GÕ BÀN PHÍM ĐÚNG CÁCH</h1>
+    <hr>
+    
+    <h2>II. Bài tập</h2>
+
+    <div class="question-block" id="q1">
+        <div class="question-title">
+            1. Khoanh tròn vào chữ cái đặt trước đáp án đúng. Các phím 
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="30" viewBox="0 0 60 30"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23fff"/><stop offset="1" stop-color="%23e0eaf0"/></linearGradient></defs><rect width="58" height="28" x="1" y="1" rx="3" fill="url(%23g)" stroke="%2388aacc" stroke-width="1"/><text x="32" y="19" font-family="Arial" font-size="10" font-weight="bold" fill="%23333" text-anchor="middle">Backspace</text><path d="M5 15 L10 12 L10 18 Z" fill="%23333"/><rect x="10" y="14" width="8" height="2" fill="%23333"/></svg>' class="key-img-inline">, 
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23fff"/><stop offset="1" stop-color="%23e0eaf0"/></linearGradient></defs><rect width="28" height="28" x="1" y="1" rx="3" fill="url(%23g)" stroke="%2388aacc" stroke-width="1"/><text x="8" y="10" font-family="Arial" font-size="8" fill="%23666">+</text><text x="10" y="22" font-family="Arial" font-size="14" font-weight="bold" fill="%23333">=</text></svg>' class="key-img-inline">,
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23fff"/><stop offset="1" stop-color="%23e0eaf0"/></linearGradient></defs><rect width="28" height="28" x="1" y="1" rx="3" fill="url(%23g)" stroke="%2388aacc" stroke-width="1"/><text x="8" y="10" font-family="Arial" font-size="8" fill="%23666">_</text><text x="10" y="22" font-family="Arial" font-size="14" font-weight="bold" fill="%23333">-</text></svg>' class="key-img-inline">,
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23fff"/><stop offset="1" stop-color="%23e0eaf0"/></linearGradient></defs><rect width="28" height="28" x="1" y="1" rx="3" fill="url(%23g)" stroke="%2388aacc" stroke-width="1"/><text x="8" y="12" font-family="Arial" font-size="10" fill="%23666">~</text><text x="10" y="24" font-family="Arial" font-size="14" font-weight="bold" fill="%23333">`</text></svg>' class="key-img-inline">
+            nằm ở hàng phím nào trên bàn phím?
+        </div>
+        <div style="margin-left: 20px;">
+            <label data-correct="true"><input type="radio" name="q1" value="A"> A. Hàng phím số (và lân cận). <span class="correct-mark">✔</span></label>
+            <label><input type="radio" name="q1" value="B"> B. Hàng phím cơ sở.</label>
+            <label><input type="radio" name="q1" value="C"> C. Hàng phím trên.</label>
+            <label><input type="radio" name="q1" value="D"> D. Hàng phím dưới.</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q2">
+        <div class="question-title">2. Nối phím với ngón tay được phân công phụ trách. (Kéo thả phím vào ô ngón tay)</div>
+        <p style="text-align:center; font-style:italic;">▼ Kéo 4 phím dưới đây ▼</p>
+        
+        <div class="drag-source-area" id="source_q2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="50" viewBox="0 0 140 50"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23ffffff"/><stop offset="1" stop-color="%23dcebf2"/></linearGradient></defs><rect x="1" y="1" width="138" height="46" rx="4" fill="url(%23g)" stroke="%238cb0d0" stroke-width="1"/><path d="M15 25 L25 18 L25 32 Z" fill="%23333"/><rect x="24" y="23" width="12" height="4" fill="%23333"/><text x="45" y="29" font-family="Arial" font-weight="bold" font-size="14" fill="%23333">Backspace</text></svg>' 
+                 class="key-img-drag" draggable="true" ondragstart="drag(event)" id="k_back" data-val="back" alt="Backspace">
+
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23ffffff"/><stop offset="1" stop-color="%23dcebf2"/></linearGradient></defs><rect x="1" y="1" width="48" height="46" rx="4" fill="url(%23g)" stroke="%238cb0d0" stroke-width="1"/><text x="10" y="18" font-family="Arial" font-size="12" fill="%23666">+</text><text x="10" y="36" font-family="Arial" font-size="20" font-weight="bold" fill="%23333">=</text></svg>' 
+                 class="key-img-drag" draggable="true" ondragstart="drag(event)" id="k_equal" data-val="right" alt="=">
+
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23ffffff"/><stop offset="1" stop-color="%23dcebf2"/></linearGradient></defs><rect x="1" y="1" width="48" height="46" rx="4" fill="url(%23g)" stroke="%238cb0d0" stroke-width="1"/><text x="10" y="18" font-family="Arial" font-size="12" fill="%23666">_</text><text x="10" y="36" font-family="Arial" font-size="20" font-weight="bold" fill="%23333">-</text></svg>' 
+                 class="key-img-drag" draggable="true" ondragstart="drag(event)" id="k_minus" data-val="right" alt="-">
+
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%23ffffff"/><stop offset="1" stop-color="%23dcebf2"/></linearGradient></defs><rect x="1" y="1" width="48" height="46" rx="4" fill="url(%23g)" stroke="%238cb0d0" stroke-width="1"/><text x="10" y="18" font-family="Arial" font-size="12" fill="%23666">~</text><text x="12" y="36" font-family="Arial" font-size="20" font-weight="bold" fill="%23333">`</text></svg>' 
+                 class="key-img-drag" draggable="true" ondragstart="drag(event)" id="k_tilde" data-val="left" alt="~">
+
+        </div>
+
+        <div class="finger-match-container">
+            <div class="finger-col">
+                <div class="finger-header">Ngón tay</div>
+                
+                <div style="margin-bottom: 20px;">
+                    <b>1. Út trái</b>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="left" data-label="Phím ~"></div>
+                </div>
+
+                <div>
+                    <b>2. Út phải</b>
+                    <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="back,right" data-label="Backspace, =, -"></div>
+                </div>
+            </div>
+            
+             <div class="finger-col" style="background:#fff; display:flex; align-items:center; justify-content:center; color:#7f8c8d; font-style:italic; padding: 20px;">
+                 (Kéo 4 phím ở vùng trên thả vào ô <b>Út trái</b> hoặc <b>Út phải</b> tương ứng)
+             </div>
+        </div>
+    </div>
+
+    <div class="question-block" id="q3">
+        <div class="question-title">3. Đánh dấu X vào ô trống trước đáp án đúng. Những thao tác nào dưới đây là đúng khi thực hiện gõ các phím trên hàng phím số đúng cách?</div>
+        <div>
+            <label data-correct="true"><input type="checkbox"> A. Đặt các ngón tay ở vị trí xuất phát trên hàng phím cơ sở. <span class="correct-mark">✔</span></label>
+            <label data-correct="true"><input type="checkbox"> B. Ngón tay vươn ra gõ đúng phím được phân công. <span class="correct-mark">✔</span></label>
+            <label data-correct="true"><input type="checkbox"> C. Gõ phím nhẹ nhàng, dứt khoát. <span class="correct-mark">✔</span></label>
+            <label data-correct="true"><input type="checkbox"> D. Gõ xong đưa ngón tay về vị trí xuất phát. <span class="correct-mark">✔</span></label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q4">
+        <div class="question-title">4. Đúng ghi Đ, sai ghi S.</div>
+        <table>
+            <tr>
+                <th>Phát biểu</th>
+                <th width="10%" class="center-text">Đ</th>
+                <th width="10%" class="center-text">S</th>
+            </tr>
+            <tr data-ans="Đ">
+                <td>A. Khi mới tập thường khó gõ, gõ chậm, gõ nhầm phím.</td>
+                <td class="center-text"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-s"></td>
+            </tr>
+            <tr data-ans="Đ">
+                <td>B. Cần rèn luyện thói quen không nhìn vào bàn phím khi gõ.</td>
+                <td class="center-text"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-s"></td>
+            </tr>
+             <tr data-ans="Đ">
+                <td>C. Kiên trì luyện tập sẽ gõ nhanh, chính xác mà không cần nhìn bàn phím.</td>
+                <td class="center-text"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-s"></td>
+            </tr>
+             <tr data-ans="S">
+                <td>D. Không cần gõ phím đúng cách, gõ bằng hai ngón trỏ nhanh và chính xác hơn.</td>
+                <td class="center-text"><input type="checkbox" class="chk-d"></td>
+                <td class="center-text"><input type="checkbox" class="chk-s"><span class="correct-mark">✔</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="question-block" id="q5">
+        <div class="question-title">5. Đánh dấu X vào ô trống trước đáp án đúng. Luyện tập thành công gõ bàn phím đúng cách có lợi ích nào sau đây?</div>
+        <div>
+            <label data-correct="true"><input type="checkbox"> A. Làm việc với máy tính hiệu quả hơn. <span class="correct-mark">✔</span></label>
+            <label data-correct="true"><input type="checkbox"> B. Tập trung quan sát được màn hình để xử lí công việc chính. <span class="correct-mark">✔</span></label>
+            <label data-correct="true"><input type="checkbox"> C. Tránh được đau, mỏi mắt, cổ, cổ tay, ngón tay. <span class="correct-mark">✔</span></label>
+            <label><input type="checkbox"> D. Hạn chế hỏng phím, kẹt phím.</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q6">
+        <div class="question-title">6. Khoanh tròn vào chữ cái đặt trước đáp án đúng. Cách nào sau đây hiệu quả hơn để luyện tập gõ bàn phím đúng cách?</div>
+        <div>
+            <label data-correct="true"><input type="radio" name="q6" value="A"> A. Luyện tập với phần mềm luyện tập gõ bàn phím theo cách: Luyện tập từng bài... <span class="correct-mark">✔</span></label>
+            <label><input type="radio" name="q6" value="B"> B. Luyện tập với phần mềm soạn thảo văn bản. (Gõ tự do)</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q7">
+        <div class="question-title">7. Nối phím với chức năng của phím trong soạn thảo văn bản.</div>
+        
+        <div class="drag-source-area" id="source_q7" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="func-tile" draggable="true" ondragstart="drag(event)" id="f_a" data-val="a">a) Ngắt dòng và đưa con trỏ xuống đầu dòng tiếp theo</div>
+            <div class="func-tile" draggable="true" ondragstart="drag(event)" id="f_b" data-val="b">b) Xoá kí tự ở bên phải con trỏ soạn thảo</div>
+            <div class="func-tile" draggable="true" ondragstart="drag(event)" id="f_c" data-val="c">c) Dịch chuyển con trỏ soạn thảo trong văn bản</div>
+            <div class="func-tile" draggable="true" ondragstart="drag(event)" id="f_d" data-val="d">d) Xoá kí tự ở bên trái con trỏ soạn thảo</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <div class="match-row">
+                <div class="match-label">1. →, ←, ↓, ↑</div>
+                <div class="match-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="c" data-label="c) Dịch chuyển..."></div>
+            </div>
+            <div class="match-row">
+                <div class="match-label">2. Backspace</div>
+                <div class="match-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="d" data-label="d) Xoá bên trái..."></div>
+            </div>
+            <div class="match-row">
+                <div class="match-label">3. Enter</div>
+                <div class="match-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="a" data-label="a) Ngắt dòng..."></div>
+            </div>
+            <div class="match-row">
+                <div class="match-label">4. Delete</div>
+                <div class="match-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="b" data-label="b) Xoá bên phải..."></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI TỪ ĐẦU</button>
+    </div>
+
+</div>
+
+<script>
+    /* --- DRAG & DROP LOGIC --- */
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); ev.target.style.opacity = "0.5"; }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        if(draggedElement) draggedElement.style.opacity = "1";
+        
+        let target = ev.target.closest('.drop-zone, .match-slot, .drag-source-area');
+        if (target) {
+            // Logic cho bài nối Bài 7 (chỉ nhận 1 item, đẩy cái cũ ra)
+            if (target.classList.contains("match-slot")) {
+                if (target.children.length > 0) {
+                    document.getElementById('source_q7').appendChild(target.children[0]);
+                }
+                let ov = target.querySelector('.correction-overlay');
+                if(ov) ov.remove();
+            }
+            target.appendChild(draggedElement);
+        }
+    }
+
+    /* --- KIỂM TRA HOÀN THÀNH --- */
+    function isComplete() {
+        let missing = [];
+
+        // Q1: Radio
+        if (!document.querySelector('input[name="q1"]:checked')) missing.push("q1");
+
+        // Q2: Drop zones (Phải có ít nhất 1 item mỗi zone)
+        let q2Zones = document.querySelectorAll('#q2 .drop-zone');
+        q2Zones.forEach((zone, index) => {
+            if (zone.children.length === 0) missing.push("q2");
+        });
+
+        // Q3: Checkbox (Ít nhất 1)
+        if (!document.querySelector('#q3 input[type="checkbox"]:checked')) missing.push("q3");
+
+        // Q4: Table rows (Mỗi dòng phải có 1 tick)
+        let q4Rows = document.querySelectorAll('#q4 tr[data-ans]');
+        q4Rows.forEach(row => {
+            if (!row.querySelector('input:checked')) missing.push("q4");
+        });
+
+        // Q5: Checkbox (Ít nhất 1)
+        if (!document.querySelector('#q5 input[type="checkbox"]:checked')) missing.push("q5");
+
+        // Q6: Radio
+        if (!document.querySelector('input[name="q6"]:checked')) missing.push("q6");
+
+        // Q7: Matching (Mỗi slot phải có 1 item)
+        let q7Slots = document.querySelectorAll('.match-slot');
+        q7Slots.forEach(slot => {
+            if (slot.children.length === 0) missing.push("q7");
+        });
+
+        // Lọc trùng lặp
+        return [...new Set(missing)];
+    }
+
+    /* --- CHẤM ĐIỂM --- */
+    function chamDiem() {
+        // Xóa highlight cũ
+        document.querySelectorAll('.incomplete-warning').forEach(el => el.classList.remove('incomplete-warning'));
+
+        // Kiểm tra hoàn thành
+        let missingQuestions = isComplete();
+        if (missingQuestions.length > 0) {
+            alert("Bạn chưa hoàn thành hết các câu hỏi. Vui lòng kiểm tra lại!");
+            // Scroll đến câu đầu tiên chưa làm
+            let firstMissing = document.getElementById(missingQuestions[0]);
+            if(firstMissing) {
+                firstMissing.scrollIntoView({behavior: "smooth", block: "center"});
+                firstMissing.classList.add('incomplete-warning');
+            }
+            return;
+        }
+
+        // --- NẾU ĐÃ HOÀN THÀNH THÌ CHẤM ---
+
+        // CÂU 1 & 6 (Radio)
+        document.querySelectorAll('label[data-correct="true"] input[type="radio"]').forEach(radio => {
+            let mark = radio.parentElement.querySelector('.correct-mark');
+            if(mark) mark.style.display = 'inline';
+        });
+
+        // CÂU 3 & 5 (Checkbox)
+        document.querySelectorAll('label[data-correct="true"] input[type="checkbox"]').forEach(chk => {
+            let mark = chk.parentElement.querySelector('.correct-mark');
+            if(mark) mark.style.display = 'inline';
+        });
+
+        // CÂU 4 (Bảng Đ/S)
+        document.querySelectorAll('#q4 tr[data-ans]').forEach(row => {
+            let ans = row.getAttribute('data-ans');
+            let selector = (ans === 'Đ') ? '.chk-d' : '.chk-s';
+            let input = row.querySelector(selector);
+            let mark = input.nextElementSibling;
+            if(!mark || !mark.classList.contains('correct-mark')) {
+                let sp = document.createElement('span');
+                sp.className = 'correct-mark'; sp.innerText = '✔';
+                input.parentNode.appendChild(sp);
+                mark = sp;
+            }
+            mark.style.display = 'inline';
+        });
+
+        // CÂU 2 (Kéo thả)
+        document.querySelectorAll('#q2 .drop-zone').forEach(zone => {
+             let expected = zone.getAttribute('data-expect').split(',');
+             let items = zone.querySelectorAll('.key-img-drag');
+             let hasWrong = false;
+             
+             items.forEach(item => {
+                 if(!expected.includes(item.getAttribute('data-val'))) hasWrong = true;
+             });
+
+             if(hasWrong || (expected[0] !== 'none' && items.length === 0) || (expected[0] === 'none' && items.length > 0)) {
+                 zone.style.border = "2px solid #c0392b";
+                 let label = zone.getAttribute('data-label');
+                 let oldOv = zone.querySelector('.correction-overlay');
+                 if(!oldOv) {
+                    let overlay = document.createElement('div');
+                    overlay.className = 'correction-overlay';
+                    overlay.innerText = "Đáp án: " + label;
+                    overlay.style.display = 'block';
+                    zone.appendChild(overlay);
+                 }
+             } else {
+                 zone.style.border = "2px solid #27ae60";
+                 let ov = zone.querySelector('.correction-overlay');
+                 if(ov) ov.remove();
+             }
+        });
+
+        // CÂU 7 (Nối)
+        document.querySelectorAll('.match-slot').forEach(slot => {
+            let isCorrect = false;
+            let expect = slot.getAttribute('data-expect');
+            let label = slot.getAttribute('data-label');
+
+            if(slot.children.length > 0) {
+                let val = slot.children[0].getAttribute('data-val');
+                if(val === expect) isCorrect = true;
+            }
+
+            if(isCorrect) {
+                slot.style.border = "2px solid #27ae60";
+                let ov = slot.querySelector('.correction-overlay');
+                if(ov) ov.remove();
+            } else {
+                slot.style.border = "2px solid #c0392b";
+                let oldOv = slot.querySelector('.correction-overlay');
+                if(!oldOv) {
+                    let overlay = document.createElement('div');
+                    overlay.className = 'correction-overlay';
+                    overlay.innerText = label;
+                    overlay.style.display = 'block';
+                    slot.appendChild(overlay);
+                }
+            }
+        });
+
+        document.getElementById('result-msg').innerText = "Đã chấm xong! Xem đáp án chi tiết trên bài làm.";
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

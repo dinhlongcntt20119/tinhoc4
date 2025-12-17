@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 7: Soạn thảo văn bản Tiếng Việt</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #eef2f7; margin: 0; padding: 20px; color: #333; }
+        .page { background-color: #fff; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+        
+        h1 { font-size: 22pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #0056b3; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+        
+        .question-title { 
+            font-weight: bold; font-size: 14pt; margin-bottom: 15px; color: #2c3e50; 
+            margin-top: 40px; border-left: 5px solid #e67e22; padding-left: 15px; background-color: #fdf2e9; padding: 10px 15px; border-radius: 0 5px 5px 0;
+        }
+
+        /* --- BẢNG VÀ INPUT --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; margin-bottom: 20px; }
+        th, td { border: 1px solid #bdc3c7; padding: 12px; text-align: left; font-size: 13pt; vertical-align: middle; }
+        th { text-align: center; background-color: #ecf0f1; font-weight: bold; color: #2c3e50; }
+        .center-text { text-align: center; }
+        
+        /* Checkbox & Radio - CÂU 1 */
+        .option-group { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+        .option-item { 
+            display: flex; flex-direction: column; align-items: center; cursor: pointer; 
+            border: 2px solid #ddd; padding: 15px; border-radius: 8px; transition: 0.2s; width: 120px;
+        }
+        .option-item:hover { border-color: #3498db; background-color: #f0f8ff; }
+        .option-item input { margin-top: 15px; transform: scale(1.5); accent-color: #0056b3; }
+        .option-item span { font-weight: bold; font-size: 14pt; margin-top: 5px; }
+        .option-img { width: 64px; height: 64px; object-fit: contain; margin-bottom: 5px; }
+
+        /* Mocks cho B và C (vì user chưa cung cấp file) */
+        .icon-mock { font-size: 30px; font-weight: bold; display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 8px; color: white; margin-bottom: 5px; }
+        .bg-word { background: #2b579a; }
+        .bg-ppt { background: #d04423; }
+
+        /* Select Box (Bài 5) */
+        select.match-select {
+            padding: 8px; font-size: 12pt; border-radius: 5px; border: 2px solid #bdc3c7; width: 100%;
+            background-color: #fff; cursor: pointer;
+        }
+        
+        /* Input số thứ tự (Bài 6) */
+        input.order-input {
+            width: 50px; padding: 8px; text-align: center; font-size: 13pt; font-weight: bold;
+            border: 2px solid #bdc3c7; border-radius: 5px;
+        }
+
+        /* --- DRAG & DROP (Câu 3) --- */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #3498db; border-radius: 10px;
+            padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; min-height: 50px;
+        }
+        .source-label {
+            width: 100%; text-align: center; margin-bottom: 5px; font-weight: bold; color: #555; font-style: italic;
+        }
+        .word-tile {
+            background-color: #0056b3; color: white; padding: 8px 20px; border-radius: 6px;
+            cursor: grab; font-weight: bold; font-size: 14pt; box-shadow: 0 3px 0 #003d80;
+            display: inline-block; margin: 5px; min-width: 40px; text-align: center; user-select: none;
+        }
+        .word-tile:active { transform: translateY(3px); box-shadow: none; cursor: grabbing; }
+        
+        /* Chỉnh ô kéo thả câu 2 (hình chữ nhật) */
+        .result-tile {
+            background-color: #fff; border: 2px solid #333; color: #333; 
+            padding: 5px 10px; display: inline-flex; align-items: center; gap: 10px;
+        }
+
+        .drop-slot {
+            display: inline-flex; width: 80px; height: 45px; 
+            border: 2px dashed #95a5a6; border-radius: 5px; background-color: #fff;
+            vertical-align: middle; margin: 0 auto;
+            align-items: center; justify-content: center; position: relative;
+        }
+        .drag-over { background-color: #d1ecf1 !important; border-color: #17a2b8 !important; transform: scale(1.05); }
+
+        /* --- STYLE CHO ICON UNIKEY (Câu 2) --- */
+        .unikey-icon {
+            display: inline-block; width: 32px; height: 32px; 
+            border: 1px solid #999; border-radius: 3px;
+            font-family: Arial, sans-serif; font-weight: bold; font-size: 20px;
+            text-align: center; line-height: 32px; background: white;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2); vertical-align: middle;
+        }
+        .v-icon { color: #d63031; } /* Chữ V màu đỏ */
+        .e-icon { color: #0984e3; } /* Chữ E màu xanh */
+        .unikey-tray-icon { /* Mô phỏng icon dưới khay hệ thống */
+            display: inline-block; padding: 2px; background: #eee; border: 1px solid #ccc;
+        }
+
+        /* --- KẾT QUẢ --- */
+        .correct-answer-text {
+            color: #c0392b; font-size: 11pt; font-weight: bold; margin-top: 5px; display: none;
+        }
+        
+        /* Controls */
+        .controls {
+            text-align: center; margin-top: 50px; padding: 20px;
+            background: #fff; border-top: 2px solid #eee; position: sticky; bottom: 0; z-index: 100; box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+        button {
+            padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+        button:active { transform: translateY(2px); box-shadow: none; }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #e74c3c; }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h3>CHỦ ĐỀ: SOẠN THẢO VĂN BẢN</h3>
+    <h1>BÀI 7: SOẠN THẢO VĂN BẢN TIẾNG VIỆT</h1>
+    <hr>
+
+    <div class="exercise" id="ex1">
+        <div class="question-title">1. Để kích hoạt phần mềm soạn thảo văn bản Word, em nháy đúp chuột vào biểu tượng nào?</div>
+        <div class="option-group">
+            <label class="option-item">
+                <img src="chrome.png" alt="Chrome" class="option-img" onerror="this.src='https://via.placeholder.com/64?text=Img+Error'">
+                <span>A</span>
+                <input type="radio" name="q1" value="A">
+            </label>
+            <label class="option-item">
+                <div class="icon-mock bg-word" title="Word">W</div>
+                <span>B</span>
+                <input type="radio" name="q1" value="B">
+            </label>
+            <label class="option-item">
+                <div class="icon-mock bg-ppt" title="PowerPoint">P</div>
+                <span>C</span>
+                <input type="radio" name="q1" value="C">
+            </label>
+            <label class="option-item">
+                <img src="rapit.png" alt="Rapit" class="option-img" onerror="this.src='https://via.placeholder.com/64?text=Img+Error'">
+                <span>D</span>
+                <input type="radio" name="q1" value="D">
+            </label>
+        </div>
+        <div class="correct-answer-text" id="ans_ex1">Đáp án đúng: B</div>
+    </div>
+
+    <div class="exercise" id="ex2">
+        <div class="question-title">2. Kéo thả KẾT QUẢ vào ô trống tương ứng với THAO TÁC (Unikey).</div>
+        
+        <div class="drag-source-area" id="source_ex2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile result-tile" draggable="true" ondragstart="drag(event)" id="res_a" data-origin="source_ex2" data-val="a">
+                a) Chuyển sang <span class="unikey-icon v-icon">V</span>
+            </div>
+            <div class="word-tile result-tile" draggable="true" ondragstart="drag(event)" id="res_b" data-origin="source_ex2" data-val="b">
+                b) Chuyển sang <span class="unikey-icon e-icon">E</span>
+            </div>
+        </div>
+
+        <table>
+            <tr>
+                <th width="40%">Thao tác</th>
+                <th width="60%">Kết quả</th>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    1. Nháy chuột vào biểu tượng <span class="unikey-icon v-icon">V</span>
+                </td>
+                <td class="center-text">
+                    <div class="drop-slot" style="width: 250px;" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="b"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    2. Nháy chuột vào biểu tượng <span class="unikey-icon e-icon">E</span>
+                </td>
+                <td class="center-text">
+                    <div class="drop-slot" style="width: 250px;" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="a"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="exercise" id="ex3">
+        <div class="question-title">3. Với kiểu gõ Telex, kéo phím vào ô trống để được kí tự/dấu thanh tương ứng.</div>
+        
+        <p><b>Kho phím cho Bảng 1 (Kí tự):</b></p>
+        <div class="drag-source-area" id="source_ex3_part1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_aa" data-origin="source_ex3_part1" data-val="aa">aa</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_dd" data-origin="source_ex3_part1" data-val="dd">dd</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_ee" data-origin="source_ex3_part1" data-val="ee">ee</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_oo" data-origin="source_ex3_part1" data-val="oo">oo</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_ow" data-origin="source_ex3_part1" data-val="ow">ow</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_uw" data-origin="source_ex3_part1" data-val="uw">uw</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_aw" data-origin="source_ex3_part1" data-val="aw">aw</div>
+        </div>
+
+        <p><i>Bảng 1. Gõ kí tự có dấu</i></p>
+        <table>
+            <tr>
+                <th width="14%">â</th>
+                <th width="14%">đ</th>
+                <th width="14%">ê</th>
+                <th width="14%">ô</th>
+                <th width="14%">ơ</th>
+                <th width="14%">ư</th>
+                <th width="14%">ă</th>
+            </tr>
+            <tr>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="aa"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="dd"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="ee"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="oo"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="ow"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="uw"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="aw"></div></td>
+            </tr>
+        </table>
+
+        <br>
+        <p><b>Kho phím cho Bảng 2 (Dấu thanh):</b></p>
+        <div class="drag-source-area" id="source_ex3_part2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_s" data-origin="source_ex3_part2" data-val="s">s</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_f" data-origin="source_ex3_part2" data-val="f">f</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_r" data-origin="source_ex3_part2" data-val="r">r</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_x" data-origin="source_ex3_part2" data-val="x">x</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="k_j" data-origin="source_ex3_part2" data-val="j">j</div>
+        </div>
+
+        <p><i>Bảng 2. Gõ dấu thanh</i></p>
+        <table>
+            <tr>
+                <th width="20%">Dấu sắc</th>
+                <th width="20%">Dấu huyền</th>
+                <th width="20%">Dấu hỏi</th>
+                <th width="20%">Dấu ngã</th>
+                <th width="20%">Dấu nặng</th>
+            </tr>
+            <tr>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="s"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="f"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="r"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="x"></div></td>
+                <td class="center-text"><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="j"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="exercise" id="ex4">
+        <div class="question-title">4. Chọn phát biểu SAI về cách gõ tiếng Việt kiểu Telex.</div>
+        <div style="font-size: 13pt; line-height: 1.8;">
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q4" value="A"> A. Có thể gõ phím dấu thanh ngay sau khi gõ kí tự mang dấu thanh.
+            </label>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q4" value="B"> B. Nên gõ phím dấu thanh ở cuối từ, Unikey sẽ tự động đặt dấu đúng quy tắc.
+            </label>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q4" value="C"> C. Nên sử dụng kiểu gõ Telex để gõ văn bản tiếng Việt.
+            </label>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q4" value="D"> D. Không có kiểu gõ tiếng Việt nào khác ngoài kiểu gõ Telex.
+            </label>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q4" value="E"> E. Sau khi đã đặt dấu, gõ phím Z để bỏ đặt dấu.
+            </label>
+        </div>
+        <div class="correct-answer-text" id="ans_ex4">Đáp án đúng: D</div>
+    </div>
+
+    <div class="exercise" id="ex5">
+        <div class="question-title">5. Nối tên phím (cột trái) với chức năng tương ứng (cột phải).</div>
+        <div style="background: #eef; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 11pt;">
+            <i>Chức năng tham khảo:</i><br>
+            a) Sang trái 1 kí tự &nbsp;|&nbsp; b) Lên dòng trên &nbsp;|&nbsp; c) Xoá kí tự bên phải &nbsp;|&nbsp; d) Xoá kí tự bên trái<br>
+            e) Bật/tắt Caps Lock &nbsp;|&nbsp; g) Giữ để gõ hoa &nbsp;|&nbsp; h) Khoảng cách &nbsp;|&nbsp; i) Xuống dòng dưới<br>
+            k) Ngắt dòng/xuống dòng &nbsp;|&nbsp; l) Sang phải 1 kí tự
+        </div>
+        
+        <table>
+            <tr>
+                <th width="30%">Tên phím</th>
+                <th width="70%">Chọn chức năng</th>
+            </tr>
+            <script>
+                var optionsHTML = `
+                    <option value="">-- Chọn chức năng --</option>
+                    <option value="a">a) Đưa con trỏ sang trái 1 kí tự</option>
+                    <option value="b">b) Đưa con trỏ lên dòng trên</option>
+                    <option value="c">c) Xoá kí tự bên phải con trỏ</option>
+                    <option value="d">d) Xoá kí tự bên trái con trỏ</option>
+                    <option value="e">e) Bật/Tắt chế độ gõ chữ hoa (Caps Lock)</option>
+                    <option value="g">g) Nhấn giữ phím để gõ chữ hoa/kí tự trên</option>
+                    <option value="h">h) Tạo khoảng cách giữa các từ</option>
+                    <option value="i">i) Đưa con trỏ xuống dòng dưới</option>
+                    <option value="k">k) Ngắt dòng và chuyển con trỏ xuống dòng mới</option>
+                    <option value="l">l) Đưa con trỏ sang phải 1 kí tự</option>
+                `;
+            </script>
+
+            <tr>
+                <td><b>1. Backspace</b></td>
+                <td><select class="match-select" data-answer="d"></select></td>
+            </tr>
+            <tr>
+                <td><b>2. Caps Lock</b></td>
+                <td><select class="match-select" data-answer="e"></select></td>
+            </tr>
+            <tr>
+                <td><b>3. Delete</b></td>
+                <td><select class="match-select" data-answer="c"></select></td>
+            </tr>
+            <tr>
+                <td><b>4. Enter</b></td>
+                <td><select class="match-select" data-answer="k"></select></td>
+            </tr>
+            <tr>
+                <td><b>5. Shift</b></td>
+                <td><select class="match-select" data-answer="g"></select></td>
+            </tr>
+            <tr>
+                <td><b>6. Spacebar</b></td>
+                <td><select class="match-select" data-answer="h"></select></td>
+            </tr>
+            <tr>
+                <td><b>7. Phím &rarr;</b></td>
+                <td><select class="match-select" data-answer="l"></select></td>
+            </tr>
+            <tr>
+                <td><b>8. Phím &larr;</b></td>
+                <td><select class="match-select" data-answer="a"></select></td>
+            </tr>
+            <tr>
+                <td><b>9. Phím &darr;</b></td>
+                <td><select class="match-select" data-answer="i"></select></td>
+            </tr>
+            <tr>
+                <td><b>10. Phím &uarr;</b></td>
+                <td><select class="match-select" data-answer="b"></select></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="exercise" id="ex6">
+        <div class="question-title">6. Điền số (1, 2, 3...) để sắp xếp thứ tự đúng các bước lưu văn bản lần đầu.</div>
+        <table>
+            <tr>
+                <th width="15%">Thứ tự</th>
+                <th>Bước thực hiện</th>
+            </tr>
+            <tr>
+                <td class="center-text"><input type="number" class="order-input" data-answer="2"></td>
+                <td>A. Nháy chuột vào nút lệnh <b>Browse</b> (hoặc chọn vị trí lưu).</td>
+            </tr>
+            <tr>
+                <td class="center-text"><input type="number" class="order-input" data-answer="3"></td>
+                <td>B. Mở thư mục sẽ chứa tệp (trong cửa sổ Save As).</td>
+            </tr>
+            <tr>
+                <td class="center-text"><input type="number" class="order-input" data-answer="5"></td>
+                <td>C. Nháy chuột vào nút lệnh <b>Save</b> để hoàn tất.</td>
+            </tr>
+            <tr>
+                <td class="center-text"><input type="number" class="order-input" data-answer="4"></td>
+                <td>D. Gõ tên tệp vào ô <b>File name</b>.</td>
+            </tr>
+            <tr>
+                <td class="center-text"><input type="number" class="order-input" data-answer="1"></td>
+                <td>E. Nháy chuột vào nút lệnh Lưu (hoặc nhấn Ctrl + S) để bắt đầu.</td>
+            </tr>
+        </table>
+        <div class="correct-answer-text" id="ans_ex6">Thứ tự đúng: E -> A -> B -> D -> C</div>
+    </div>
+
+    <div class="exercise" id="ex7">
+        <div class="question-title">7. Khoanh tròn vào phát biểu SAI về soạn thảo văn bản.</div>
+        <div style="font-size: 13pt; line-height: 1.8;">
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q7" value="A"> A. Trong quá trình soạn thảo văn bản ta nên thường xuyên thực hiện lưu văn bản.
+            </label>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q7" value="B"> B. Sau khi lưu lần đầu, để lưu những chỉnh sửa tiếp theo, ta có thể nhấn Ctrl + S.
+            </label>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="radio" name="q7" value="C"> C. Chỉ nên thực hiện lưu văn bản khi đã soạn thảo xong hoàn toàn.
+            </label>
+        </div>
+        <div class="correct-answer-text" id="ans_ex7">Đáp án đúng: C</div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
+    </div>
+
+</div>
+
+<script>
+    // Điền options vào tất cả các ô select ở Bài 5
+    document.querySelectorAll('.match-select').forEach(sel => {
+        sel.innerHTML = optionsHTML;
+    });
+
+    /* --- LOGIC KÉO THẢ (DRAG & DROP) --- */
+    function allowDrop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.drop-slot, .drag-source-area');
+        if(target && !target.classList.contains('drag-source-area')) {
+            target.classList.add('drag-over');
+        }
+    }
+
+    document.addEventListener("dragleave", function(event) {
+        let target = event.target.closest('.drop-slot');
+        if (target) target.classList.remove("drag-over");
+    });
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.target.style.opacity = "0.5";
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        if(draggedElement) draggedElement.style.opacity = "1";
+        
+        let target = ev.target.closest('.drop-slot, .drag-source-area');
+
+        if (target) {
+            target.classList.remove("drag-over");
+            
+            // Xử lý khi thả vào Drop Slot
+            if (target.classList.contains("drop-slot")) {
+                // Nếu ô đã có item, trả item cũ về kho GỐC của nó
+                if (target.children.length > 0) {
+                    let oldItem = target.children[0];
+                    let originId = oldItem.getAttribute('data-origin'); // Lấy id kho gốc
+                    if(originId) {
+                        document.getElementById(originId).appendChild(oldItem);
+                    }
+                }
+                target.appendChild(draggedElement);
+            } 
+            // Xử lý khi thả lại vào Drag Source Area
+            else if (target.classList.contains("drag-source-area")) {
+                // Chỉ cho phép thả về đúng kho gốc của nó
+                let originId = draggedElement.getAttribute('data-origin');
+                if (target.id === originId) {
+                    target.appendChild(draggedElement);
+                } else {
+                    // Nếu thả sai kho, tự động đưa về kho đúng
+                    document.getElementById(originId).appendChild(draggedElement);
+                }
+            }
+        }
+    }
+
+    /* --- HÀM CHẤM ĐIỂM --- */
+    function chamDiem() {
+        // --- BÀI 1 ---
+        let q1 = document.querySelector('input[name="q1"]:checked');
+        let divEx1 = document.getElementById('ex1');
+        if (q1 && q1.value === 'B') {
+            divEx1.style.background = "#d4edda";
+        } else {
+            divEx1.style.background = "#f8d7da";
+            document.getElementById('ans_ex1').style.display = 'block';
+        }
+
+        // --- BÀI 2 & 3 ---
+        document.querySelectorAll('.drop-slot').forEach(slot => {
+            let expected = slot.getAttribute('data-expect');
+            let isCorrect = false;
+            
+            if(slot.children.length > 0) {
+                let childVal = slot.children[0].getAttribute('data-val');
+                if(childVal === expected) isCorrect = true;
+            }
+
+            if(isCorrect) {
+                slot.style.border = "2px solid #27ae60";
+                slot.style.backgroundColor = "#d4edda";
+            } else {
+                slot.style.border = "2px solid #c0392b";
+                slot.style.backgroundColor = "#f8d7da";
+            }
+        });
+
+        // --- BÀI 4 ---
+        let q4 = document.querySelector('input[name="q4"]:checked');
+        let divEx4 = document.getElementById('ex4');
+        if (q4 && q4.value === 'D') {
+            divEx4.querySelector('.question-title').style.background = "#d4edda";
+        } else {
+            divEx4.querySelector('.question-title').style.background = "#f8d7da";
+            document.getElementById('ans_ex4').style.display = 'block';
+        }
+
+        // --- BÀI 5 ---
+        document.querySelectorAll('.match-select').forEach(sel => {
+            let answer = sel.getAttribute('data-answer');
+            if (sel.value === answer) {
+                sel.style.border = "2px solid #27ae60";
+                sel.style.backgroundColor = "#d4edda";
+            } else {
+                sel.style.border = "2px solid #c0392b";
+                sel.style.backgroundColor = "#f8d7da";
+            }
+        });
+
+        // --- BÀI 6 ---
+        document.querySelectorAll('.order-input').forEach(inp => {
+            let answer = inp.getAttribute('data-answer');
+            if (inp.value === answer) {
+                inp.style.border = "2px solid #27ae60";
+                inp.style.backgroundColor = "#d4edda";
+            } else {
+                inp.style.border = "2px solid #c0392b";
+                inp.style.backgroundColor = "#f8d7da";
+                document.getElementById('ans_ex6').style.display = 'block';
+            }
+        });
+
+        // --- BÀI 7 ---
+        let q7 = document.querySelector('input[name="q7"]:checked');
+        let divEx7 = document.getElementById('ex7');
+        if (q7 && q7.value === 'C') {
+            divEx7.querySelector('.question-title').style.background = "#d4edda";
+        } else {
+            divEx7.querySelector('.question-title').style.background = "#f8d7da";
+            document.getElementById('ans_ex7').style.display = 'block';
+        }
+
+        document.getElementById('result-msg').innerText = "Đã kiểm tra xong! Hãy xem chi tiết đúng/sai.";
+        document.getElementById('result-msg').scrollIntoView({behavior: "smooth"});
+    }
+</script>
+
+</body>
+</html>

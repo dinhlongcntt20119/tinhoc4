@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 5: Thao tác với thư mục, tệp</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; user-select: none; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #2c3e50; margin: 10px 0; }
+        h2 { font-size: 14pt; font-weight: bold; color: #2980b9; margin-top: 20px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        
+        .question-block { margin-bottom: 30px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; transition: all 0.3s; }
+        .question-title { font-weight: bold; font-size: 12pt; margin-bottom: 15px; color: #0056b3; line-height: 1.5; }
+        
+        /* Cảnh báo chưa làm */
+        .incomplete-warning { border: 2px solid #e74c3c !important; background-color: #fff5f5; }
+
+        /* --- BÀI 1: BẢNG QUY TRÌNH --- */
+        .process-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .process-table th, .process-table td { border: 1px solid #999; padding: 8px; text-align: center; vertical-align: middle; }
+        .process-table th { background-color: #e3f2fd; color: #000; font-weight: bold; }
+        
+        /* Reference Table (Bảng 1 trong sách) */
+        .ref-table { width: 100%; border: 1px solid #666; background: #f9f9f9; margin-bottom: 15px; font-size: 0.9em; }
+        .ref-table td { padding: 5px 10px; border: 1px dotted #ccc; text-align: left; }
+        .ref-code { font-weight: bold; color: #d35400; margin-right: 5px; }
+
+        /* Drag Items */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #bdc3c7; border-radius: 10px;
+            padding: 15px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; min-height: 50px;
+        }
+        .code-tile {
+            background-color: #fff; border: 1px solid #3498db; color: #2c3e50;
+            padding: 5px 15px; border-radius: 4px; font-weight: bold; cursor: grab;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .code-tile:active { cursor: grabbing; background: #eef; }
+
+        .drop-slot {
+            width: 100%; height: 35px; border: 1px dashed #bbb; background-color: #fff;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .drag-over { background-color: #d4edda !important; }
+
+        /* --- BÀI ĐÚNG SAI / TRẮC NGHIỆM --- */
+        .choice-table { width: 100%; border-collapse: collapse; }
+        .choice-table th, .choice-table td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        .center-cell { text-align: center; }
+        
+        input[type="checkbox"], input[type="radio"] { transform: scale(1.3); cursor: pointer; accent-color: #0056b3; }
+        label { cursor: pointer; }
+
+        /* --- KẾT QUẢ --- */
+        .correct-mark { color: #27ae60; font-weight: bold; margin-left: 10px; display: none; }
+        .correction-overlay {
+            color: #c0392b; font-weight: bold; font-size: 10pt; background: rgba(255,255,255,0.95);
+            padding: 2px 6px; border: 1px solid #c0392b; display: none; margin-left: 5px; border-radius: 4px;
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 10;
+        }
+        
+        .user-correct { background-color: #d4edda !important; }
+        .user-wrong { background-color: #f8d7da !important; }
+
+        .controls { text-align: center; margin-top: 40px; }
+        button { padding: 15px 40px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13pt; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:hover { background: #219150; transform: translateY(-2px); }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h2>CHỦ ĐỀ C. TỔ CHỨC LƯU TRỮ, TÌM KIẾM VÀ TRAO ĐỔI THÔNG TIN</h2>
+    <h1>BÀI 5: THAO TÁC VỚI THƯ MỤC, TỆP</h1>
+    <hr>
+
+    <div class="question-block" id="q1">
+        <div class="question-title">1. Lựa chọn các thao tác (thẻ mã) dưới đây và sắp xếp vào Bảng 2 để được các bước theo thứ tự đúng.</div>
+        
+        <table class="ref-table">
+            <tr><td colspan="2"><b>Bảng 1: Các thao tác</b></td></tr>
+            <tr>
+                <td width="50%">
+                    <span class="ref-code">A1.</span> Mở thư mục chứa tệp/thư mục.<br>
+                    <span class="ref-code">A2.</span> Mở thư mục nguồn.<br>
+                    <span class="ref-code">A3.</span> Mở thư mục đích.<br>
+                    <span class="ref-code">B.</span> Chọn thư mục hoặc tệp.
+                </td>
+                <td>
+                    <span class="ref-code">C1.</span> Chọn lệnh Delete (Xoá).<br>
+                    <span class="ref-code">C2.</span> Chọn lệnh Rename (Đổi tên).<br>
+                    <span class="ref-code">C3.</span> Chọn lệnh Copy (Sao chép).<br>
+                    <span class="ref-code">C4.</span> Chọn lệnh Cut (Di chuyển).<br>
+                    <span class="ref-code">C5.</span> Chọn lệnh Paste (Dán).<br>
+                    <span class="ref-code">D.</span> Gõ tên mới rồi gõ Enter.
+                </td>
+            </tr>
+        </table>
+
+        <p style="text-align:center; font-style:italic;">▼ Kéo các thẻ lệnh dưới đây vào bảng ▼</p>
+        <div class="drag-source-area" id="source_q1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_A2_1" data-val="A2">A2</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_A2_2" data-val="A2">A2</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_B_1" data-val="B">B</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_B_2" data-val="B">B</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_B_3" data-val="B">B</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_C2" data-val="C2">C2</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_C3" data-val="C3">C3</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_C4" data-val="C4">C4</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_A3_1" data-val="A3">A3</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_A3_2" data-val="A3">A3</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_C5_1" data-val="C5">C5</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_C5_2" data-val="C5">C5</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="t_D" data-val="D">D</div>
+        </div>
+
+        <table class="process-table">
+            <thead>
+                <tr>
+                    <th width="10%">Bước</th>
+                    <th width="20%">Xoá<br>(Đã làm mẫu)</th>
+                    <th width="22%">Đổi tên</th>
+                    <th width="24%">Sao chép</th>
+                    <th width="24%">Di chuyển</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>1</b></td>
+                    <td style="background:#eee;">A1</td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="A1"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="A2"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="A2"></div></td>
+                </tr>
+                <tr>
+                    <td><b>2</b></td>
+                    <td style="background:#eee;">B</td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="B"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="B"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="B"></div></td>
+                </tr>
+                <tr>
+                    <td><b>3</b></td>
+                    <td style="background:#eee;">C1</td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="C2"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="C3"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="C4"></div></td>
+                </tr>
+                <tr>
+                    <td><b>4</b></td>
+                    <td style="background:#eee;"></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="D"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="A3"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="A3"></div></td>
+                </tr>
+                <tr>
+                    <td><b>5</b></td>
+                    <td style="background:#eee;"></td>
+                    <td style="background:#eee;"></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="C5"></div></td>
+                    <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="C5"></div></td>
+                </tr>
+            </tbody>
+        </table>
+        <script>
+            // Add A1 dynamically to source
+            let a1 = document.createElement('div');
+            a1.className='code-tile'; a1.draggable=true; a1.id='t_A1'; a1.setAttribute('data-val','A1'); a1.innerText='A1';
+            a1.addEventListener('dragstart', function(e){e.dataTransfer.setData("text", e.target.id);});
+            document.getElementById('source_q1').prepend(a1);
+        </script>
+    </div>
+
+    <div class="question-block" id="q2">
+        <div class="question-title">2. Đúng ghi Đ, Sai ghi S.</div>
+        <table class="choice-table">
+            <tr data-ans="Đ">
+                <td>A. Khi xoá một thư mục thì tất cả các thư mục con và tệp trong thư mục đó cũng bị xoá.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"></td>
+            </tr>
+            <tr data-ans="S">
+                <td>B. Khi đổi tên một thư mục thì tất cả các thư mục con và tệp trong thư mục đó cũng được đổi tên theo.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-ans="Đ">
+                <td>C. Sau khi sao chép một thư mục, ở thư mục nguồn sẽ không còn tồn tại thư mục đó. (Sai, sao chép vẫn còn. Di chuyển mới mất. À khoan, câu này là S. Sao chép = Nhân bản -> Nguồn vẫn còn) <br><i>*Sách in: Sau khi SAO CHÉP... nguồn sẽ KHÔNG CÒN -> Đây là SAI (S)</i></td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-ans="S">
+                <td>D. Sau khi di chuyển một thư mục, ở thư mục nguồn sẽ không còn tồn tại thư mục đó. (Đúng. Di chuyển = Cut -> Nguồn mất). <br><i>*Sách in: Sau khi DI CHUYỂN... nguồn sẽ KHÔNG CÒN -> Đây là ĐÚNG (Đ)</i></td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"></td>
+            </tr>
+        </table>
+        <script>
+            // Cập nhật lại data-ans cho đúng logic
+            // Row C (Index 2): data-ans="S"
+            // Row D (Index 3): data-ans="Đ"
+            let rows = document.querySelectorAll('#q2 tr[data-ans]');
+            rows[2].setAttribute('data-ans', 'S');
+            rows[3].setAttribute('data-ans', 'Đ');
+        </script>
+    </div>
+
+    <div class="question-block" id="q3">
+        <div class="question-title">3. Đánh dấu X vào ô trống trước đáp án đúng. Thao tác nhầm với thư mục, tệp có thể dẫn đến tác hại nào sau đây?</div>
+        <div>
+            <label data-correct="true"><input type="checkbox"> A. Mất dữ liệu. <span class="correct-mark">✔</span></label><br>
+            <label data-correct="true"><input type="checkbox"> B. Khó khăn khi cần tìm kiếm thư mục hoặc tệp. <span class="correct-mark">✔</span></label><br>
+            <label data-correct="true"><input type="checkbox"> C. Gây lỗi phần mềm, phần mềm không hoạt động được hoặc máy tính bị treo. <span class="correct-mark">✔</span></label><br>
+            <label><input type="checkbox"> D. Nứt, vỡ bàn phím, chuột máy tính. (Sai)</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q4">
+        <div class="question-title">4. Nối việc làm và hậu quả tương ứng. (Kéo thả)</div>
+        <div class="drag-source-area" id="source_q4" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="item_1" data-val="1" style="width:auto;">1. Sao chép, di chuyển, đổi tên tuỳ tiện</div>
+            <div class="code-tile" draggable="true" ondragstart="drag(event)" id="item_2" data-val="2" style="width:auto;">2. Sao chép cùng một tài liệu đến quá nhiều nơi</div>
+        </div>
+        
+        <table class="choice-table">
+            <tr>
+                <th width="50%">Hậu quả</th>
+                <th width="50%">Việc làm tương ứng</th>
+            </tr>
+            <tr>
+                <td>a) Bộ nhớ máy tính bị đầy, làm cho máy tính chạy chậm...</td>
+                <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="2" data-label="Việc làm 2"></div></td>
+            </tr>
+            <tr>
+                <td>b) Khó khăn trong việc quản lí, tìm thư mục và tệp.</td>
+                <td><div class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="1" data-label="Việc làm 1"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="question-block" id="q5">
+        <div class="question-title">5. <b>Mouse Skills.exe</b> là một tệp được tạo ra khi cài đặt chương trình luyện tập sử dụng chuột. Theo em, có nên thực hiện xoá, đổi tên hay di chuyển tệp này không? Tại sao?</div>
+        <div style="background:#f9f9f9; padding:10px; border:1px solid #ccc; border-radius:5px;">
+            <label><input type="radio" name="q5_yn" value="no"> Không nên.</label> 
+            <label><input type="radio" name="q5_yn" value="yes"> Nên.</label>
+            <br><br>
+            <b>Lý do:</b><br>
+            <textarea id="q5_text" rows="3" style="width:100%; border:1px solid #ccc; padding:5px;"></textarea>
+        </div>
+        <div id="q5-feedback" style="display:none; margin-top:10px; color:#27ae60; font-weight:bold;">
+            Đáp án gợi ý: Không nên. Vì nếu xoá, đổi tên hay di chuyển, chương trình có thể sẽ bị lỗi và không hoạt động được.
+        </div>
+    </div>
+
+    <div class="question-block" id="q6">
+        <div class="question-title">6. Đúng ghi Đ, sai ghi S.</div>
+        <table class="choice-table">
+            <tr data-ans="S">
+                <td>A. Mỗi lần sao chép, di chuyển chỉ có thể sao chép, di chuyển được một thư mục hoặc một tệp.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-ans="Đ">
+                <td>B. Có thể chọn nhiều thư mục, tệp bằng cách nhấn giữ phím <b>Ctrl</b> kết hợp nháy chuột.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"></td>
+            </tr>
+            <tr data-ans="Đ">
+                <td>C. Mỗi lần sao chép, di chuyển có thể đồng thời sao chép, di chuyển được nhiều thư mục và tệp.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"><span class="correct-mark">✔</span></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"></td>
+            </tr>
+            <tr data-ans="S">
+                <td>D. Không thể đồng thời chọn nhiều thư mục, tệp.</td>
+                <td class="center-cell"><input type="checkbox" class="chk-d"></td>
+                <td class="center-cell"><input type="checkbox" class="chk-s"><span class="correct-mark">✔</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="controls">
+        <button onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+    </div>
+</div>
+
+<script>
+    /* --- DRAG & DROP LOGIC --- */
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); ev.target.style.opacity = "0.5"; }
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        if(draggedElement) draggedElement.style.opacity = "1";
+        
+        let target = ev.target.closest('.drop-slot, .drag-source-area');
+        if (target) {
+            if (target.classList.contains('drop-slot')) {
+                // Nếu slot đã có item, trả item cũ về kho (đúng kho của nó)
+                if (target.children.length > 0) {
+                    let oldItem = target.children[0];
+                    let sourceId = oldItem.id.startsWith("t_") ? "source_q1" : "source_q4";
+                    document.getElementById(sourceId).appendChild(oldItem);
+                }
+                // Xóa overlay
+                let ov = target.querySelector('.correction-overlay');
+                if(ov) ov.remove();
+            }
+            target.appendChild(draggedElement);
+        }
+    }
+
+    /* --- VALIDATE --- */
+    function validate() {
+        document.querySelectorAll('.incomplete-warning').forEach(el => el.classList.remove('incomplete-warning'));
+        let missing = [];
+
+        // Q1: Check empty slots
+        let q1Slots = document.querySelectorAll('#q1 .drop-slot');
+        let q1Empty = false;
+        q1Slots.forEach(s => { if(s.children.length===0) q1Empty = true; });
+        if(q1Empty) missing.push('q1');
+
+        // Q2, Q6: Table rows
+        ['q2', 'q6'].forEach(qid => {
+            let rows = document.querySelectorAll(`#${qid} tr[data-ans]`);
+            let inc = false;
+            rows.forEach(r => { if(!r.querySelector('input:checked')) inc = true; });
+            if(inc) missing.push(qid);
+        });
+
+        // Q3: Checkbox
+        if(!document.querySelector('#q3 input:checked')) missing.push('q3');
+
+        // Q4: Drag slots
+        let q4Slots = document.querySelectorAll('#q4 .drop-slot');
+        let q4Empty = false;
+        q4Slots.forEach(s => { if(s.children.length===0) q4Empty = true; });
+        if(q4Empty) missing.push('q4');
+
+        // Q5: Radio & Text
+        let q5Radio = document.querySelector('input[name="q5_yn"]:checked');
+        let q5Text = document.getElementById('q5_text').value.trim();
+        if(!q5Radio || q5Text === "") missing.push('q5');
+
+        return missing;
+    }
+
+    /* --- CHẤM ĐIỂM --- */
+    function chamDiem() {
+        let missing = validate();
+        if(missing.length > 0) {
+            alert("Bạn chưa hoàn thành hết các câu hỏi. Vui lòng kiểm tra lại!");
+            missing.forEach(id => document.getElementById(id).classList.add('incomplete-warning'));
+            document.getElementById(missing[0]).scrollIntoView({behavior: 'smooth', block: 'center'});
+            return;
+        }
+
+        // RESET styles
+        document.querySelectorAll('.user-correct, .user-wrong').forEach(el => {
+            el.classList.remove('user-correct', 'user-wrong');
+        });
+        document.querySelectorAll('.correction-overlay').forEach(el => el.remove());
+
+        // BÀI 1 & 4: KÉO THẢ
+        document.querySelectorAll('.drop-slot').forEach(slot => {
+            let expect = slot.getAttribute('data-expect');
+            let child = slot.children[0];
+            let val = child.getAttribute('data-val');
+            
+            if(val === expect) {
+                child.classList.add('user-correct');
+            } else {
+                child.classList.add('user-wrong');
+                // Overlay đáp án
+                let label = expect;
+                // Nếu bài 4 thì label khác
+                if(slot.hasAttribute('data-label')) label = slot.getAttribute('data-label');
+                
+                let ov = document.createElement('div');
+                ov.className = 'correction-overlay';
+                ov.innerText = label;
+                ov.style.display = 'block';
+                slot.appendChild(ov);
+            }
+        });
+
+        // BÀI 2 & 6: ĐÚNG/SAI
+        ['q2', 'q6'].forEach(qid => {
+            document.querySelectorAll(`#${qid} tr[data-ans]`).forEach(row => {
+                let ans = row.getAttribute('data-ans');
+                let selector = (ans === 'Đ') ? '.chk-d' : '.chk-s';
+                let input = row.querySelector(selector);
+                
+                // Show mark
+                input.nextElementSibling.style.display = 'inline';
+                
+                // Check user answer
+                let userCheck = row.querySelector('input:checked');
+                if(userCheck === input) {
+                    // Đúng
+                } else {
+                    // Sai (người dùng chọn ô kia)
+                }
+            });
+        });
+
+        // BÀI 3: CHECKBOX
+        document.querySelectorAll('#q3 label[data-correct="true"]').forEach(lbl => {
+            lbl.querySelector('.correct-mark').style.display = 'inline';
+        });
+
+        // BÀI 5: TỰ LUẬN
+        document.getElementById('q5-feedback').style.display = 'block';
+
+        alert("Đã chấm xong! Xem kết quả chi tiết.");
+    }
+</script>
+
+</body>
+</html>

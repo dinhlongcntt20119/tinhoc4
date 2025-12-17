@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 1: Phần cứng và Phần mềm (Cập nhật Ảnh Full)</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; user-select: none; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #2c3e50; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; }
+        .question-title { font-weight: bold; font-size: 14pt; margin-bottom: 15px; color: #0056b3; margin-top: 35px; border-left: 5px solid #0056b3; padding-left: 10px; }
+        .content-text { font-size: 13pt; line-height: 2.4; } 
+
+        /* --- BẢNG --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; font-size: 12pt; vertical-align: middle; }
+        th { text-align: center; background-color: #ecf0f1; font-weight: bold; color: #2c3e50; }
+        .center-text { text-align: center; }
+        
+        input[type="checkbox"], input[type="radio"] { transform: scale(1.4); cursor: pointer; accent-color: #0056b3; margin-right: 10px; }
+        
+        /* Đánh dấu đáp án đúng cho bài 1 & 6 */
+        .correct-mark {
+            color: red; font-weight: bold; margin-left: 5px; font-size: 16pt; display: none; vertical-align: middle;
+        }
+
+        /* --- DRAG & DROP --- */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #bdc3c7; border-radius: 10px;
+            padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; min-height: 80px;
+        }
+
+        /* Item Bài 2 - Mô phỏng theo ảnh Bảng 1 */
+        .draggable-item {
+            cursor: grab; background: white; border: 1px solid #ccc; border-radius: 6px; padding: 5px;
+            width: 95px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05); z-index: 10; margin: 5px;
+        }
+        .draggable-item:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        
+        /* Style cho SVG */
+        .draggable-item svg { width: 50px; height: 50px; pointer-events: none; margin-top: 5px; }
+        
+        /* Style cho IMG (Chrome, RapidTyping, Paint, Mouse Skills) */
+        .draggable-item img { width: 50px; height: 50px; pointer-events: none; margin-top: 5px; object-fit: contain; }
+
+        .draggable-item span { font-size: 9pt; text-align: center; pointer-events: none; line-height: 1.1; margin-bottom: 5px; }
+        .draggable-item b { color: #333; font-size: 10pt; align-self: flex-start; margin-left: 5px; pointer-events: none; }
+
+        /* Item Kéo thả chữ Bài 4 */
+        .word-tile {
+            background-color: #9b59b6; color: white; padding: 6px 15px; border-radius: 20px;
+            cursor: grab; font-weight: bold; font-size: 11pt; box-shadow: 2px 2px 0px #8e44ad;
+            display: inline-block; margin: 3px;
+        }
+        
+        /* Item Bài 3 - Điền từ */
+        .drop-slot {
+            display: inline-flex; width: 150px; height: 38px; 
+            border: 2px dashed #999; border-radius: 5px; background-color: #fff;
+            vertical-align: middle; margin: 0 5px;
+            align-items: center; justify-content: center; position: relative;
+        }
+        .drag-over { background-color: #e8f6f3 !important; border-style: dashed !important; transform: scale(1.02); transition: 0.2s; }
+
+        /* Drop Zones Bài 2 */
+        .drop-zone-container { display: flex; gap: 20px; justify-content: space-between; }
+        .drop-zone {
+            flex: 1; border: 2px solid #bdc3c7; border-radius: 10px; padding: 10px; min-height: 250px;
+            background-color: #fff; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; justify-content: center;
+        }
+        .drop-zone-title { text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 13pt; color: #fff; padding: 8px; border-radius: 5px; width: 100%; }
+        .zone-pc { border-color: #2980b9; } .title-pc { background-color: #2980b9; }
+        .zone-pm { border-color: #e67e22; } .title-pm { background-color: #e67e22; }
+
+        /* --- KẾT QUẢ --- */
+        .result-text { font-weight: bold; color: red; margin-top: 10px; display: none; font-size: 11pt; text-align: left; width: 100%; border-top: 1px dotted #ccc; padding-top: 5px;}
+        
+        .correction-overlay {
+            color: red; font-weight: bold; font-size: 11pt; background: rgba(255,255,255,0.95);
+            padding: 2px 5px; border-radius: 3px; border: 1px solid red; display: none;
+            position: absolute; top: -25px; left: 0; z-index: 100; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        /* Riêng cho bài 5 (Check bảng) */
+        .table-overlay {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            color: red; font-size: 20pt; font-weight: bold; display: none; pointer-events: none;
+        }
+
+        /* Controls */
+        .controls {
+            text-align: center; margin-top: 40px; padding: 20px;
+            background: #fff; border-top: 1px solid #eee; position: sticky; bottom: 0; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        button {
+            padding: 12px 30px; margin: 0 10px; border: none; border-radius: 25px; cursor: pointer; color: white; font-weight: bold; font-size: 12pt;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;
+        }
+        button:active { transform: translateY(2px); }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h3>CHỦ ĐỀ 1: MÁY TÍNH VÀ CỘNG ĐỒNG</h3>
+    <h1>BÀI 1: PHẦN CỨNG VÀ PHẦN MỀM MÁY TÍNH</h1>
+    <hr>
+
+    <div class="exercise" id="ex1">
+        <div class="question-title">1. Đánh dấu (X) vào ô trống để chỉ ra những đặc điểm thuộc về phần cứng, phần mềm máy tính.</div>
+        <table>
+            <tr>
+                <th>Đặc điểm</th>
+                <th width="15%">Phần cứng</th>
+                <th width="15%">Phần mềm</th>
+            </tr>
+            <tr data-correct="pc">
+                <td>Có thể cầm, nắm, chạm tay vào hay quan sát được hình dạng.</td>
+                <td class="center-text"><input type="radio" name="r1" value="pc"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="radio" name="r1" value="pm"></td>
+            </tr>
+            <tr data-correct="pm">
+                <td>Không thể chạm tay vào hay quan sát được hình dạng.</td>
+                <td class="center-text"><input type="radio" name="r2" value="pc"></td>
+                <td class="center-text"><input type="radio" name="r2" value="pm"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-correct="pc">
+                <td>Là thiết bị vật lí.</td>
+                <td class="center-text"><input type="radio" name="r3" value="pc"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="radio" name="r3" value="pm"></td>
+            </tr>
+            <tr data-correct="pm">
+                <td>Là chương trình, ứng dụng.</td>
+                <td class="center-text"><input type="radio" name="r4" value="pc"></td>
+                <td class="center-text"><input type="radio" name="r4" value="pm"><span class="correct-mark">✔</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="exercise" id="ex2">
+        <div class="question-title">2. Phân loại thiết bị phần cứng, biểu tượng phần mềm trong Bảng 1.</div>
+        <p style="text-align: center; font-style: italic;">▼ Kho chứa (Kéo hình vào hộp tương ứng) ▼</p>
+        
+        <div class="drag-source-area" id="source_ex2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_a" data-type="pc">
+                <b>a)</b><svg viewBox="0 0 24 24"><path fill="#333" d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></svg><span>Màn hình</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_b" data-type="pm">
+                <b>b)</b><svg viewBox="0 0 24 24"><path fill="#3498db" d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg><span>File Explorer</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_c" data-type="pm">
+                <b>c)</b><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="#c0392b"/><text x="12" y="17" font-size="16" fill="#fff" text-anchor="middle" font-weight="bold">P</text></svg><span>PowerPoint</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_d" data-type="pc">
+                <b>d)</b><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2" fill="#34495e"/><rect x="4" y="8" width="2" height="2" fill="#fff"/><rect x="7" y="8" width="2" height="2" fill="#fff"/><rect x="10" y="8" width="2" height="2" fill="#fff"/></svg><span>Bàn phím</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_e" data-type="pm">
+                <b>e)</b><svg viewBox="0 0 24 24"><path fill="#0078d7" d="M0 3.44L9.36 2.12v9.33H0v-8.01zm9.36 10.05v9.84L0 20.67v-7.18h9.36zM10.12 2v9.45h13.88V0L10.12 2zm13.88 10.16H10.12v10.43L24 24V12.16z"/></svg><span>Windows 10</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_g" data-type="pc">
+                <b>g)</b><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2" fill="#333"/><circle cx="12" cy="8" r="3" fill="#555"/><circle cx="12" cy="16" r="4" fill="#555"/></svg><span>Loa</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_h" data-type="pm">
+                <b>h)</b>
+                <svg viewBox="0 0 48 48"><rect width="48" height="48" rx="4" fill="black"/><circle cx="24" cy="24" r="6" fill="#FFD700"/><ellipse cx="24" cy="24" rx="18" ry="6" fill="none" stroke="#555" stroke-width="1.5" transform="rotate(-20 24 24)"/><ellipse cx="24" cy="24" rx="18" ry="6" fill="none" stroke="#555" stroke-width="1.5" transform="rotate(20 24 24)"/><circle cx="10" cy="20" r="2.5" fill="#3498db"/><circle cx="36" cy="28" r="2.5" fill="#e74c3c"/></svg>
+                <span>SolarSystem</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_i" data-type="pm">
+                <b>i)</b>
+                <img src="paint.png" alt="Paint">
+                <span>Paint</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_k" data-type="pc">
+                <b>k)</b><svg viewBox="0 0 24 24"><path fill="#555" d="M13 2h-2C7.5 2 5 6.5 5 11v4c0 4.5 2.5 7 6 7h2c3.5 0 6-2.5 6-7v-4c0-4.5-2.5-9-6-9z"/><line x1="12" y1="2" x2="12" y2="8" stroke="#fff"/></svg><span>Chuột</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_l" data-type="pm">
+                <b>l)</b>
+                <img src="rapit.png" alt="RapidTyping">
+                <span>RapidTyping</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_m" data-type="pm">
+                <b>m)</b>
+                <img src="chrome.png" alt="Chrome">
+                <span>Chrome</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_n" data-type="pc">
+                <b>n)</b><svg viewBox="0 0 24 24"><path fill="#555" d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 14H8v-4h8v4z"/></svg><span>Máy in</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_o" data-type="pc">
+                <b>o)</b><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2" fill="#2c3e50"/><circle cx="12" cy="6" r="1" fill="#ecf0f1"/><rect x="10" y="12" width="4" height="1" fill="#ecf0f1"/></svg><span>Thân máy</span>
+            </div>
+             <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_p" data-type="pm">
+                <b>p)</b>
+                <img src="mouse.png" alt="Mouse Skills">
+                <span>Mouse Skills</span>
+            </div>
+            <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_q" data-type="pm">
+                <b>q)</b><svg viewBox="0 0 24 24"><path fill="#2980b9" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span>Word</span>
+            </div>
+             <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="item_r" data-type="pc">
+                <b>r)</b><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="4" fill="#333"/><circle cx="12" cy="10" r="1.5" fill="#fff"/><rect x="8" y="16" width="8" height="3" rx="1" fill="#555"/></svg><span>Webcam</span>
+            </div>
+        </div>
+
+        <div class="drop-zone-container">
+            <div class="drop-zone zone-pc" id="zone_pc" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="drop-zone-title title-pc">PHẦN CỨNG</div>
+                <div class="result-text" id="res_pc"></div>
+            </div>
+            <div class="drop-zone zone-pm" id="zone_pm" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="drop-zone-title title-pm">PHẦN MỀM</div>
+                <div class="result-text" id="res_pm"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exercise" id="ex3">
+        <div class="question-title">3. Điền cụm từ thích hợp (phần cứng, phần mềm) vào chỗ chấm.</div>
+        
+        <div style="margin-bottom:10px;">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_pc_1" data-val="pc">phần cứng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_pm_1" data-val="pm">phần mềm</div>
+             <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_pc_2" data-val="pc">phần cứng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_pm_2" data-val="pm">phần mềm</div>
+             <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_pc_3" data-val="pc">phần cứng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_pm_3" data-val="pm">phần mềm</div>
+        </div>
+
+        <div class="content-text">
+            <p>a) <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="pc" data-label="phần cứng"></span> làm việc theo lệnh của <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="pm" data-label="phần mềm"></span>.</p>
+            <p>b) <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="pc" data-label="phần cứng"></span> là môi trường hoạt động của <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="pm" data-label="phần mềm"></span>.</p>
+            <p>c) Không có <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="pm" data-label="phần mềm"></span> thì phần cứng không hoạt động được.</p>
+        </div>
+    </div>
+
+    <div class="exercise" id="ex4">
+        <div class="question-title">4. Kéo thả từ thích hợp vào chỗ chấm.</div>
+        
+        <div class="drag-source-area" id="source_ex4" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_4_1" data-val="pc">Phần cứng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_4_2" data-val="suynghi">Suy nghĩ</div>
+        </div>
+
+        <div class="content-text">
+            <p>a) Đặc điểm chung của cơ thể con người và <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="pc" data-label="Phần cứng"></span> là có thể chạm tay vào hay quan sát được hình dạng.</p>
+            <p>b) Đặc điểm chung của <span class="drop-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="suynghi" data-label="Suy nghĩ"></span> và phần mềm máy tính là không thể chạm tay vào hay quan sát được.</p>
+        </div>
+    </div>
+
+    <div class="exercise" id="ex5">
+        <div class="question-title">5. Đánh dấu (X) vào ô trống để chỉ ra hậu quả có thể xảy ra khi thực hiện mỗi thao tác không đúng.</div>
+        <table>
+            <tr>
+                <th width="40%">Thao tác không đúng</th>
+                <th width="30%">Gây lỗi phần mềm</th>
+                <th width="30%">Gây lỗi, làm hỏng, xước, nứt vỡ phần cứng</th>
+            </tr>
+            <tr data-correct="pm">
+                <td>a) Tắt máy tính bằng cách ngắt nguồn điện đột ngột.</td>
+                <td class="center-text"><input type="checkbox" class="chk-pm" value="pm"><div class="correct-mark">✔</div></td>
+                <td class="center-text"><input type="checkbox" class="chk-pc" value="pc"><div class="table-overlay">Đáp án: Gây lỗi phần mềm</div></td>
+            </tr>
+            <tr data-correct="pc">
+                <td>b) Va đập mạnh.</td>
+                <td class="center-text"><input type="checkbox" class="chk-pm"><div class="table-overlay">Đáp án: Hỏng phần cứng</div></td>
+                <td class="center-text"><input type="checkbox" class="chk-pc"><div class="correct-mark">✔</div></td>
+            </tr>
+            <tr data-correct="pc">
+                <td>c) Dùng vải thô ráp lau hay để vật sắc, nhọn tác động vào màn hình.</td>
+                <td class="center-text"><input type="checkbox" class="chk-pm"><div class="table-overlay">Đáp án: Hỏng phần cứng</div></td>
+                <td class="center-text"><input type="checkbox" class="chk-pc"><div class="correct-mark">✔</div></td>
+            </tr>
+             <tr data-correct="pc">
+                <td>d) Lắc mạnh khi tháo, lắp thẻ nhớ USB, bàn phím, chuột.</td>
+                <td class="center-text"><input type="checkbox" class="chk-pm"><div class="table-overlay">Đáp án: Hỏng phần cứng</div></td>
+                <td class="center-text"><input type="checkbox" class="chk-pc"><div class="correct-mark">✔</div></td>
+            </tr>
+            <tr data-correct="pc">
+                <td>e) Để máy tính bị ẩm, ướt, bụi, bẩn.</td>
+                <td class="center-text"><input type="checkbox" class="chk-pm"><div class="table-overlay">Đáp án: Hỏng phần cứng</div></td>
+                <td class="center-text"><input type="checkbox" class="chk-pc"><div class="correct-mark">✔</div></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="exercise" id="ex6">
+        <div class="question-title">6. Đánh dấu (X) vào ô trống để chỉ ra việc nên hay không nên làm.</div>
+        <table>
+            <tr>
+                <th>Việc</th>
+                <th width="15%" class="center-text">Nên làm</th>
+                <th width="15%" class="center-text">Không nên làm</th>
+            </tr>
+            <tr data-nen="true">
+                <td>a) Thoát khỏi các phần mềm đã được kích hoạt rồi tắt máy tính bằng nút lệnh <b>Shut down</b>.</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"></td>
+            </tr>
+            <tr data-nen="true">
+                <td>b) Gõ phím nhẹ, dứt khoát.</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"></td>
+            </tr>
+             <tr data-nen="true">
+                <td>c) Để máy tính ở nơi khô ráo, thông thoáng.</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"></td>
+            </tr>
+            <tr data-nen="false">
+                <td>d) Vừa ăn, uống vừa sử dụng máy tính.</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"><span class="correct-mark">✔</span></td>
+            </tr>
+            <tr data-nen="true">
+                <td>e) Sử dụng vải khô, mềm để vệ sinh bàn phím, chuột, màn hình máy tính.</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"></td>
+            </tr>
+             <tr data-nen="true">
+                <td>g) Thao tác với chuột nhẹ nhàng, dứt khoát.</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"><span class="correct-mark">✔</span></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"></td>
+            </tr>
+             <tr data-nen="false">
+                <td>h) Di chuyển chuột trên mặt gồ ghề hay trơn bóng (như mặt kính).</td>
+                <td class="center-text"><input type="checkbox" class="chk-nen"></td>
+                <td class="center-text"><input type="checkbox" class="chk-ko"><span class="correct-mark">✔</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="validateAndSubmit()">NỘP BÀI & KIỂM TRA</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI TỪ ĐẦU</button>
+    </div>
+
+</div>
+
+<script>
+    /* --- LOGIC KÉO THẢ --- */
+    function allowDrop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.drop-zone, .drop-slot, .drag-source-area');
+        if(target && !target.classList.contains('drag-source-area')) {
+            target.classList.add('drag-over');
+        }
+    }
+
+    document.addEventListener("dragleave", function(event) {
+        let target = event.target.closest('.drop-zone, .drop-slot');
+        if (target) target.classList.remove("drag-over");
+    });
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.target.style.opacity = "0.5";
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        if(draggedElement) draggedElement.style.opacity = "1";
+        
+        let target = ev.target.closest('.drop-zone, .drop-slot, .drag-source-area');
+
+        if (target) {
+            target.classList.remove("drag-over");
+            
+            // Logic cho drop-slot: Mỗi ô chỉ chứa 1 item
+            if (target.classList.contains("drop-slot")) {
+                if (target.children.length > 0) {
+                    let oldItem = target.children[0];
+                    let sourceId = "";
+                    // Nếu là bài 4 thì trả về source_ex4, bài 3 trả về source của bài 3
+                    // Tuy nhiên trong code HTML bài 3 không có ID source rõ ràng (nó nằm trong div), 
+                    // nên ta dùng append vào source_ex4 hoặc 1 div chung đều được, miễn là nó quay về chỗ cũ.
+                    // Ở đây ta đơn giản hóa: trả về drag-source-area gần nhất hoặc source_ex4
+                    let defaultSource = document.getElementById('source_ex4'); 
+                    // Logic cũ: 
+                    document.querySelector('.drag-source-area').appendChild(oldItem); 
+                }
+            }
+            target.appendChild(draggedElement);
+        }
+    }
+
+    /* --- HÀM KIỂM TRA ĐIỀU KIỆN TRƯỚC KHI NỘP BÀI --- */
+    function validateAndSubmit() {
+        // 1. Kiểm tra Bài 1
+        const ex1Rows = document.querySelectorAll('#ex1 tr[data-correct]');
+        for (let i = 0; i < ex1Rows.length; i++) {
+            if (!ex1Rows[i].querySelector('input[type="radio"]:checked')) {
+                alert("Bạn chưa hoàn thành Bài 1! Vui lòng chọn đáp án cho tất cả các dòng.");
+                ex1Rows[i].scrollIntoView({behavior: "smooth", block: "center"});
+                return; // Dừng lại không chấm điểm
+            }
+        }
+
+        // 2. Kiểm tra Bài 2 (Kéo thả hình)
+        const sourceEx2 = document.getElementById('source_ex2');
+        if (sourceEx2.children.length > 0) {
+            alert("Bạn chưa hoàn thành Bài 2! Hãy kéo hết các hình vào hộp tương ứng.");
+            document.getElementById('ex2').scrollIntoView({behavior: "smooth", block: "center"});
+            return;
+        }
+
+        // 3. Kiểm tra Bài 3 và Bài 4 (Các ô drop-slot)
+        const slots = document.querySelectorAll('.drop-slot');
+        for (let i = 0; i < slots.length; i++) {
+            if (slots[i].children.length === 0) {
+                // Tìm xem slot này thuộc bài nào để báo lỗi chính xác
+                let parentEx = slots[i].closest('.exercise');
+                let exName = parentEx.id === 'ex3' ? "Bài 3" : "Bài 4";
+                alert(`Bạn chưa hoàn thành ${exName}! Vui lòng kéo từ vào chỗ trống.`);
+                slots[i].scrollIntoView({behavior: "smooth", block: "center"});
+                return;
+            }
+        }
+
+        // 4. Kiểm tra Bài 5
+        const ex5Rows = document.querySelectorAll('#ex5 tr[data-correct]');
+        for (let i = 0; i < ex5Rows.length; i++) {
+            // Kiểm tra xem có checkbox nào được check trong dòng đó không
+            if (!ex5Rows[i].querySelector('input[type="checkbox"]:checked')) {
+                alert("Bạn chưa hoàn thành Bài 5! Vui lòng chọn đáp án cho từng hành động.");
+                ex5Rows[i].scrollIntoView({behavior: "smooth", block: "center"});
+                return;
+            }
+        }
+
+        // 5. Kiểm tra Bài 6
+        const ex6Rows = document.querySelectorAll('#ex6 tr[data-nen]');
+        for (let i = 0; i < ex6Rows.length; i++) {
+            if (!ex6Rows[i].querySelector('input[type="checkbox"]:checked')) {
+                alert("Bạn chưa hoàn thành Bài 6! Vui lòng chọn Nên hoặc Không nên.");
+                ex6Rows[i].scrollIntoView({behavior: "smooth", block: "center"});
+                return;
+            }
+        }
+
+        // Nếu tất cả đã ok, tiến hành chấm điểm
+        chamDiem();
+    }
+
+    /* --- CHẤM ĐIỂM --- */
+    function chamDiem() {
+        
+        // --- BÀI 1: HIỆN ĐÁP ÁN ĐÚNG BÊN CẠNH ---
+        document.querySelectorAll('#ex1 tr[data-correct]').forEach(row => {
+            let correct = row.getAttribute('data-correct');
+            let correctInput = row.querySelector(`input[value="${correct}"]`);
+            if(correctInput) {
+                let mark = correctInput.nextElementSibling;
+                if(mark) mark.style.display = "inline";
+            }
+        });
+
+        // --- BÀI 2: HIỂN THỊ ĐÁP ÁN DẠNG TEXT MÀU ĐỎ ---
+        document.getElementById('res_pc').style.display = 'block';
+        document.getElementById('res_pc').innerText = "Phần cứng: a, d, g, k, n, o, r";
+        
+        document.getElementById('res_pm').style.display = 'block';
+        document.getElementById('res_pm').innerText = "Phần mềm: b, c, e, h, i, l, m, p, q";
+
+
+        // --- BÀI 3, 4: NẾU SAI THÌ HIỆN TEXT ĐỎ ---
+        document.querySelectorAll('.drop-slot').forEach(slot => {
+            let isCorrect = false;
+            let expectedVal = slot.getAttribute('data-expect');
+            let correctLabel = slot.getAttribute('data-label');
+
+            if(slot.children.length > 0) {
+                let child = slot.children[0];
+                let childVal = child.getAttribute('data-val');
+                if(childVal === expectedVal) isCorrect = true;
+            }
+
+            if(!isCorrect) {
+                let oldOverlay = slot.querySelector('.correction-overlay');
+                if(oldOverlay) oldOverlay.remove();
+
+                let overlay = document.createElement('div');
+                overlay.className = 'correction-overlay';
+                overlay.innerText = correctLabel;
+                overlay.style.display = 'block';
+                slot.appendChild(overlay);
+                slot.style.border = "2px solid red";
+            } else {
+                slot.style.border = "2px solid green";
+            }
+        });
+
+        // --- BÀI 5: NẾU SAI THÌ HIỆN TEXT ĐỎ ---
+        document.querySelectorAll('#ex5 tr[data-correct]').forEach(row => {
+            let correctType = row.getAttribute('data-correct'); // pm hoặc pc
+            let chkPm = row.querySelector('.chk-pm');
+            let chkPc = row.querySelector('.chk-pc');
+            
+            if(correctType === 'pm') {
+                chkPm.nextElementSibling.style.display = 'inline'; 
+                if(chkPc.checked) {
+                   row.querySelector('.chk-pc').nextElementSibling.style.display = 'block';
+                }
+            } else {
+                chkPc.nextElementSibling.style.display = 'inline';
+                if(chkPm.checked) {
+                    row.querySelector('.chk-pm').nextElementSibling.style.display = 'block';
+                }
+            }
+        });
+
+
+        // --- BÀI 6: HIỆN ĐÁP ÁN ĐÚNG BÊN CẠNH ---
+        document.querySelectorAll('#ex6 tr[data-nen]').forEach(row => {
+            let isNen = row.getAttribute('data-nen') === "true";
+            let correctClass = isNen ? '.chk-nen' : '.chk-ko';
+            let correctInput = row.querySelector(correctClass);
+            if(correctInput) {
+                let mark = correctInput.nextElementSibling;
+                if(mark) mark.style.display = "inline";
+            }
+        });
+
+        document.getElementById('result-msg').innerText = "Đã chấm xong! Hãy xem lại các đáp án.";
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

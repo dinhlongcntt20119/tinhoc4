@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 10: Định dạng, tạo hiệu ứng cho trang chiếu</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #eef2f7; margin: 0; padding: 20px; color: #333; }
+        .page { background-color: #fff; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #d35400; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+        
+        .question-block {
+            margin-bottom: 30px; padding: 20px; border-radius: 8px;
+            background-color: #fff; border: 1px solid #eee; transition: 0.3s;
+        }
+
+        .question-title { 
+            font-weight: bold; font-size: 13pt; margin-bottom: 15px; color: #2c3e50; 
+            border-left: 5px solid #2980b9; padding-left: 10px; background-color: #f4f6f7; padding: 10px;
+        }
+
+        /* --- BẢNG VÀ INPUT --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; margin-bottom: 20px; }
+        th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; font-size: 12pt; vertical-align: middle; }
+        th { text-align: center; background-color: #ecf0f1; font-weight: bold; color: #2c3e50; }
+        .center-text { text-align: center; }
+        
+        select.match-select {
+            padding: 8px; font-size: 11pt; border-radius: 5px; border: 2px solid #bdc3c7; width: 100%;
+            background-color: #fff; cursor: pointer;
+        }
+        
+        /* Radio Buttons for True/False */
+        input[type="radio"] { transform: scale(1.5); accent-color: #2980b9; cursor: pointer; }
+
+        /* --- DRAG & DROP --- */
+        .drag-source-area {
+            background-color: #f8f9fa; border: 2px dashed #3498db; border-radius: 10px;
+            padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+        }
+        .word-tile {
+            background-color: #e67e22; color: white; padding: 6px 15px; border-radius: 6px;
+            cursor: grab; font-weight: bold; font-size: 12pt; box-shadow: 0 3px 0 #d35400;
+            user-select: none; z-index: 10;
+        }
+        
+        .inline-slot {
+            display: inline-flex; min-width: 150px; height: 30px; 
+            border-bottom: 2px dashed #333; margin: 0 5px;
+            vertical-align: bottom; align-items: center; justify-content: center;
+            color: #2980b9; font-weight: bold; padding: 0 5px;
+        }
+
+        /* --- SUB-QUESTIONS FOR ORDERING --- */
+        .sub-question { margin-bottom: 15px; padding: 10px; background: #fafafa; border-radius: 5px; border: 1px dashed #ccc; }
+        .sub-question strong { display: block; margin-bottom: 5px; color: #555; }
+        select.order-mini { width: 50px; text-align: center; font-weight: bold; padding: 5px; border: 1px solid #aaa; border-radius: 4px; }
+
+        /* --- ICONS --- */
+        .cursor-icon { width: 30px; height: 30px; vertical-align: middle; display: block; margin: 0 auto; }
+        
+        /* Cập nhật style cho icon nút lệnh: margin-left thay vì margin-right */
+        .btn-icon { 
+            height: 24px; vertical-align: middle; 
+            margin-left: 10px; /* Tạo khoảng cách với chữ phía trước */
+            border: 1px solid #ccc; padding: 2px; background: #f0f0f0; border-radius: 3px; 
+        }
+        .btn-label { font-weight: bold; vertical-align: middle; }
+
+        /* --- TRẠNG THÁI ĐÚNG SAI --- */
+        .slot-correct { border: 2px solid #27ae60 !important; background-color: #eafaf1; border-radius: 4px; color: #27ae60;}
+        .slot-wrong { border: 2px solid #c0392b !important; background-color: #fdedec; border-radius: 4px; color: #c0392b;}
+        
+        .correct-answer-text {
+            color: #c0392b; font-size: 11pt; font-weight: bold; margin-top: 15px; display: none; 
+            padding: 10px; background: #fff0f0; border-radius: 5px; border: 1px solid #ffcccc;
+        }
+        .missing-alert { border: 2px solid red !important; background-color: #fff5f5 !important; }
+
+        /* Controls */
+        .controls {
+            text-align: center; margin-top: 40px; padding: 20px;
+            background: #fff; border-top: 2px solid #eee; position: sticky; bottom: 0; z-index: 100; box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+        button {
+            padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #e74c3c; }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h3>CHỦ ĐỀ: BÀI TRÌNH CHIẾU</h3>
+    <h1>BÀI 10: ĐỊNH DẠNG, TẠO HIỆU ỨNG CHO TRANG CHIẾU</h1>
+    <hr>
+
+    <div class="question-block" id="ex1">
+        <div class="question-title">1. Điền cụm từ thích hợp vào chỗ trống.</div>
+        <div class="drag-source-area" id="source_ex1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_dinhdang" data-val="dinhdang" data-origin="source_ex1">định dạng văn bản</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_rorang" data-val="rorang" data-origin="source_ex1">rõ ràng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_sinhdong" data-val="sinhdong" data-origin="source_ex1">sinh động</div>
+        </div>
+        <div style="font-size: 13pt; line-height: 2.5;">
+            Việc thay đổi kiểu chữ, màu chữ, cỡ chữ được gọi là <span class="inline-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="dinhdang"></span>. Định dạng văn bản giúp cho trang chiếu <span class="inline-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="rorang|sinhdong"></span> và <span class="inline-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="sinhdong|rorang"></span> đẹp hơn.
+        </div>
+        <div class="correct-answer-text">Đáp án: định dạng văn bản - rõ ràng - sinh động</div>
+    </div>
+
+    <div class="question-block" id="ex2">
+        <div class="question-title">2. Lựa chọn các thao tác và sắp xếp thứ tự (1, 2) để thực hiện định dạng từng thuộc tính.</div>
+        <p style="font-style: italic; color: #666;">Danh sách thao tác:<br>
+        <b>A.</b> Chọn nút lệnh B, I, U. <br>
+        <b>B.</b> Chọn màu sắc trong Font Color.<br>
+        <b>C.</b> Chọn cỡ chữ trong Font Size.<br>
+        <b>D.</b> Chọn phần văn bản cần định dạng.</p>
+        
+        <div class="sub-question">
+            <strong>a) Để định dạng KIỂU CHỮ (Đậm, Nghiêng...):</strong>
+            Bước 1: <select class="order-mini required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+            &rarr; Bước 2: <select class="order-mini required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+        </div>
+        
+        <div class="sub-question">
+            <strong>b) Để định dạng MÀU CHỮ:</strong>
+            Bước 1: <select class="order-mini required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+            &rarr; Bước 2: <select class="order-mini required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+        </div>
+
+        <div class="sub-question">
+            <strong>c) Để định dạng CỠ CHỮ:</strong>
+            Bước 1: <select class="order-mini required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+            &rarr; Bước 2: <select class="order-mini required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+        </div>
+        <div class="correct-answer-text">Luôn chọn văn bản (D) trước, sau đó mới chọn lệnh định dạng tương ứng (A, B, hoặc C).</div>
+    </div>
+
+    <div class="question-block" id="ex3">
+        <div class="question-title">3. Điền chức năng tương ứng của từng nút lệnh (Chọn từ danh sách).</div>
+        <table>
+            <tr><th width="30%">Nút lệnh</th><th>Chức năng</th></tr>
+            <tr>
+                <td class="center-text">
+                    <span class="btn-label">Font Size</span>
+                    <svg class="btn-icon" viewBox="0 0 48 24">
+                        <text x="4" y="18" font-family="Arial" font-size="18">24</text>
+                        <path d="M36 8l6 6 6-6" stroke="#333" fill="none" stroke-width="2"/>
+                    </svg>
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="size">
+                        <option value="">-- Chọn chức năng --</option>
+                        <option value="size">Thay đổi cỡ chữ</option>
+                        <option value="italic">Thay đổi kiểu chữ nghiêng</option>
+                        <option value="bold">Thay đổi kiểu chữ đậm</option>
+                        <option value="color">Thay đổi màu chữ</option>
+                        <option value="underline">Thay đổi kiểu chữ gạch chân</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <span class="btn-label">Italic</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="24">
+                        <text x="6" y="20" font-family="Times New Roman" font-size="22" font-style="italic">I</text>
+                    </svg>
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="italic">
+                        <option value="">-- Chọn chức năng --</option>
+                        <option value="size">Thay đổi cỡ chữ</option>
+                        <option value="italic">Thay đổi kiểu chữ nghiêng</option>
+                        <option value="bold">Thay đổi kiểu chữ đậm</option>
+                        <option value="color">Thay đổi màu chữ</option>
+                        <option value="underline">Thay đổi kiểu chữ gạch chân</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <span class="btn-label">Bold</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="24">
+                        <text x="4" y="20" font-family="Times New Roman" font-size="22" font-weight="bold">B</text>
+                    </svg>
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="bold">
+                        <option value="">-- Chọn chức năng --</option>
+                        <option value="size">Thay đổi cỡ chữ</option>
+                        <option value="italic">Thay đổi kiểu chữ nghiêng</option>
+                        <option value="bold">Thay đổi kiểu chữ đậm</option>
+                        <option value="color">Thay đổi màu chữ</option>
+                        <option value="underline">Thay đổi kiểu chữ gạch chân</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <span class="btn-label">Font Color</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="24">
+                        <text x="4" y="18" font-family="Times New Roman" font-size="22" font-weight="bold">A</text>
+                        <rect x="2" y="20" width="20" height="4" fill="red"/>
+                    </svg>
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="color">
+                        <option value="">-- Chọn chức năng --</option>
+                        <option value="size">Thay đổi cỡ chữ</option>
+                        <option value="italic">Thay đổi kiểu chữ nghiêng</option>
+                        <option value="bold">Thay đổi kiểu chữ đậm</option>
+                        <option value="color">Thay đổi màu chữ</option>
+                        <option value="underline">Thay đổi kiểu chữ gạch chân</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <span class="btn-label">Underline</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="24">
+                        <text x="4" y="18" font-family="Times New Roman" font-size="22" font-weight="bold">U</text>
+                        <line x1="4" y1="21" x2="20" y2="21" stroke="black" stroke-width="2"/>
+                    </svg>
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="underline">
+                        <option value="">-- Chọn chức năng --</option>
+                        <option value="size">Thay đổi cỡ chữ</option>
+                        <option value="italic">Thay đổi kiểu chữ nghiêng</option>
+                        <option value="bold">Thay đổi kiểu chữ đậm</option>
+                        <option value="color">Thay đổi màu chữ</option>
+                        <option value="underline">Thay đổi kiểu chữ gạch chân</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">Thứ tự đúng: Cỡ chữ - Nghiêng - Đậm - Màu chữ - Gạch chân</div>
+    </div>
+
+    <div class="question-block" id="ex4">
+        <div class="question-title">4. Nối hình dạng con trỏ chuột với công dụng tương ứng.</div>
+        <table>
+            <tr><th width="20%">Con trỏ chuột</th><th>Công dụng khi kéo thả</th></tr>
+            <tr>
+                <td class="center-text">
+                    <svg viewBox="0 0 24 24" class="cursor-icon"><path d="M19 5L5 19M19 5l-4 1M19 5l-1 4M5 19l4-1M5 19l1-4" stroke="black" stroke-width="2" fill="none"/></svg>
+                    (Chéo góc trái trên)
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="d">
+                        <option value="">-- Chọn --</option>
+                        <option value="a">a) Di chuyển hình ảnh (khung văn bản).</option>
+                        <option value="b">b) Thay đổi kích thước theo chiều ngang.</option>
+                        <option value="c">c) Thay đổi kích thước theo chiều dọc.</option>
+                        <option value="d">d) Thay đổi kích thước theo đường chéo (trái trên - phải dưới).</option>
+                        <option value="e">e) Thay đổi kích thước theo đường chéo (trái dưới - phải trên).</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <svg viewBox="0 0 24 24" class="cursor-icon"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4" stroke="black" stroke-width="2" fill="none"/></svg>
+                    (Ngang)
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="b">
+                        <option value="">-- Chọn --</option>
+                        <option value="a">a) Di chuyển hình ảnh.</option>
+                        <option value="b">b) Thay đổi kích thước theo chiều ngang.</option>
+                        <option value="c">c) Thay đổi kích thước theo chiều dọc.</option>
+                        <option value="d">d) Thay đổi kích thước theo đường chéo.</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <svg viewBox="0 0 24 24" class="cursor-icon"><path d="M12 2v20M2 12h20 M12 2l-3 3 M12 2l3 3 M12 22l-3-3 M12 22l3-3 M2 12l3-3 M2 12l3 3 M22 12l-3-3 M22 12l-3 3" stroke="black" stroke-width="2" fill="none"/></svg>
+                    (Bốn chiều)
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="a">
+                        <option value="">-- Chọn --</option>
+                        <option value="a">a) Di chuyển hình ảnh (khung văn bản).</option>
+                        <option value="b">b) Thay đổi kích thước theo chiều ngang.</option>
+                        <option value="c">c) Thay đổi kích thước theo chiều dọc.</option>
+                        <option value="d">d) Thay đổi kích thước theo đường chéo.</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <svg viewBox="0 0 24 24" class="cursor-icon"><path d="M12 4v16M12 4l-4 4M12 4l4 4M12 20l-4-4M12 20l4-4" stroke="black" stroke-width="2" fill="none"/></svg>
+                    (Dọc)
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="c">
+                        <option value="">-- Chọn --</option>
+                        <option value="a">a) Di chuyển hình ảnh.</option>
+                        <option value="b">b) Thay đổi kích thước theo chiều ngang.</option>
+                        <option value="c">c) Thay đổi kích thước theo chiều dọc.</option>
+                        <option value="d">d) Thay đổi kích thước theo đường chéo.</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="center-text">
+                    <svg viewBox="0 0 24 24" class="cursor-icon"><path d="M5 5l14 14M5 5l4 1M5 5l1 4M19 19l-4 1M19 19l-1-4" stroke="black" stroke-width="2" fill="none"/></svg>
+                    (Chéo góc trái dưới)
+                </td>
+                <td>
+                    <select class="match-select required-select" data-answer="e">
+                        <option value="">-- Chọn --</option>
+                        <option value="a">a) Di chuyển hình ảnh.</option>
+                        <option value="b">b) Thay đổi kích thước theo chiều ngang.</option>
+                        <option value="d">d) Thay đổi kích thước theo đường chéo (trái trên - phải dưới).</option>
+                        <option value="e">e) Thay đổi kích thước theo đường chéo (trái dưới - phải trên).</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">
+            Đáp án: 1-d, 2-b, 3-a, 4-c, 5-e
+        </div>
+    </div>
+
+    <div class="question-block" id="ex5">
+        <div class="question-title">5. Đúng ghi Đ, Sai ghi S vào ô trống.</div>
+        <table>
+            <tr>
+                <th width="70%">Phát biểu</th>
+                <th width="15%">Đúng (Đ)</th>
+                <th width="15%">Sai (S)</th>
+            </tr>
+            <tr>
+                <td>A. Chỉ có thể áp dụng hiệu ứng chuyển trang cho trang chiếu đang được chọn.</td>
+                <td class="center-text"><input type="radio" name="q5_row1" value="D"></td>
+                <td class="center-text"><input type="radio" name="q5_row1" value="S"></td>
+            </tr>
+            <tr>
+                <td>B. Đối với một trang chiếu, tại mỗi thời điểm, chỉ có thể sử dụng một hiệu ứng chuyển trang.</td>
+                <td class="center-text"><input type="radio" name="q5_row2" value="D"></td>
+                <td class="center-text"><input type="radio" name="q5_row2" value="S"></td>
+            </tr>
+            <tr>
+                <td>C. Không thể bỏ hiệu ứng chuyển trang đã tạo cho trang chiếu.</td>
+                <td class="center-text"><input type="radio" name="q5_row3" value="D"></td>
+                <td class="center-text"><input type="radio" name="q5_row3" value="S"></td>
+            </tr>
+            <tr>
+                <td>D. Có thể điều chỉnh kích thước, thay đổi vị trí hình ảnh, khung văn bản để sắp xếp bố cục hợp lý.</td>
+                <td class="center-text"><input type="radio" name="q5_row4" value="D"></td>
+                <td class="center-text"><input type="radio" name="q5_row4" value="S"></td>
+            </tr>
+            <tr>
+                <td>E. Hiệu ứng chuyển trang giúp cho bài trình bày sinh động, ấn tượng và hấp dẫn hơn.</td>
+                <td class="center-text"><input type="radio" name="q5_row5" value="D"></td>
+                <td class="center-text"><input type="radio" name="q5_row5" value="S"></td>
+            </tr>
+        </table>
+        <div class="correct-answer-text">
+            Đáp án: A(S - Vì có thể dùng Apply to All), B(Đ), C(S - Có thể chọn None), D(Đ), E(Đ).
+        </div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
+    </div>
+
+</div>
+
+<script>
+    /* --- LOGIC KÉO THẢ --- */
+    function allowDrop(ev) { ev.preventDefault(); ev.target.closest('.inline-slot, .drag-source-area').classList.add('drag-over'); }
+    
+    document.addEventListener("dragleave", function(event) { 
+        let target = event.target.closest('.inline-slot, .drag-source-area');
+        if (target) target.classList.remove("drag-over");
+    });
+    
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    
+    function drop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.inline-slot, .drag-source-area');
+        if (target) {
+            target.classList.remove("drag-over");
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            
+            if (draggedEl) {
+                if (target.classList.contains("inline-slot")) {
+                    if (target.children.length > 0) {
+                        let oldItem = target.children[0];
+                        document.getElementById(oldItem.getAttribute('data-origin')).appendChild(oldItem);
+                    }
+                    target.appendChild(draggedEl);
+                } else if (target.classList.contains("drag-source-area")) {
+                    let origin = draggedEl.getAttribute('data-origin');
+                    document.getElementById(origin).appendChild(draggedEl);
+                }
+            }
+        }
+    }
+
+    /* --- KIỂM TRA & CHẤM ĐIỂM --- */
+    function checkProgress() {
+        let allAnswered = true;
+        let firstMissing = null;
+        document.querySelectorAll('.missing-alert').forEach(el => el.classList.remove('missing-alert'));
+
+        // Check Selects
+        document.querySelectorAll('.required-select').forEach(el => {
+            if(el.value === "") { allAnswered = false; el.classList.add('missing-alert'); if(!firstMissing) firstMissing = el; }
+        });
+
+        // Check Drag Slots
+        document.querySelectorAll('.required-slot').forEach(el => {
+            if(el.children.length === 0) { allAnswered = false; el.classList.add('missing-alert'); if(!firstMissing) firstMissing = el; }
+        });
+
+        // Check Radio Table (Bai 5)
+        for(let i=1; i<=5; i++) {
+            if (!document.querySelector(`input[name="q5_row${i}"]:checked`)) {
+                allAnswered = false;
+                let row = document.querySelector(`input[name="q5_row${i}"]`).closest('tr');
+                row.style.border = "2px solid red";
+                if(!firstMissing) firstMissing = row;
+            } else {
+                let row = document.querySelector(`input[name="q5_row${i}"]`).closest('tr');
+                row.style.border = "1px solid #bdc3c7";
+            }
+        }
+
+        if(!allAnswered) {
+            alert("Bạn chưa hoàn thành tất cả các câu hỏi! Vui lòng kiểm tra lại.");
+            if(firstMissing) firstMissing.scrollIntoView({behavior: "smooth", block: "center"});
+            return false;
+        }
+        return true;
+    }
+
+    function chamDiem() {
+        if (!checkProgress()) return;
+
+        // Reset Styles
+        document.querySelectorAll('.correct-answer-text').forEach(e => e.style.display = 'none');
+        document.querySelectorAll('.slot-correct, .slot-wrong').forEach(e => e.classList.remove('slot-correct', 'slot-wrong'));
+        document.querySelectorAll('div.question-block').forEach(e => {
+            e.style.border = '1px solid #eee'; e.style.backgroundColor = '#fff';
+        });
+
+        // --- BÀI 1: Drag & Drop ---
+        let ex1Correct = true;
+        document.querySelectorAll('#ex1 .required-slot').forEach(slot => {
+            let expect = slot.getAttribute('data-expect').split('|');
+            let child = slot.children[0];
+            if (child && expect.includes(child.getAttribute('data-val'))) {
+                slot.classList.add('slot-correct');
+            } else {
+                slot.classList.add('slot-wrong');
+                ex1Correct = false;
+            }
+        });
+        setResult('ex1', ex1Correct);
+
+        // --- BÀI 2, 3, 4: Select ---
+        ['ex2', 'ex3', 'ex4'].forEach(id => {
+            let correct = true;
+            document.querySelectorAll(`#${id} select`).forEach(sel => {
+                if(sel.value !== sel.getAttribute('data-answer')) {
+                    correct = false;
+                    sel.style.border = "2px solid #c0392b";
+                } else {
+                    sel.style.border = "2px solid #27ae60";
+                }
+            });
+            setResult(id, correct);
+        });
+
+        // --- BÀI 5: Radio (True/False) ---
+        let ex5Correct = true;
+        // Đáp án: A(S), B(Đ), C(S), D(Đ), E(Đ)
+        // Giải thích: A sai vì có nút Apply to All. C sai vì có thể chọn hiệu ứng None.
+        let q5Answers = {
+            'q5_row1': 'S',
+            'q5_row2': 'D',
+            'q5_row3': 'S',
+            'q5_row4': 'D',
+            'q5_row5': 'D'
+        };
+        
+        for (let key in q5Answers) {
+            let userVal = document.querySelector(`input[name="${key}"]:checked`).value;
+            let row = document.querySelector(`input[name="${key}"]`).closest('tr');
+            if(userVal !== q5Answers[key]) {
+                ex5Correct = false;
+                row.style.backgroundColor = "#fdedec";
+            } else {
+                row.style.backgroundColor = "#eafaf1";
+            }
+        }
+        setResult('ex5', ex5Correct);
+
+        document.getElementById('result-msg').innerText = "Đã chấm điểm! Xem chi tiết đúng (Xanh) / sai (Đỏ).";
+        document.getElementById('result-msg').scrollIntoView({behavior: "smooth"});
+    }
+
+    function setResult(id, isCorrect) {
+        let block = document.getElementById(id);
+        if(isCorrect) {
+            block.style.border = "2px solid #27ae60";
+            block.style.backgroundColor = "#eafaf1";
+        } else {
+            block.style.border = "2px solid #c0392b";
+            block.style.backgroundColor = "#fdedec";
+            let ansText = block.querySelector('.correct-answer-text');
+            if(ansText) ansText.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

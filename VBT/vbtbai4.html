@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 4: Tìm kiếm thông tin trên Internet</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; color: #333; user-select: none; }
+        .page { background-color: #fff; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+        
+        h1 { font-size: 18pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #2c3e50; margin: 10px 0; }
+        h2 { font-size: 14pt; font-weight: bold; color: #2980b9; margin-top: 20px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        
+        .question-block { margin-bottom: 30px; border: 1px solid #eee; padding: 15px; border-radius: 8px; background-color: #fff; }
+        .question-title { font-weight: bold; font-size: 12pt; margin-bottom: 15px; color: #0056b3; line-height: 1.5; }
+        
+        /* Cảnh báo chưa làm */
+        .incomplete-warning { border: 2px solid #e74c3c !important; background-color: #fff5f5; }
+
+        /* --- CÂU 1: SẮP XẾP VỚI CỘT STT --- */
+        .sort-wrapper {
+            display: flex; gap: 10px; background: #fafafa; padding: 15px; border: 1px solid #ddd; border-radius: 5px;
+        }
+        .stt-column {
+            display: flex; flex-direction: column; gap: 10px; width: 40px; align-items: center; justify-content: flex-start;
+        }
+        .stt-box {
+            width: 30px; height: 60px; /* Chiều cao khớp với item bên phải */
+            background-color: #e67e22; color: white; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 4px; margin-bottom: 0; flex-shrink: 0;
+        }
+        .sort-container {
+            flex: 1; display: flex; flex-direction: column; gap: 10px; min-height: 200px;
+        }
+        .sort-item {
+            background: #fff; border: 1px solid #999; padding: 10px; cursor: grab; border-radius: 4px;
+            min-height: 60px; box-sizing: border-box; display: flex; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: transform 0.2s, background-color 0.2s;
+        }
+        .sort-item:active { cursor: grabbing; background: #eef; transform: scale(1.01); }
+        .dragging { opacity: 0.5; background: #e0e0e0; }
+
+        /* --- CÂU 3: ĐIỀN TỪ (Kéo thả) --- */
+        .word-bank {
+            background-color: #f0f8ff; border: 1px solid #bde; padding: 15px; margin-bottom: 15px; border-radius: 5px;
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+        }
+        .word-tile {
+            background-color: #3498db; color: white; padding: 6px 12px; border-radius: 20px; font-size: 10pt; cursor: grab;
+            box-shadow: 1px 2px 3px rgba(0,0,0,0.2); user-select: none;
+        }
+        
+        .fill-text { line-height: 2.2; font-size: 11pt; text-align: justify; }
+        .drop-slot {
+            display: inline-flex; min-width: 120px; height: 30px; border-bottom: 2px dashed #555; 
+            vertical-align: middle; margin: 0 5px; align-items: center; justify-content: center;
+            background-color: #fdfdfd; padding: 0 5px; color: #2c3e50; font-weight: bold; border-radius: 4px;
+        }
+        .drag-over { background-color: #d4edda !important; border-bottom: 2px solid #28a745 !important; }
+
+        /* --- TRẮC NGHIỆM --- */
+        .radio-group label { display: block; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 4px; border: 1px solid transparent; }
+        .radio-group label:hover { background-color: #f5f5f5; }
+        input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+
+        /* --- MÀU SẮC KẾT QUẢ --- */
+        .user-correct { background-color: #d4edda !important; border: 1px solid #28a745 !important; color: #155724; }
+        .user-wrong { background-color: #f8d7da !important; border: 1px solid #dc3545 !important; color: #721c24; }
+        .actual-correct { border: 2px solid #28a745 !important; position: relative; }
+        .actual-correct::after { content: " (Đáp án đúng)"; font-weight: bold; color: #28a745; font-size: 0.9em; float: right;}
+
+        /* Overlay sửa lỗi */
+        .correction-overlay {
+            color: #c0392b; font-weight: bold; font-size: 10pt; background: rgba(255,255,255,0.95);
+            padding: 2px 6px; border: 1px solid #c0392b; display: none; margin-left: 5px; border-radius: 4px;
+            position: absolute; top: -25px; left: 0; white-space: nowrap; z-index: 10;
+        }
+        .drop-slot { position: relative; } 
+
+        .controls { text-align: center; margin-top: 40px; }
+        button { padding: 15px 40px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13pt; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:hover { background: #219150; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <h2>CHỦ ĐỀ C. TỔ CHỨC LƯU TRỮ, TÌM KIẾM VÀ TRAO ĐỔI THÔNG TIN</h2>
+    <h1>BÀI 4: TÌM KIẾM THÔNG TIN TRÊN INTERNET</h1>
+    <hr>
+
+    <div class="question-block" id="q1">
+        <div class="question-title">1. Sắp xếp các việc dưới đây theo thứ tự đúng (1, 2, 3, 4) để sử dụng máy tìm kiếm tìm thông tin theo từ khóa. (Kéo các ô bên phải lên/xuống)</div>
+        
+        <div class="sort-wrapper">
+            <div class="stt-column">
+                <div class="stt-box">1</div>
+                <div class="stt-box">2</div>
+                <div class="stt-box">3</div>
+                <div class="stt-box">4</div>
+            </div>
+            
+            <div class="sort-container" id="sortList">
+                <div class="sort-item" draggable="true" id="step_a" data-val="A">
+                    A. Gõ từ khóa vào ô tìm kiếm rồi gõ phím Enter.
+                </div>
+                <div class="sort-item" draggable="true" id="step_b" data-val="B">
+                    B. Nháy chuột vào tiêu đề của một kết quả tìm kiếm để xem chi tiết nội dung trang web tìm được.
+                </div>
+                <div class="sort-item" draggable="true" id="step_c" data-val="C">
+                    C. Gõ địa chỉ trang web của máy tìm kiếm Google (google.com.vn) rồi gõ phím Enter.
+                </div>
+                <div class="sort-item" draggable="true" id="step_d" data-val="D">
+                    D. Kích hoạt trình duyệt web.
+                </div>
+            </div>
+        </div>
+        <div class="correction-overlay" id="q1-correction" style="position: static; margin-top: 15px;"></div>
+    </div>
+
+    <div class="question-block" id="q2">
+        <div class="question-title">2. Khoanh tròn vào chữ cái đặt trước phát biểu SAI.</div>
+        <div class="radio-group">
+            <label><input type="radio" name="q2" value="A"> A. Máy tìm kiếm giúp em dễ dàng, nhanh chóng tìm được thông tin mong muốn trên Internet.</label>
+            <label><input type="radio" name="q2" value="B"> B. google.com.vn là địa chỉ trang web của máy tìm kiếm Google.</label>
+            <label><input type="radio" name="q2" value="C"> C. Từ khóa tìm kiếm là từ, cụm từ được gõ vào ô tìm kiếm của máy tìm kiếm.</label>
+            <label data-correct="true"><input type="radio" name="q2" value="D"> D. Kết quả do máy tìm kiếm trả về không liên quan đến từ khóa tìm kiếm.</label>
+            <label><input type="radio" name="q2" value="E"> E. Trong danh sách kết quả, phần nội dung bài viết có chứa và in đậm từ khóa đã sử dụng để tìm kiếm.</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q3">
+        <div class="question-title">3. Kéo từ thích hợp vào chỗ chấm.</div>
+        
+        <div class="word-bank" id="wordBank">
+            <div class="word-tile" draggable="true" id="w1">từ đặc trưng</div>
+            <div class="word-tile" draggable="true" id="w2">liên quan đến</div>
+            <div class="word-tile" draggable="true" id="w3">từ khóa</div>
+            <div class="word-tile" draggable="true" id="w4">nội dung chính</div>
+            <div class="word-tile" draggable="true" id="w5">tên chủ đề</div>
+        </div>
+
+        <div class="fill-text">
+            Máy tìm kiếm trả về kết quả là danh sách các bài viết có chứa <span class="drop-slot" data-expect="từ khóa"></span> hoặc <span class="drop-slot" data-expect="liên quan đến"></span> từ khóa. 
+            Do vậy, để có được thông tin mong muốn em cần chọn từ khóa là <span class="drop-slot" data-expect="tên chủ đề"></span> hay cụm từ mô tả <span class="drop-slot" data-expect="nội dung chính"></span> của thông tin cần tìm. 
+            Đặc biệt, nếu từ khóa gồm những <span class="drop-slot" data-expect="từ đặc trưng"></span> như địa danh, tên riêng, từ đặc biệt thì kết quả tìm kiếm càng chính xác.
+        </div>
+    </div>
+
+    <div class="question-block" id="q4">
+        <div class="question-title">4. Khoanh tròn vào chữ cái đặt trước đáp án đúng. Đối với kết quả tìm kiếm như ở Hình 4 trong SGK, ta có thể xác định <b>Văn Miếu</b> là từ khóa đã được sử dụng để tìm kiếm thông tin vì:</div>
+        <div class="radio-group">
+            <label><input type="radio" name="q4" value="A"> A. Từ Văn Miếu có màu sắc nổi bật hơn (màu xanh) và có trong tiêu đề của bài viết.</label>
+            <label data-correct="true"><input type="radio" name="q4" value="B"> B. Từ Văn Miếu được in đậm trong phần nội dung của bài viết của kết quả do máy tìm kiếm trả về.</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q5">
+        <div class="question-title">5. Khoanh tròn vào chữ cái đặt trước đáp án SAI. Đối với thông tin cần tìm ở Hình 6 trong SGK:</div>
+        <div class="radio-group">
+            <label><input type="radio" name="q5" value="A"> A. Có thể sử dụng từ khóa <b>sao la</b> để tìm kiếm thông tin vì đó là tên của chủ đề.</label>
+            <label data-correct="true"><input type="radio" name="q5" value="B"> B. <b>Kì lân Châu Á</b> không phải là từ khóa để tìm kiếm thông tin.</label>
+            <label><input type="radio" name="q5" value="C"> C. Có thể sử dụng cả <b>sao la</b> và <b>kì lân châu á</b> làm từ khóa tìm kiếm thông tin.</label>
+        </div>
+    </div>
+
+    <div class="question-block" id="q6">
+        <div class="question-title">6. Khoanh tròn vào chữ cái đặt trước phát biểu SAI về tìm thông tin bằng máy tìm kiếm.</div>
+        <div class="radio-group">
+            <label><input type="radio" name="q6" value="A"> A. Từ khóa thường là tên chủ đề, nội dung chính của thông tin cần tìm.</label>
+            <label data-correct="true"><input type="radio" name="q6" value="B"> B. Kết quả tìm kiếm là các bài viết không liên quan đến từ khóa.</label>
+            <label><input type="radio" name="q6" value="C"> C. Trên cơ sở kết quả tìm kiếm do máy tìm kiếm trả về, ta có thể chỉnh sửa từ khóa để có kết quả tìm kiếm phù hợp hơn.</label>
+            <label><input type="radio" name="q6" value="D"> D. Từ khóa càng mô tả đầy đủ, cụ thể về thông tin cần tìm thì kết quả tìm kiếm càng chính xác.</label>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+    </div>
+</div>
+
+<script>
+    // --- XỬ LÝ SẮP XẾP (CÂU 1) ---
+    const sortList = document.getElementById('sortList');
+    
+    sortList.addEventListener('dragstart', function(e) {
+        if(e.target.classList.contains('sort-item')) {
+            e.target.classList.add('dragging');
+        }
+    });
+
+    sortList.addEventListener('dragend', function(e) {
+        if(e.target.classList.contains('sort-item')) {
+            e.target.classList.remove('dragging');
+        }
+    });
+
+    sortList.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(sortList, e.clientY);
+        const dragging = document.querySelector('.dragging');
+        if (afterElement == null) {
+            sortList.appendChild(dragging);
+        } else {
+            sortList.insertBefore(dragging, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.sort-item:not(.dragging)')];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // --- XỬ LÝ KÉO THẢ TỪ (CÂU 3) ---
+    const words = document.querySelectorAll('.word-tile');
+    const slots = document.querySelectorAll('.drop-slot');
+    const bank = document.getElementById('wordBank');
+
+    words.forEach(word => {
+        word.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text', e.target.id);
+            setTimeout(() => e.target.style.visibility = 'hidden', 0);
+        });
+        word.addEventListener('dragend', e => {
+            e.target.style.visibility = 'visible';
+        });
+    });
+
+    [...slots, bank].forEach(container => {
+        container.addEventListener('dragover', e => {
+            e.preventDefault();
+            if(container.classList.contains('drop-slot')) container.classList.add('drag-over');
+        });
+        container.addEventListener('dragleave', e => {
+            if(container.classList.contains('drop-slot')) container.classList.remove('drag-over');
+        });
+        container.addEventListener('drop', e => {
+            e.preventDefault();
+            if(container.classList.contains('drop-slot')) container.classList.remove('drag-over');
+            
+            const id = e.dataTransfer.getData('text');
+            const item = document.getElementById(id);
+            
+            if (item) {
+                if (container.classList.contains('drop-slot')) {
+                    // Nếu slot đã có item, trả item cũ về kho
+                    if (container.children.length > 0) {
+                        bank.appendChild(container.children[0]);
+                    }
+                    container.appendChild(item);
+                    container.style.borderBottom = "none";
+                } else {
+                    // Thả về kho
+                    bank.appendChild(item);
+                }
+            }
+        });
+    });
+
+    // --- VALIDATE ---
+    function validate() {
+        document.querySelectorAll('.incomplete-warning').forEach(el => el.classList.remove('incomplete-warning'));
+        let missing = [];
+
+        // Q1: Sort luôn có item, bỏ qua check
+        
+        // Q2
+        if(!document.querySelector('input[name="q2"]:checked')) missing.push('q2');
+
+        // Q3: Phải điền hết
+        let q3Empty = false;
+        slots.forEach(s => { if(s.children.length === 0) q3Empty = true; });
+        if(q3Empty) missing.push('q3');
+
+        // Q4, Q5, Q6
+        if(!document.querySelector('input[name="q4"]:checked')) missing.push('q4');
+        if(!document.querySelector('input[name="q5"]:checked')) missing.push('q5');
+        if(!document.querySelector('input[name="q6"]:checked')) missing.push('q6');
+
+        return missing;
+    }
+
+    // --- CHẤM ĐIỂM ---
+    function chamDiem() {
+        let missing = validate();
+        if(missing.length > 0) {
+            alert("Bạn chưa hoàn thành hết các câu hỏi.\nVui lòng kiểm tra các phần được tô viền đỏ.");
+            missing.forEach(id => document.getElementById(id).classList.add('incomplete-warning'));
+            document.getElementById(missing[0]).scrollIntoView({behavior: 'smooth', block: 'center'});
+            return;
+        }
+
+        // --- CÂU 1: Sort D-C-A-B ---
+        const items = document.querySelectorAll('.sort-item');
+        const order = Array.from(items).map(i => i.getAttribute('data-val')).join('');
+        const q1Block = document.getElementById('q1');
+        const q1Msg = document.getElementById('q1-correction');
+        
+        q1Msg.style.display = "none";
+        
+        if(order === 'DCAB') { // Thứ tự đúng: 1.D (Kích hoạt) -> 2.C (Gõ địa chỉ) -> 3.A (Gõ từ khóa) -> 4.B (Nháy chuột)
+            q1Block.classList.add('user-correct');
+            q1Block.classList.remove('user-wrong');
+        } else {
+            q1Block.classList.add('user-wrong');
+            q1Block.classList.remove('user-correct');
+            q1Msg.innerHTML = "Thứ tự đúng là: <b>1.D ➜ 2.C ➜ 3.A ➜ 4.B</b>";
+            q1Msg.style.display = "block";
+        }
+
+        // --- CÂU 3: ĐIỀN TỪ ---
+        slots.forEach(slot => {
+            let expect = slot.getAttribute('data-expect');
+            let child = slot.children[0];
+            
+            // Xóa overlay cũ
+            let oldOv = slot.querySelector('.correction-overlay');
+            if(oldOv) oldOv.remove();
+
+            if(child && child.innerText.trim() === expect) {
+                child.style.backgroundColor = "#27ae60"; // Màu xanh cho item đúng
+            } else {
+                if(child) child.style.backgroundColor = "#c0392b"; // Màu đỏ cho item sai
+                
+                // Show tooltip đáp án đúng
+                let ov = document.createElement('span');
+                ov.className = 'correction-overlay';
+                ov.style.display = 'inline-block';
+                ov.innerText = expect;
+                slot.appendChild(ov);
+            }
+        });
+
+        // --- CÁC CÂU TRẮC NGHIỆM (2, 4, 5, 6) ---
+        ['q2', 'q4', 'q5', 'q6'].forEach(qid => {
+            // Reset style cũ
+            document.querySelectorAll(`#${qid} label`).forEach(l => l.classList.remove('user-correct', 'user-wrong', 'actual-correct'));
+
+            let selected = document.querySelector(`input[name="${qid}"]:checked`);
+            let userLabel = selected.parentElement;
+            let correctLabel = document.querySelector(`#${qid} label[data-correct="true"]`);
+            
+            if(userLabel === correctLabel) {
+                userLabel.classList.add('user-correct');
+            } else {
+                userLabel.classList.add('user-wrong');
+                correctLabel.classList.add('actual-correct');
+            }
+        });
+
+        alert("Đã chấm xong! Hãy xem lại kết quả chi tiết.");
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 14: Điều khiển nhân vật chuyển động</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #eef2f7; margin: 0; padding: 20px; color: #333; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #2980b9; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+        
+        .question-block { margin-bottom: 30px; padding: 20px; border-radius: 8px; background-color: #fff; border: 1px solid #eee; transition: 0.3s; }
+        .question-title { font-weight: bold; font-size: 13pt; margin-bottom: 15px; color: #2c3e50; border-left: 5px solid #e67e22; padding-left: 10px; background-color: #fff5e6; padding: 10px; }
+
+        /* --- KHO CHỨA TỪ (Cho câu 1, 3) --- */
+        .drag-source-area {
+            background-color: #fdfdfd; 
+            border: 2px dashed #f39c12; 
+            border-radius: 8px;
+            padding: 10px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px;
+        }
+        .word-tile {
+            background-color: #3498db; color: white; padding: 8px 20px; border-radius: 20px;
+            cursor: grab; font-weight: bold; font-size: 11pt; box-shadow: 0 3px 0 #2980b9;
+            user-select: none; z-index: 1001; white-space: nowrap; transition: transform 0.1s; min-width: 40px; text-align: center;
+        }
+        .word-tile:active { transform: scale(0.95); box-shadow: 0 1px 0 #2980b9; }
+
+        /* --- HÌNH ẢNH --- */
+        .ref-image-center { width: 100%; max-width: 800px; display: block; margin: 0 auto 15px auto; border: 1px solid #ddd; border-radius: 8px; cursor: zoom-in; }
+        
+        .inline-icon { vertical-align: middle; height: 30px; width: auto; border: 1px solid #ccc; border-radius: 4px; margin: 0 5px; }
+        .inline-block-img { vertical-align: middle; height: 35px; width: auto; margin: 0 3px; border-radius: 4px; }
+        
+        /* --- BỐ CỤC CÂU 5 (NẰM NGANG) --- */
+        .programs-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch; /* Để chiều cao bằng nhau */
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .program-item {
+            flex: 1;
+            min-width: 220px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .program-item img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: zoom-in;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            flex-grow: 1; /* Đẩy ảnh xuống dưới */
+        }
+        .program-label {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 10px;
+            font-size: 11pt;
+            text-transform: uppercase;
+        }
+        
+        /* Style cho phần chọn đáp án A, B, C */
+        .option-group {
+            display: flex;
+            gap: 15px;
+            background: #fff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .option-label {
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12pt;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .option-label input[type="radio"] {
+            transform: scale(1.3);
+            accent-color: #2980b9;
+        }
+
+        /* --- CÁC LOẠI CÂU HỎI KHÁC --- */
+        .match-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .match-table td, .match-table th { border: 1px solid #ddd; padding: 10px; vertical-align: middle; }
+        .match-table th { background-color: #f4f6f7; text-align: center; }
+        .col-task { width: 55%; }
+        .col-result { width: 45%; text-align: center; background-color: #fafafa; }
+        
+        .answer-slot {
+            background-color: #fff; border: 2px dashed #bdc3c7; border-radius: 6px; min-height: 50px;
+            display: flex; justify-content: center; align-items: center; margin: 5px auto; width: 80%; transition: all 0.2s;
+        }
+        .answer-slot.drag-over { background-color: #eafaf1; border-color: #27ae60; }
+
+        .order-container { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin-top: 15px; }
+        select.order-select { padding: 8px; width: 60px; text-align: center; font-weight: bold; color: #2980b9; border: 2px solid #bdc3c7; border-radius: 5px; cursor: pointer; }
+
+        .text-content-box { margin-bottom: 15px; font-size: 11pt; line-height: 1.6; background: #f9f9f9; padding: 15px; border-radius: 5px; }
+
+        .radio-option { display: block; margin: 10px 0; cursor: pointer; font-size: 11pt; padding: 10px; border-radius: 5px; transition: background 0.2s; border: 1px solid transparent; }
+        .radio-option:hover { background-color: #f0f8ff; }
+        .radio-option input { margin-right: 10px; transform: scale(1.2); accent-color: #2980b9; }
+
+        .slot-correct, .select-correct { border: 2px solid #27ae60 !important; background-color: #eafaf1 !important; color: #27ae60; }
+        .slot-wrong, .select-wrong { border: 2px solid #c0392b !important; background-color: #fdedec !important; color: #c0392b; }
+        
+        /* Kết quả câu 5 */
+        .prog-correct { border: 2px solid #27ae60; background-color: #eafaf1; }
+        .prog-wrong { border: 2px solid #c0392b; background-color: #fdedec; }
+
+        .correct-answer-text { color: #c0392b; font-size: 11pt; margin-top: 10px; display: none; padding: 10px; background: #fff0f0; border-radius: 5px; border: 1px solid #ffcccc; font-weight: bold; }
+        .missing-alert { border: 2px solid red !important; box-shadow: 0 0 8px red; }
+        
+        .controls { text-align: center; margin-top: 40px; padding: 20px; background: #fff; border-top: 2px solid #eee; position: sticky; bottom: 0; z-index: 200; }
+        button { padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #e74c3c; }
+
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); }
+        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90vh; border-radius: 5px; animation-name: zoom; animation-duration: 0.3s; }
+        @keyframes zoom { from {transform:scale(0)} to {transform:scale(1)} }
+        .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
+
+    </style>
+</head>
+<body>
+
+<div id="imageModal" class="modal"><span class="close-modal">&times;</span><img class="modal-content" id="imgExpanded"></div>
+
+<div class="page">
+    <h3>CHỦ ĐỀ F: GIẢI QUYẾT VẤN ĐỀ VỚI SỰ TRỢ GIÚP CỦA MÁY TÍNH</h3>
+    <h1>BÀI 14: ĐIỀU KHIỂN NHÂN VẬT CHUYỂN ĐỘNG TRÊN SÂN KHẤU</h1>
+    <hr>
+
+    <div class="question-block" id="q1">
+        <div class="question-title">1. Nối việc được thực hiện (cột trái) với kết quả tương ứng (cột phải).</div>
+        
+        <div class="drag-source-area" id="source_q1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_them" data-val="them" data-source="source_q1">a) Thêm nhân vật</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_nen" data-val="nen" data-source="source_q1">b) Chọn phông nền</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_xoa" data-val="xoa" data-source="source_q1">c) Xoá nhân vật</div>
+        </div>
+
+        <table class="match-table">
+            <thead>
+                <tr>
+                    <th class="col-task">Việc được thực hiện</th>
+                    <th class="col-result">Kết quả</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1) Nháy chuột vào nút lệnh <img src="bai14c1.1.jpg" class="inline-icon" alt="thùng rác">.</td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="xoa"></div></td>
+                </tr>
+                <tr>
+                    <td>2) Nháy chuột vào nút lệnh <img src="bai14c1.2.jpg" class="inline-icon" alt="đầu mèo">. Sau đó, nháy chuột chọn một nhân vật trong cửa sổ <b>Chọn một Nhân vật</b> mở ra.</td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="them"></div></td>
+                </tr>
+                <tr>
+                    <td>3) Nháy chuột vào nút lệnh <img src="bai14c1.3.jpg" class="inline-icon" alt="bức tranh">. Sau đó, nháy chuột chọn phông nền trong cửa sổ <b>Chọn một Phông nền</b> mở ra.</td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="nen"></div></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="correct-answer-text">Đáp án đúng: 1-c; 2-a; 3-b</div>
+    </div>
+
+    <div class="question-block" id="q2">
+        <div class="question-title">2. Chọn và sắp xếp các việc dưới đây theo thứ tự để tạo chương trình điều khiển nhân vật cô bọ cánh cứng di chuyển theo các cạnh của hình vuông (Hình 1).</div>
+        
+        <img src="bai14c2.jpg" class="ref-image-center" onclick="zoomImage(this)" title="Nhấn vào để xem hình">
+        
+        <div class="text-content-box">
+            <p><b>A.</b> Chọn nhóm lệnh <b>Sự kiện</b>, kéo thả lệnh <img src="trang56cau4.4.jpg" class="inline-block-img" alt="cờ xanh"> vào khu vực chương trình.</p>
+            <p><b>B.</b> Chọn nhóm lệnh <b>Điều khiển</b>, kéo thả và lắp ghép lệnh <img src="bai14c2.1.jpg" class="inline-block-img" alt="đợi 1 giây"> vào khối lệnh trong khu vực chương trình.</p>
+            <p><b>C.</b> Chọn nhóm lệnh <b>Chuyển động</b>, kéo thả, lắp ghép lệnh <img src="bai14c2.3.jpg" class="inline-block-img" alt="di chuyển"> vào lệnh (hoặc khối lệnh) trong khu vực chương trình rồi thay số bước thành 100.</p>
+            <p><b>D.</b> Chọn nhóm lệnh <b>Chuyển động</b>, kéo thả, lắp ghép lệnh <img src="bai14c2.4.jpg" class="inline-block-img" alt="xoay phải"> vào khối lệnh trong khu vực chương trình rồi thay giá trị góc xoay thành 90°.</p>
+        </div>
+
+        <div class="order-container">
+            <span style="font-weight:bold;">Thứ tự đúng: </span>
+            <select class="order-select required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+            ➔
+            <select class="order-select required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+            ➔
+            <select class="order-select required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+            ➔
+            <select class="order-select required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+        </div>
+        <div class="correct-answer-text">Thứ tự gợi ý: A (Sự kiện) ➔ C (Di chuyển) ➔ D (Xoay) ➔ B (Đợi)</div>
+    </div>
+
+    <div class="question-block" id="q3">
+        <div class="question-title">3. Nối mỗi lệnh ở cột bên trái với ý nghĩa tương ứng ở cột bên phải.</div>
+        
+        <div class="drag-source-area" id="source_q3" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_xoaytrai" data-val="xoaytrai" data-source="source_q3">a) Xoay trái 15 độ</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_luot" data-val="luot" data-source="source_q3">b) Di chuyển trong 1 giây đến vị trí ngẫu nhiên</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_batlai" data-val="batlai" data-source="source_q3">c) Nếu chạm cạnh sân khấu thì quay lại</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_xoayphai" data-val="xoayphai" data-source="source_q3">d) Xoay phải 15 độ</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_tien" data-val="tien" data-source="source_q3">e) Tiến thẳng 10 bước</div>
+        </div>
+
+        <table class="match-table">
+            <thead>
+                <tr>
+                    <th style="width: 40%;">Lệnh Scratch</th>
+                    <th>Ý nghĩa</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1. <img src="bai14c2.3.jpg" class="inline-block-img" alt="di chuyển"></td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="tien"></div></td>
+                </tr>
+                <tr>
+                    <td>2. <img src="bai14c3.2.jpg" class="inline-block-img" alt="xoay phải"></td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="xoayphai"></div></td>
+                </tr>
+                <tr>
+                    <td>3. <img src="bai14c2.4.jpg" class="inline-block-img" alt="xoay trái"></td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="xoaytrai"></div></td>
+                </tr>
+                <tr>
+                    <td>4. <img src="bai14c3.4.jpg" class="inline-block-img" alt="lướt"></td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="luot"></div></td>
+                </tr>
+                <tr>
+                    <td>5. <img src="bai14c3.5.jpg" class="inline-block-img" alt="bật lại"></td>
+                    <td class="col-result"><div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="batlai"></div></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="correct-answer-text">1-e; 2-d; 3-a; 4-b; 5-c</div>
+    </div>
+
+    <div class="question-block" id="q4">
+        <div class="question-title">4. Khoanh tròn vào chữ cái đặt trước phát biểu sai.</div>
+        <label class="radio-option">
+            <input type="radio" name="q4" value="A"> 
+            <b>A.</b> Nếu tăng số giây trong lệnh <img src="bai14c2.1.jpg" class="inline-block-img" alt="đợi"> thì nhân vật sẽ dừng lại lâu hơn trước khi thực hiện lệnh tiếp theo.
+        </label>
+        <label class="radio-option">
+            <input type="radio" name="q4" value="B"> 
+            <b>B.</b> Nếu tăng số giây trong lệnh <img src="bai14c3.4.jpg" class="inline-block-img" alt="lướt tới"> thì nhân vật sẽ di chuyển chậm hơn.
+        </label>
+        <label class="radio-option">
+            <input type="radio" name="q4" value="C"> 
+            <b>C.</b> Không thể thay đổi số giây trong lệnh <img src="bai14c2.1.jpg" class="inline-block-img" alt="đợi"> và lệnh <img src="bai14c3.4.jpg" class="inline-block-img" alt="lướt tới">.
+        </label>
+        <div class="correct-answer-text">Đáp án đúng: C (Phát biểu sai là C vì ta hoàn toàn có thể thay đổi số giây).</div>
+    </div>
+
+    <div class="question-block" id="q5">
+        <div class="question-title">5. Ghép mỗi mô tả kết quả thực hiện chương trình dưới đây với một chương trình tương ứng.</div>
+        
+        <div class="text-content-box">
+            <p><b>A.</b> Nhân vật di chuyển đến vị trí ngẫu nhiên (chạm cạnh thì bật lại) 5 lần.</p>
+            <p><b>B.</b> Nhân vật di chuyển hướng lên trên theo các cạnh của <b>hình vuông</b>, trở về vị trí xuất phát và hướng nhân vật như khi xuất phát.</p>
+            <p><b>C.</b> Nhân vật di chuyển hướng xuống dưới theo các cạnh của <b>hình chữ nhật</b>, trở về vị trí xuất phát và hướng nhân vật khác với khi xuất phát.</p>
+        </div>
+
+        <p style="font-style: italic; color: #555;">(Tích chọn đáp án A, B hoặc C tương ứng với mỗi chương trình)</p>
+
+        <div class="programs-container">
+            <div class="program-item" id="prog1-box">
+                <div class="program-label">Chương trình 1</div>
+                <div class="option-group">
+                    <label class="option-label"><input type="radio" name="prog1" value="A"> A</label>
+                    <label class="option-label"><input type="radio" name="prog1" value="B"> B</label>
+                    <label class="option-label"><input type="radio" name="prog1" value="C"> C</label>
+                </div>
+                <img src="bai14c5.1.jpg" alt="Chương trình 1" onclick="zoomImage(this)">
+            </div>
+
+            <div class="program-item" id="prog2-box">
+                <div class="program-label">Chương trình 2</div>
+                <div class="option-group">
+                    <label class="option-label"><input type="radio" name="prog2" value="A"> A</label>
+                    <label class="option-label"><input type="radio" name="prog2" value="B"> B</label>
+                    <label class="option-label"><input type="radio" name="prog2" value="C"> C</label>
+                </div>
+                <img src="bai14c5.2.jpg" alt="Chương trình 2" onclick="zoomImage(this)">
+            </div>
+
+            <div class="program-item" id="prog3-box">
+                <div class="program-label">Chương trình 3</div>
+                <div class="option-group">
+                    <label class="option-label"><input type="radio" name="prog3" value="A"> A</label>
+                    <label class="option-label"><input type="radio" name="prog3" value="B"> B</label>
+                    <label class="option-label"><input type="radio" name="prog3" value="C"> C</label>
+                </div>
+                <img src="bai14c5.3.jpg" alt="Chương trình 3" onclick="zoomImage(this)">
+            </div>
+        </div>
+        
+        <div class="correct-answer-text">
+            Chương trình 1: B; Chương trình 2: C; Chương trình 3: A
+        </div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
+    </div>
+</div>
+
+<script>
+    /* --- KÉO THẢ LOGIC --- */
+    function allowDrop(ev) { ev.preventDefault(); ev.target.closest('.answer-slot, .drag-source-area').classList.add('drag-over'); }
+    
+    document.addEventListener("dragleave", function(event) { 
+        let target = event.target.closest('.answer-slot, .drag-source-area');
+        if (target) target.classList.remove("drag-over");
+    });
+    
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    
+    function drop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.answer-slot, .drag-source-area');
+        if (target) {
+            target.classList.remove("drag-over");
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            
+            if (draggedEl) {
+                let originalSourceId = draggedEl.getAttribute('data-source');
+                if (target.classList.contains("answer-slot")) {
+                    let existingItems = target.querySelectorAll('.word-tile');
+                    existingItems.forEach(item => {
+                        let itemSourceId = item.getAttribute('data-source');
+                        document.getElementById(itemSourceId).appendChild(item);
+                    });
+                    target.appendChild(draggedEl);
+                } 
+                else if (target.classList.contains("drag-source-area")) {
+                    if (target.id === originalSourceId) {
+                        target.appendChild(draggedEl);
+                    } else {
+                        document.getElementById(originalSourceId).appendChild(draggedEl);
+                    }
+                }
+            }
+        }
+    }
+
+    /* --- ZOOM ẢNH --- */
+    var modal = document.getElementById("imageModal");
+    var modalImg = document.getElementById("imgExpanded");
+    function zoomImage(imgElement) { modal.style.display = "block"; modalImg.src = imgElement.src; }
+    document.getElementsByClassName("close-modal")[0].onclick = function() { modal.style.display = "none"; }
+    modal.onclick = function(event) { if (event.target === modal) modal.style.display = "none"; }
+
+    /* --- CHẤM ĐIỂM --- */
+    function chamDiem() {
+        let missing = false;
+        let firstMiss = null;
+        
+        // 1. Check Kéo thả (Câu 1, 3)
+        document.querySelectorAll('.required-slot').forEach(slot => {
+            slot.classList.remove('missing-alert');
+            if (slot.childElementCount === 0) {
+                missing = true;
+                slot.classList.add('missing-alert');
+                if(!firstMiss) firstMiss = slot;
+            }
+        });
+        
+        // 2. Check Select (Câu 2)
+        document.querySelectorAll('.required-select').forEach(sel => {
+            sel.classList.remove('missing-alert');
+            if (sel.value === "") {
+                missing = true;
+                sel.classList.add('missing-alert');
+                if(!firstMiss) firstMiss = sel;
+            }
+        });
+        
+        // 3. Check Radio (Câu 4)
+        let q4 = document.querySelector('input[name="q4"]:checked');
+        if (!q4) {
+            missing = true;
+            document.getElementById('q4').classList.add('missing-alert');
+            if(!firstMiss) firstMiss = document.getElementById('q4');
+        } else {
+            document.getElementById('q4').classList.remove('missing-alert');
+        }
+
+        // 4. Check Radio (Câu 5 - Mới)
+        const progNames = ['prog1', 'prog2', 'prog3'];
+        const progBoxes = ['prog1-box', 'prog2-box', 'prog3-box'];
+        
+        progNames.forEach((name, index) => {
+            let checked = document.querySelector(`input[name="${name}"]:checked`);
+            let box = document.getElementById(progBoxes[index]);
+            box.style.border = "2px solid #ddd"; // Reset border
+            
+            if (!checked) {
+                missing = true;
+                box.style.border = "2px solid red";
+                if (!firstMiss) firstMiss = box;
+            }
+        });
+
+        if (missing) {
+            alert("Bạn chưa hoàn thành hết các câu hỏi. Hãy kiểm tra các ô được viền đỏ!");
+            if(firstMiss) firstMiss.scrollIntoView({behavior: "smooth", block: "center"});
+            return;
+        }
+
+        // --- TÍNH ĐIỂM ---
+        let score = 0;
+        let total = 0;
+
+        // Reset display
+        document.querySelectorAll('.correct-answer-text').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.slot-correct, .slot-wrong, .select-correct, .select-wrong').forEach(el => {
+            el.classList.remove('slot-correct', 'slot-wrong', 'select-correct', 'select-wrong');
+            el.style.backgroundColor = ''; 
+            el.style.border = '';
+        });
+        document.querySelectorAll('.prog-correct, .prog-wrong').forEach(el => el.classList.remove('prog-correct', 'prog-wrong'));
+        
+        // Chấm Câu 1, 3 (Kéo thả)
+        document.querySelectorAll('.required-slot').forEach(slot => {
+            total++;
+            let tile = slot.querySelector('.word-tile');
+            if (tile && tile.getAttribute('data-val') === slot.getAttribute('data-expect')) {
+                slot.classList.add('slot-correct');
+                score++;
+            } else {
+                slot.classList.add('slot-wrong');
+                slot.closest('.question-block').querySelector('.correct-answer-text').style.display = 'block';
+            }
+        });
+
+        // Chấm Câu 2 (Sắp xếp)
+        document.querySelectorAll('.required-select').forEach(sel => {
+            total++;
+            if (sel.value === sel.getAttribute('data-answer')) {
+                sel.classList.add('select-correct');
+                score++;
+            } else {
+                sel.classList.add('select-wrong');
+                document.querySelector('#q2 .correct-answer-text').style.display = 'block';
+            }
+        });
+
+        // Chấm Câu 4 (Trắc nghiệm)
+        total++;
+        if (q4 && q4.value === 'C') {
+            score++;
+            q4.parentElement.style.backgroundColor = '#eafaf1';
+            q4.parentElement.style.border = '1px solid #27ae60';
+        } else {
+            document.querySelector('#q4 .correct-answer-text').style.display = 'block';
+            if(q4) {
+                q4.parentElement.style.backgroundColor = '#fdedec';
+                q4.parentElement.style.border = '1px solid #c0392b';
+            }
+        }
+
+        // Chấm Câu 5 (Radio button mới)
+        const answersQ5 = { 'prog1': 'B', 'prog2': 'C', 'prog3': 'A' };
+        let q5Correct = true;
+
+        progNames.forEach((name, index) => {
+            total++;
+            let checked = document.querySelector(`input[name="${name}"]:checked`);
+            let box = document.getElementById(progBoxes[index]);
+            
+            if (checked && checked.value === answersQ5[name]) {
+                score++;
+                box.classList.add('prog-correct');
+            } else {
+                q5Correct = false;
+                box.classList.add('prog-wrong');
+            }
+        });
+
+        if (!q5Correct) {
+            document.querySelector('#q5 .correct-answer-text').style.display = 'block';
+        }
+
+        let msg = document.getElementById('result-msg');
+        msg.innerText = `Kết quả: ${score}/${total} câu đúng!`;
+        msg.scrollIntoView({behavior: "smooth"});
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 12: Làm quen với Scratch</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #eef2f7; margin: 0; padding: 20px; color: #333; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #d35400; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+        
+        .question-block { margin-bottom: 30px; padding: 20px; border-radius: 8px; background-color: #fff; border: 1px solid #eee; transition: 0.3s; }
+        .question-title { font-weight: bold; font-size: 13pt; margin-bottom: 15px; color: #2c3e50; border-left: 5px solid #2980b9; padding-left: 10px; background-color: #f4f6f7; padding: 10px; }
+
+        /* --- KHO CHỨA TỪ (STICKY) --- */
+        .drag-source-area {
+            position: sticky; top: 0; z-index: 1000;
+            background-color: #fff; border: 2px dashed #3498db; border-radius: 0 0 10px 10px; border-top: none;
+            padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .word-tile {
+            background-color: #008CBA; color: white; padding: 8px 15px; border-radius: 4px;
+            cursor: grab; font-weight: bold; font-size: 10pt; box-shadow: 0 2px 0 #005f7f;
+            user-select: none; z-index: 1001; white-space: nowrap;
+        }
+
+        /* --- ẢNH MINH HỌA --- */
+        .ref-image-center { width: 100%; max-width: 800px; display: block; margin: 0 auto 20px auto; border: 1px solid #ddd; border-radius: 8px; cursor: zoom-in; }
+
+        /* --- LƯỚI TRẢ LỜI CÂU 1 --- */
+        .answer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .answer-slot {
+            background-color: #f9f9f9; border: 2px dashed #bdc3c7; border-radius: 6px; min-height: 60px;
+            display: flex; align-items: center; padding: 5px 10px 5px 50px; position: relative; transition: all 0.2s;
+        }
+        .answer-slot.drag-over { background-color: #eafaf1; border-color: #27ae60; transform: scale(1.02); }
+        .slot-number {
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            background-color: #e67e22; color: white; font-weight: bold; width: 30px; height: 30px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 11pt;
+        }
+
+        /* --- CÁC PHẦN KHÁC --- */
+        .text-input { border: 1px solid #ccc; border-radius: 4px; padding: 5px; width: 200px; font-weight: bold; }
+        select.order-select { padding: 5px; width: 50px; text-align: center; font-weight: bold; color: #2980b9; }
+        .radio-option { display: block; margin: 10px 0; cursor: pointer; font-size: 12pt; }
+        .radio-option input { transform: scale(1.3); margin-right: 10px; accent-color: #2980b9; }
+        
+        .slot-correct, .input-correct { border: 2px solid #27ae60 !important; background-color: #eafaf1 !important; color: #27ae60; }
+        .slot-wrong, .input-wrong { border: 2px solid #c0392b !important; background-color: #fdedec !important; color: #c0392b; }
+        
+        .correct-answer-text { color: #c0392b; font-size: 11pt; margin-top: 15px; display: none; padding: 15px; background: #fff0f0; border-radius: 5px; border: 1px solid #ffcccc; }
+        .missing-alert { border: 2px solid red !important; box-shadow: 0 0 10px red; }
+        
+        .controls { text-align: center; margin-top: 40px; padding: 20px; background: #fff; border-top: 2px solid #eee; position: sticky; bottom: 0; z-index: 200; }
+        button { padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #e74c3c; }
+
+        /* Zoom modal */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); }
+        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90vh; border-radius: 5px; animation-name: zoom; animation-duration: 0.3s; }
+        @keyframes zoom { from {transform:scale(0)} to {transform:scale(1)} }
+        .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="imageModal" class="modal"><span class="close-modal">&times;</span><img class="modal-content" id="imgExpanded"></div>
+
+<div class="page">
+    <h3>CHỦ ĐỀ F: GIẢI QUYẾT VẤN ĐỀ VỚI SỰ TRỢ GIÚP CỦA MÁY TÍNH</h3>
+    <h1>BÀI 12: LÀM QUEN VỚI SCRATCH</h1>
+    <hr>
+
+    <div class="question-block" id="ex1">
+        <div class="question-title">1. Kéo tên thành phần thả vào ô số tương ứng bên dưới hình.</div>
+        
+        <div class="drag-source-area" id="source_ex1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_ngonngu" data-val="ngonngu">Nút ngôn ngữ</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_bangchon" data-val="bangchon">Thanh bảng chọn</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_khulenh" data-val="khulenh">Nhóm lệnh</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_coxanh" data-val="bangchon_phu">Khu vực hướng dẫn</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_stop" data-val="stop">Nút Cờ xanh/Dừng</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_sankhau" data-val="sankhau">Sân khấu</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_taonhanvat" data-val="taonhanvat">Khu vực lệnh</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_chuongtrinh" data-val="chuongtrinh">Khu vực chương trình</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_nhanvat" data-val="nhanvat">Khu quản lý nhân vật</div>
+        </div>
+
+        <img src="trang48h1.jpg" class="ref-image-center" alt="Giao diện Scratch" onclick="zoomImage(this)" title="Nhấn vào để phóng to">
+
+        <div class="answer-grid">
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="ngonngu"><div class="slot-number">1</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="bangchon"><div class="slot-number">2</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="khulenh"><div class="slot-number">3</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="bangchon_phu"><div class="slot-number">4</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="stop"><div class="slot-number">5</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="sankhau"><div class="slot-number">6</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="taonhanvat"><div class="slot-number">7</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="chuongtrinh"><div class="slot-number">8</div></div>
+            <div class="answer-slot required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="nhanvat"><div class="slot-number">9</div></div>
+        </div>
+        <div class="correct-answer-text" id="ex1-answer-key"></div>
+    </div>
+
+    <div class="question-block" id="ex2">
+        <div class="question-title">2. Sắp xếp các việc dưới đây theo thứ tự đúng để mở chương trình Scratch.</div>
+        <div style="margin-bottom: 10px;">A. Chọn nút lệnh <b>Open</b>...<br>B. Chọn thẻ <b>Tập tin (File)</b>...<br>C. Mở thư mục chứa tệp...</div>
+        <div style="font-weight: bold;">Thứ tự: <select class="order-select required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select> &rarr; <select class="order-select required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select> &rarr; <select class="order-select required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></div>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> B -> C -> A</div>
+    </div>
+
+    <div class="question-block" id="ex3">
+        <div class="question-title">3. Quan sát Hình 2 và điền vào chỗ trống.</div>
+        <img src="trang49h2.png" class="ref-image-center" onclick="zoomImage(this)" alt="Code Mèo bắt bóng">
+        <p>a) Phím <input type="text" class="text-input required-input" data-expect="mũi tên"> di chuyển nhân vật.</p>
+        <p>b) Khi chạm bóng mèo nói: <input type="text" class="text-input required-input" data-expect="Tớ bắt được bóng rồi">.</p>
+        <p>c) Thay đổi câu nói thì <input type="text" class="text-input required-input" data-expect="lời nói"> thay đổi.</p>
+        <p>d) Để đi nhanh hơn, thay số 5 bằng số <input type="text" class="text-input required-input" data-expect="lớn hơn 5">.</p>
+        <p>e) Để đi chậm hơn, thay số 5 bằng số <input type="text" class="text-input required-input" data-expect="nhỏ hơn 5">.</p>
+        <div class="correct-answer-text">
+            <b>Đáp án gợi ý:</b><br>
+            a) mũi tên<br>b) Tớ bắt được bóng rồi<br>c) lời nói<br>d) lớn hơn 5<br>e) nhỏ hơn 5
+        </div>
+    </div>
+
+    <div class="question-block" id="ex4">
+        <div class="question-title">4. Khoanh tròn vào phát biểu SAI (Về trò chơi Robot tìm quà).</div>
+        <img src="trang50h3.png" class="ref-image-center" onclick="zoomImage(this)" alt="Robot tìm quà">
+        <label class="radio-option"><input type="radio" name="q4" value="A"> A. Trò chơi trên máy tính là chương trình máy tính.</label>
+        <label class="radio-option"><input type="radio" name="q4" value="B"> B. Không thể thực hiện thay đổi trò chơi bằng cách thay đổi trong chương trình.</label>
+        <label class="radio-option"><input type="radio" name="q4" value="C"> C. Khi thay các số 10 bằng số 2, robot sẽ di chuyển chậm hơn.</label>
+        <label class="radio-option"><input type="radio" name="q4" value="D"> D. Có thể chỉnh sửa chương trình để thay đổi lời nói của robot.</label>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> B</div>
+    </div>
+
+    <div class="question-block" id="ex5">
+        <div class="question-title">5. Điền từ thích hợp vào chỗ chấm (Dựa vào trò chơi Robot).</div>
+        <p>a) Thay đổi số bước di chuyển thì <input type="text" class="text-input required-input" data-expect="tốc độ"> thay đổi.</p>
+        <p>b) Thay đổi nội dung ô Nói thì <input type="text" class="text-input required-input" data-expect="lời nói"> thay đổi.</p>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> a) tốc độ; b) lời nói</div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
+    </div>
+</div>
+
+<script>
+    /* --- LOGIC KÉO THẢ --- */
+    function allowDrop(ev) { ev.preventDefault(); ev.target.closest('.answer-slot, .drag-source-area').classList.add('drag-over'); }
+    
+    document.addEventListener("dragleave", function(event) { 
+        let target = event.target.closest('.answer-slot, .drag-source-area');
+        if (target) target.classList.remove("drag-over");
+    });
+    
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    
+    function drop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.answer-slot, .drag-source-area');
+        if (target) {
+            target.classList.remove("drag-over");
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            if (draggedEl) {
+                if (target.classList.contains("answer-slot")) {
+                    // Nếu ô đã có thẻ, trả thẻ cũ về kho
+                    let existingItems = target.querySelectorAll('.word-tile');
+                    existingItems.forEach(item => document.getElementById('source_ex1').appendChild(item));
+                    target.appendChild(draggedEl);
+                } else if (target.classList.contains("drag-source-area")) {
+                    target.appendChild(draggedEl);
+                }
+            }
+        }
+    }
+
+    /* --- LOGIC ZOOM --- */
+    var modal = document.getElementById("imageModal"); var modalImg = document.getElementById("imgExpanded");
+    function zoomImage(imgElement) { modal.style.display = "block"; modalImg.src = imgElement.src; }
+    document.getElementsByClassName("close-modal")[0].onclick = function() { modal.style.display = "none"; }
+    modal.onclick = function(event) { if (event.target === modal) modal.style.display = "none"; }
+
+    /* --- LOGIC CHẤM ĐIỂM --- */
+    function chamDiem() {
+        try {
+            // 1. KIỂM TRA ĐIỀN ĐỦ (BLOCK NẾU THIẾU)
+            let hasMissing = false;
+            let firstMissing = null;
+
+            document.querySelectorAll('.missing-alert').forEach(el => el.classList.remove('missing-alert'));
+            
+            const checkMissing = (selector) => {
+                document.querySelectorAll(selector).forEach(el => {
+                    let isFilled = false;
+                    if (el.classList.contains('answer-slot')) isFilled = el.querySelector('.word-tile') !== null;
+                    else if (el.tagName === 'SELECT') isFilled = el.value !== "";
+                    else if (el.tagName === 'INPUT') isFilled = el.value.trim() !== "";
+                    
+                    if (!isFilled) {
+                        hasMissing = true;
+                        el.classList.add('missing-alert');
+                        if (!firstMissing) firstMissing = el;
+                    }
+                });
+            };
+
+            checkMissing('.required-slot');
+            checkMissing('.required-select');
+            checkMissing('.required-input');
+            if (!document.querySelector('input[name="q4"]:checked')) {
+                hasMissing = true;
+                let q4 = document.getElementById('ex4');
+                q4.classList.add('missing-alert');
+                if (!firstMissing) firstMissing = q4;
+            }
+
+            // Nếu thiếu: Báo lỗi và DỪNG CHƯƠNG TRÌNH (Không nộp)
+            if (hasMissing) {
+                alert("Bạn chưa hoàn thành tất cả các câu hỏi. Vui lòng làm hết các ô được viền đỏ trước khi nộp bài!");
+                if (firstMissing) firstMissing.scrollIntoView({behavior: "smooth", block: "center"});
+                return; 
+            }
+
+            // --- 2. BẮT ĐẦU CHẤM ĐIỂM ---
+            document.querySelectorAll('.correct-answer-text').forEach(e => e.style.display = 'none');
+            document.querySelectorAll('.slot-correct, .slot-wrong, .input-correct, .input-wrong').forEach(e => e.classList.remove('slot-correct', 'slot-wrong', 'input-correct', 'input-wrong'));
+            
+            let correctCount = 0; 
+            let total = 0;
+
+            // Câu 1
+            let ex1Correct = true;
+            document.querySelectorAll('#ex1 .required-slot').forEach(slot => {
+                total++; 
+                let expect = slot.getAttribute('data-expect'); 
+                let child = slot.querySelector('.word-tile');
+                if (child && child.getAttribute('data-val') === expect) { 
+                    slot.classList.add('slot-correct'); correctCount++; 
+                } else { 
+                    slot.classList.add('slot-wrong'); ex1Correct = false; 
+                }
+            });
+            if(!ex1Correct) {
+                let answerHtml = "<b>Đáp án đúng:</b><br>";
+                const labels = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+                document.querySelectorAll('#ex1 .required-slot').forEach((slot, index) => {
+                    let expectCode = slot.getAttribute('data-expect');
+                    let wordEl = document.getElementById('w_' + expectCode);
+                    if(wordEl) { 
+                        answerHtml += `(${labels[index]}) ${wordEl.innerText}; `; 
+                    }
+                });
+                let keyDiv = document.getElementById('ex1-answer-key');
+                keyDiv.innerHTML = answerHtml; 
+                keyDiv.style.display = 'block';
+            }
+
+            // Câu 2
+            let ex2Correct = true;
+            document.querySelectorAll('#ex2 .required-select').forEach(sel => { 
+                total++; 
+                if(sel.value === sel.getAttribute('data-answer')) { sel.style.border = "2px solid #27ae60"; correctCount++; } 
+                else { sel.style.border = "2px solid #c0392b"; ex2Correct = false; } 
+            });
+            if(!ex2Correct) document.querySelector('#ex2 .correct-answer-text').style.display = 'block';
+
+            // Câu 3
+            let ex3Correct = true;
+            document.querySelectorAll('#ex3 .required-input').forEach(inp => { 
+                total++; 
+                let v = inp.value.trim().toLowerCase(); 
+                let e = inp.getAttribute('data-expect').toLowerCase(); 
+                // Kiểm tra: giống hệt HOẶC chứa từ khóa (nếu từ khóa > 5 ký tự)
+                if(v === e || (e.length > 5 && v.includes(e.split(' ')[0]))) { 
+                    inp.classList.add('input-correct'); correctCount++; 
+                } else { 
+                    inp.classList.add('input-wrong'); ex3Correct = false;
+                } 
+            });
+            if(!ex3Correct) document.querySelector('#ex3 .correct-answer-text').style.display = 'block';
+
+            // Câu 4
+            total++; 
+            let q4Checked = document.querySelector('input[name="q4"]:checked');
+            if(q4Checked && q4Checked.value === 'B') { 
+                correctCount++; 
+            } else { 
+                document.querySelector('#ex4 .correct-answer-text').style.display = 'block'; 
+            }
+
+            // Câu 5
+            let ex5Correct = true;
+            document.querySelectorAll('#ex5 .required-input').forEach(inp => { 
+                total++; 
+                if(inp.value.trim().toLowerCase().includes(inp.getAttribute('data-expect').toLowerCase())) { 
+                    inp.classList.add('input-correct'); correctCount++; 
+                } else { 
+                    inp.classList.add('input-wrong'); ex5Correct = false;
+                } 
+            });
+            if(!ex5Correct) document.querySelector('#ex5 .correct-answer-text').style.display = 'block';
+
+            // Hiển thị kết quả
+            let msg = document.getElementById('result-msg');
+            msg.innerText = `Kết quả: ${correctCount}/${total} câu đúng.`;
+            msg.scrollIntoView({behavior: "smooth"});
+
+        } catch (error) {
+            alert("Có lỗi xảy ra khi chấm điểm: " + error.message);
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>

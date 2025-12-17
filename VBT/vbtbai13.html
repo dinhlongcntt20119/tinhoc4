@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBT Tin học 4 - Bài 13: Tạo chương trình máy tính để kể chuyện</title>
+    <style>
+        /* --- CẤU TRÚC CHUNG --- */
+        body { font-family: "Segoe UI", Arial, sans-serif; background-color: #eef2f7; margin: 0; padding: 20px; color: #333; }
+        .page { background-color: #fff; max-width: 950px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; }
+        
+        h1 { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #d35400; margin: 10px 0; }
+        h3 { font-size: 12pt; text-align: center; color: #7f8c8d; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 20px 0; }
+        
+        .question-block { margin-bottom: 30px; padding: 20px; border-radius: 8px; background-color: #fff; border: 1px solid #eee; transition: 0.3s; }
+        .question-title { font-weight: bold; font-size: 13pt; margin-bottom: 15px; color: #2c3e50; border-left: 5px solid #2980b9; padding-left: 10px; background-color: #f4f6f7; padding: 10px; }
+
+        /* --- CÂU 1: KÉO THẢ VÀO KHUNG HÌNH --- */
+        .drag-source-area {
+            background-color: #fff; border: 2px dashed #3498db; border-radius: 10px;
+            padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .word-tile {
+            background-color: #e67e22; color: white; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: grab; font-weight: bold; font-size: 14pt; box-shadow: 0 3px 0 #d35400;
+            user-select: none; z-index: 1001;
+        }
+
+        .image-gallery-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 10px;
+            width: 200px; /* Điều chỉnh kích thước khung chứa ảnh */
+            background-color: #f9f9f9;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gallery-item.drag-over { background-color: #eafaf1; border-color: #27ae60; transform: scale(1.05); }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: zoom-in;
+            margin-bottom: 10px;
+        }
+        
+        .gallery-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #7f8c8d;
+        }
+
+        /* Vùng chứa số sau khi thả vào */
+        .dropped-content {
+            min-height: 45px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eee;
+            border-radius: 20px;
+        }
+
+
+        /* --- CÂU 4: ẢNH TRONG DÒNG (INLINE) --- */
+        .text-content-box { background: #fdfdfd; padding: 15px; border-left: 4px solid #3498db; margin-bottom: 20px; font-size: 12pt; line-height: 1.8; }
+        .inline-img {
+            vertical-align: middle;
+            height: 35px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 5px;
+            display: inline-block;
+        }
+
+        /* --- CÁC PHẦN KHÁC --- */
+        .ref-image-center { width: 100%; max-width: 800px; display: block; margin: 0 auto 20px auto; border: 1px solid #ddd; border-radius: 8px; cursor: zoom-in; }
+        
+        .image-column { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-bottom: 20px; width: 100%; }
+        .image-column img { max-width: 80%; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        select.order-select { padding: 5px; width: 60px; text-align: center; font-weight: bold; color: #2980b9; border: 1px solid #bdc3c7; border-radius: 4px; }
+        
+        .slot-correct { border: 2px solid #27ae60 !important; background-color: #eafaf1 !important; }
+        .slot-wrong { border: 2px solid #c0392b !important; background-color: #fdedec !important; }
+        
+        /* Hiệu ứng visual cho số khi thả vào đúng/sai */
+        .gallery-item.slot-correct .word-tile { background-color: #27ae60; box-shadow: none; }
+        .gallery-item.slot-wrong .word-tile { background-color: #c0392b; box-shadow: none; }
+
+        .correct-answer-text { color: #c0392b; font-size: 11pt; margin-top: 15px; display: none; padding: 15px; background: #fff0f0; border-radius: 5px; border: 1px solid #ffcccc; }
+        .missing-alert { border: 2px solid red !important; box-shadow: 0 0 10px red; }
+        
+        .controls { text-align: center; margin-top: 40px; padding: 20px; background: #fff; border-top: 2px solid #eee; position: sticky; bottom: 0; z-index: 200; }
+        button { padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
+        .btn-submit { background-color: #27ae60; }
+        .btn-reset { background-color: #e74c3c; }
+
+        /* Zoom modal */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.9); }
+        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 90vh; border-radius: 5px; animation-name: zoom; animation-duration: 0.3s; }
+        @keyframes zoom { from {transform:scale(0)} to {transform:scale(1)} }
+        .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="imageModal" class="modal"><span class="close-modal">&times;</span><img class="modal-content" id="imgExpanded"></div>
+
+<div class="page">
+    <h3>CHỦ ĐỀ F: GIẢI QUYẾT VẤN ĐỀ VỚI SỰ TRỢ GIÚP CỦA MÁY TÍNH</h3>
+    <h1>BÀI 13: TẠO CHƯƠNG TRÌNH MÁY TÍNH ĐỂ KỂ CHUYỆN</h1>
+    <hr>
+
+    <div class="question-block" id="ex1">
+        <div class="question-title">1. Ghép mỗi lệnh được đánh số thứ tự trong chương trình ở Hình 1 với kết quả tương ứng bên dưới.</div>
+        
+        <p><b>Hình 1: Các đoạn lệnh</b></p>
+        <img src="trang51h1.jpg" class="ref-image-center" alt="Hình 1: Các đoạn lệnh" onclick="zoomImage(this)">
+
+        <p style="text-align: center; font-style: italic;">Kéo số thứ tự lệnh thả vào hình kết quả tương ứng:</p>
+        
+        <div class="drag-source-area" id="source_ex1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_1" data-val="1">1</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_2" data-val="2">2</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_3" data-val="3">3</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_4" data-val="4">4</div>
+            <div class="word-tile" draggable="true" ondragstart="drag(event)" id="w_5" data-val="5">5</div>
+        </div>
+
+        <div class="image-gallery-grid">
+            <div class="gallery-item required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="4">
+                <div class="gallery-label">Hình A</div>
+                <img src="trang52cauA.jpg" alt="Hình A" onclick="zoomImage(this)">
+                <div class="dropped-content"></div> </div>
+
+            <div class="gallery-item required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="1">
+                <div class="gallery-label">Hình B</div>
+                <img src="trang52cauB.jpg" alt="Hình B" onclick="zoomImage(this)">
+                <div class="dropped-content"></div>
+            </div>
+
+            <div class="gallery-item required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="3">
+                <div class="gallery-label">Hình C</div>
+                <img src="trang52cauC.jpg" alt="Hình C" onclick="zoomImage(this)">
+                <div class="dropped-content"></div>
+            </div>
+
+            <div class="gallery-item required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="5">
+                <div class="gallery-label">Hình D</div>
+                <img src="trang52cauD.jpg" alt="Hình D" onclick="zoomImage(this)">
+                <div class="dropped-content"></div>
+            </div>
+
+            <div class="gallery-item required-slot" ondrop="drop(event)" ondragover="allowDrop(event)" data-expect="2">
+                <div class="gallery-label">Hình E</div>
+                <img src="trang52cauE.jpg" alt="Hình E" onclick="zoomImage(this)">
+                <div class="dropped-content"></div>
+            </div>
+        </div>
+
+        <div class="correct-answer-text" id="ex1-answer-key"></div>
+    </div>
+
+    <div class="question-block" id="ex2">
+        <div class="question-title">2. Sắp xếp các lệnh dưới đây thành chương trình Scratch kể "Câu chuyện ở vườn trường" theo diễn biến hợp lí.</div>
+        <img src="trang52h3.jpg" class="ref-image-center" alt="Hình minh họa câu 2" onclick="zoomImage(this)">
+        
+        <div style="font-weight: bold; margin-top: 15px;">Thứ tự đúng:</div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 10px;">
+            <select class="order-select required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="E"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+        </div>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> C &rarr; B &rarr; A &rarr; D &rarr; E</div>
+    </div>
+
+    <div class="question-block" id="ex3">
+        <div class="question-title">3. Sắp xếp các lệnh dưới đây thành chương trình Scratch kể các việc được thực hiện vào buổi sáng.</div>
+        
+        <div class="image-column">
+            <img src="trang52h4.jpg" alt="Hình minh họa câu 3" onclick="zoomImage(this)">
+        </div>
+
+        <div style="font-weight: bold; margin-top: 15px;">Thứ tự đúng:</div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 10px;">
+            <select class="order-select required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="G">G</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="G"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="G">G</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="E"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="G">G</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="G">G</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="G">G</option></select>
+            &rarr;
+            <select class="order-select required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="G">G</option></select>
+        </div>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> C &rarr; G &rarr; E &rarr; A &rarr; B &rarr; D</div>
+    </div>
+
+    <div class="question-block" id="ex4">
+        <div class="question-title">4. Sắp xếp các việc dưới đây theo thứ tự để tạo và chạy chương trình Scratch kể chuyện.</div>
+        
+        <div class="text-content-box">
+            <p><b>A.</b> Thực hiện lặp lại các việc sau đây đối với mỗi lời kể:</p>
+            <ul style="list-style-type: none;">
+                <li>– Kéo thả câu lệnh <img src="trang56cau4.1.jpg" class="inline-img" alt="Lệnh nói"> trong nhóm lệnh <b>Hiển thị</b>, ghép nối với lệnh đã có trong khu vực chương trình;</li>
+                <li>– Nhập lời kể vào ô <img src="trang56cau4.2.jpg" class="inline-img" alt="Ô lời nói">;</li>
+                <li>– Nhập thời gian hiển thị lời kể vào ô <img src="trang56cau4.3.jpg" class="inline-img" alt="Ô thời gian">.</li>
+            </ul>
+            
+            <p><b>B.</b> Kéo thả câu lệnh <img src="trang56cau4.4.jpg" class="inline-img" alt="Lệnh sự kiện"> trong nhóm lệnh <b>Sự kiện</b> vào khu vực chương trình.</p>
+            <p><b>C.</b> Nháy chuột vào nút lệnh cờ xanh (Go) <img src="trang56cau4.5.jpg" class="inline-img" alt="Cờ xanh"> để chạy chương trình.</p>
+            <p><b>D.</b> Kích hoạt phần mềm Scratch.</p>
+        </div>
+
+        <div style="font-weight: bold;">Thứ tự: 
+            <select class="order-select required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select> &rarr; 
+            <select class="order-select required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select> &rarr; 
+            <select class="order-select required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select> &rarr;
+            <select class="order-select required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
+        </div>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> D (Mở) &rarr; B (Sự kiện) &rarr; A (Hiển thị) &rarr; C (Chạy)</div>
+    </div>
+
+    <div class="question-block" id="ex5">
+        <div class="question-title">5. Sắp xếp các việc dưới đây theo thứ tự đúng để LƯU chương trình vào máy tính.</div>
+        <div style="margin-bottom: 10px;">
+            <b>A.</b> Chọn "Lưu về máy tính".<br>
+            <b>B.</b> Gõ tên tệp vào ô File name.<br>
+            <b>C.</b> Nháy chuột vào nút lệnh Save.<br>
+            <b>D.</b> Chọn thẻ Tập tin (File).<br>
+            <b>E.</b> Mở thư mục sẽ chứa tệp chương trình Scratch.
+        </div>
+        <div style="font-weight: bold;">Thứ tự: 
+            <select class="order-select required-select" data-answer="D"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select> &rarr; 
+            <select class="order-select required-select" data-answer="A"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select> &rarr; 
+            <select class="order-select required-select" data-answer="E"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select> &rarr; 
+            <select class="order-select required-select" data-answer="B"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select> &rarr; 
+            <select class="order-select required-select" data-answer="C"><option value="">-</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+        </div>
+        <div class="correct-answer-text"><b>Đáp án đúng:</b> D &rarr; A &rarr; E &rarr; B &rarr; C</div>
+    </div>
+
+    <div class="controls">
+        <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
+        <button class="btn-submit" onclick="chamDiem()">NỘP BÀI & KIỂM TRA</button>
+        <button class="btn-reset" onclick="location.reload()">LÀM LẠI</button>
+    </div>
+</div>
+
+<script>
+    /* --- LOGIC KÉO THẢ --- */
+    function allowDrop(ev) { ev.preventDefault(); ev.target.closest('.gallery-item, .drag-source-area').classList.add('drag-over'); }
+    
+    document.addEventListener("dragleave", function(event) { 
+        let target = event.target.closest('.gallery-item, .drag-source-area');
+        if (target) target.classList.remove("drag-over");
+    });
+    
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    
+    function drop(ev) {
+        ev.preventDefault();
+        let target = ev.target.closest('.gallery-item, .drag-source-area');
+        if (target) {
+            target.classList.remove("drag-over");
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            if (draggedEl) {
+                // Xử lý khi thả vào khung hình (Câu 1)
+                if (target.classList.contains("gallery-item")) {
+                    // Nếu khung đã có số, trả số cũ về kho
+                    let droppedContent = target.querySelector('.dropped-content');
+                    if (droppedContent) {
+                        let existingItems = droppedContent.querySelectorAll('.word-tile');
+                        existingItems.forEach(item => document.getElementById('source_ex1').appendChild(item));
+                        droppedContent.appendChild(draggedEl);
+                    }
+                } 
+                // Xử lý khi thả về kho
+                else if (target.classList.contains("drag-source-area")) {
+                    target.appendChild(draggedEl);
+                }
+            }
+        }
+    }
+
+    /* --- LOGIC ZOOM --- */
+    var modal = document.getElementById("imageModal"); var modalImg = document.getElementById("imgExpanded");
+    function zoomImage(imgElement) { modal.style.display = "block"; modalImg.src = imgElement.src; }
+    document.getElementsByClassName("close-modal")[0].onclick = function() { modal.style.display = "none"; }
+    modal.onclick = function(event) { if (event.target === modal) modal.style.display = "none"; }
+
+    /* --- LOGIC CHẤM ĐIỂM --- */
+    function chamDiem() {
+        try {
+            // 1. KIỂM TRA ĐIỀN ĐỦ
+            let hasMissing = false;
+            let firstMissing = null;
+
+            document.querySelectorAll('.missing-alert').forEach(el => el.classList.remove('missing-alert'));
+            
+            const checkMissing = (selector) => {
+                document.querySelectorAll(selector).forEach(el => {
+                    let isFilled = false;
+                    if (el.classList.contains('gallery-item')) {
+                        isFilled = el.querySelector('.dropped-content .word-tile') !== null;
+                    }
+                    else if (el.tagName === 'SELECT') isFilled = el.value !== "";
+                    
+                    if (!isFilled) {
+                        hasMissing = true;
+                        el.classList.add('missing-alert');
+                        if (!firstMissing) firstMissing = el;
+                    }
+                });
+            };
+
+            checkMissing('.required-slot');
+            checkMissing('.required-select');
+
+            if (hasMissing) {
+                alert("Bạn chưa hoàn thành tất cả các câu hỏi. Vui lòng làm hết các ô được viền đỏ trước khi nộp bài!");
+                if (firstMissing) firstMissing.scrollIntoView({behavior: "smooth", block: "center"});
+                return; 
+            }
+
+            // --- 2. BẮT ĐẦU CHẤM ĐIỂM ---
+            document.querySelectorAll('.correct-answer-text').forEach(e => e.style.display = 'none');
+            document.querySelectorAll('.slot-correct, .slot-wrong').forEach(e => e.classList.remove('slot-correct', 'slot-wrong'));
+            
+            let correctCount = 0; 
+            let total = 0;
+
+            // Câu 1
+            let ex1Correct = true;
+            document.querySelectorAll('#ex1 .required-slot').forEach(slot => {
+                total++; 
+                let expect = slot.getAttribute('data-expect'); 
+                let child = slot.querySelector('.dropped-content .word-tile');
+                
+                if (child && child.getAttribute('data-val') === expect) { 
+                    slot.classList.add('slot-correct'); 
+                    correctCount++; 
+                } else { 
+                    slot.classList.add('slot-wrong'); 
+                    ex1Correct = false; 
+                }
+            });
+            if(!ex1Correct) {
+                let answerHtml = "<b>Đáp án đúng:</b><br>Hình A: 4; Hình B: 1; Hình C: 3; Hình D: 5; Hình E: 2";
+                let keyDiv = document.getElementById('ex1-answer-key');
+                keyDiv.innerHTML = answerHtml; 
+                keyDiv.style.display = 'block';
+            }
+
+            // Logic chung cho các câu hỏi Select
+            const checkSelectBlock = (blockId) => {
+                let blockCorrect = true;
+                document.querySelectorAll(blockId + ' .required-select').forEach(sel => { 
+                    total++; 
+                    if(sel.value === sel.getAttribute('data-answer')) { sel.style.border = "2px solid #27ae60"; sel.style.background = "#eafaf1"; correctCount++; } 
+                    else { sel.style.border = "2px solid #c0392b"; sel.style.background = "#fdedec"; blockCorrect = false; } 
+                });
+                if(!blockCorrect) document.querySelector(blockId + ' .correct-answer-text').style.display = 'block';
+            };
+
+            checkSelectBlock('#ex2');
+            checkSelectBlock('#ex3');
+            checkSelectBlock('#ex4');
+            checkSelectBlock('#ex5');
+
+            // Hiển thị kết quả
+            let msg = document.getElementById('result-msg');
+            msg.innerText = `Kết quả: ${correctCount}/${total} ý đúng.`;
+            msg.scrollIntoView({behavior: "smooth"});
+
+        } catch (error) {
+            alert("Có lỗi xảy ra khi chấm điểm: " + error.message);
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>
