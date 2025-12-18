@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* --- COPY CSS TỪ INDEX.HTML (CHO HEADER & FOOTER) --- */
+        /* --- CSS GIAO DIỆN CHUNG --- */
         :root {
             --primary-color: #0056b3; 
             --accent-color: #00a8ff; 
@@ -316,13 +316,52 @@
             padding: 12px 35px; margin: 0 10px; border: none; border-radius: 30px; cursor: pointer; color: white; font-weight: bold; font-size: 13pt;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s;
         }
-        .btn-submit { background-color: #0056b3; } /* Màu xanh đậm cho nút chính */
+        .btn-submit { background-color: #0056b3; }
         .btn-submit:hover { background-color: #004494; }
         .btn-submit:disabled { background-color: #95a5a6; cursor: not-allowed; }
+
+        /* --- LOADING OVERLAY & PDF FIX --- */
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .loading-overlay.active { display: flex; animation: fadeIn 0.3s; }
+
+        .spinner {
+            width: 60px; height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid #ff9800;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text { color: white; font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+        .sub-text { color: #ccc; font-size: 1rem; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media print {
+            .question-block { page-break-inside: avoid; } 
+            .wood-bookshelf { page-break-inside: avoid; }
+            .page { box-shadow: none; border: none; width: 100%; }
+        }
 
     </style>
 </head>
 <body>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Đang nộp bài...</div>
+        <div class="sub-text">Hệ thống đang lưu gửi bài cho giáo viên</div>
+    </div>
 
     <header>
         <div class="header-left">
@@ -353,7 +392,11 @@
 
             <div class="question-block" id="ex1">
                 <div class="question-title">1. Hai anh em Bình và Minh sử dụng chung một tủ sách, được thể hiện ở sơ đồ hình cây bên dưới.</div>
-                <div class="question-img-container"><img src="c1.png" alt="Sơ đồ cây tủ sách" class="img-c1"></div>
+                
+                <div class="question-img-container">
+                    <img src="https://github.com/dinhlongcntt20119/tinhoc/raw/main/tinhoc3/c1.png" alt="Sơ đồ cây tủ sách" class="img-c1">
+                </div>
+                
                 <div class="instruction-text">Em hãy giúp Bình và Minh sắp xếp sách, vở, đồ dùng học tập của vào tủ sách:</div>
 
                 <div class="exercise-container">
@@ -423,7 +466,11 @@
                         <p>Bạn An đã sắp xếp sách vở của mình vào giá sách này theo thứ tự : ngăn trên để sách giáo khoa, ngăn giữa để vở ghi bài và ngăn dưới để vở bài tập.</p>
                         <p>Em hãy điền vào sơ đồ hình cây biểu diễn cách bạn An đã sắp xếp sách vở vào trong giá sách này (sử dụng số 0 làm gốc)</p>
                     </div>
-                    <div class="q4-img"><img src="c4.png" alt="Giá sách"></div>
+                    
+                    <div class="q4-img">
+                        <img src="https://github.com/dinhlongcntt20119/tinhoc/raw/main/tinhoc3/c4.png" alt="Giá sách">
+                    </div>
+                    
                 </div>
                 
                 <div class="tree-diagram-wrapper">
@@ -450,8 +497,11 @@
             <div class="question-block" id="ex5">
                 <div class="question-title">5. Em hãy chọn các đồ vật dưới đây để ghép thành một chiếc máy tính để bàn?</div>
                 <p><i>(Tích chọn vào ô đúng)</i></p>
-                <div class="question-img-container"><img src="c5.png" alt="Hình minh họa" class="question-img"></div>
                 
+                <div class="question-img-container">
+                    <img src="https://github.com/dinhlongcntt20119/tinhoc/raw/main/tinhoc3/c5.png" alt="Hình minh họa" class="question-img">
+                </div>
+
                 <div class="q5-grid">
                     <label><input type="checkbox" class="computer-part" value="false"> 1. Bàn ủi</label>
                     <label><input type="checkbox" class="computer-part" value="true"> 2. Bàn phím</label>
@@ -511,17 +561,15 @@
         }
     }
 
-    /* --- HÀM KIỂM TRA HOÀN THÀNH (BẮT BUỘC) --- */
+    /* --- HÀM KIỂM TRA HOÀN THÀNH --- */
     function checkCompletion() {
         let isComplete = true;
         let firstMissing = null;
 
-        // Xóa các cảnh báo cũ
         document.querySelectorAll('.missing-alert, .missing-alert-input').forEach(el => {
             el.classList.remove('missing-alert', 'missing-alert-input');
         });
 
-        // 1. Kiểm tra Tên và Lớp
         const sName = document.getElementById('student-name');
         const sClass = document.getElementById('student-class');
         
@@ -537,7 +585,6 @@
             if(!firstMissing) firstMissing = sClass;
         }
 
-        // 2. Kiểm tra các ô Kéo thả (Required Slot)
         document.querySelectorAll('.required-slot').forEach(slot => {
             if(slot.children.length === 0) {
                 slot.classList.add('missing-alert');
@@ -546,7 +593,6 @@
             }
         });
 
-        // 3. Kiểm tra các ô Nhập liệu (Required Input)
         document.querySelectorAll('.required-input').forEach(inp => {
             if(!inp.value.trim()) {
                 inp.classList.add('missing-alert-input');
@@ -555,7 +601,6 @@
             }
         });
 
-        // 4. Kiểm tra Checkbox (Ít nhất 1 cái được chọn) - Bài 5
         let checkedCount = document.querySelectorAll('.computer-part:checked').length;
         if(checkedCount === 0) {
             let q5Block = document.getElementById('ex5');
@@ -572,13 +617,11 @@
         return true;
     }
 
-    /* --- HÀM CHẤM ĐIỂM (CHỈ CHẠY KHI ĐÃ HOÀN THÀNH) --- */
+    /* --- HÀM CHẤM ĐIỂM --- */
     function chamDiem(showResult = true) {
         let score = 0;
         let total = 0;
-        let allCorrect = true;
-
-        // Reset Styles
+        
         if(showResult) {
             document.querySelectorAll('.correct-answer-text').forEach(e => e.style.display = 'none');
             document.querySelectorAll('.correct-border, .wrong-border, .correct-bg, .wrong-bg').forEach(e => {
@@ -667,82 +710,106 @@
         return {score, total};
     }
 
-    /* --- HÀM LƯU DRIVE & PDF (GỌI GAS) --- */
+    /* --- HÀM XỬ LÝ LƯU PDF & NỘP BÀI --- */
     function saveToDrive() {
-        // 1. Bắt buộc hoàn thành mới được nộp
-        if(!checkCompletion()) return;
+        if (!checkCompletion()) return;
 
-        // 2. Chấm điểm để hiện kết quả trong file lưu
         const result = chamDiem(true);
-        
-        // 3. Hiệu ứng nút bấm đang xử lý
-        const btn = document.getElementById('btn-drive');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-        btn.disabled = true;
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.add('active');
 
-        // 4. Thu thập dữ liệu
+        const originalPage = document.querySelector('.page');
+        const clonePage = originalPage.cloneNode(true);
+
+        // --- BAKE INPUTS ---
+        const originalInputs = originalPage.querySelectorAll('input[type="text"]');
+        const cloneInputs = clonePage.querySelectorAll('input[type="text"]');
+        for (let i = 0; i < originalInputs.length; i++) {
+            cloneInputs[i].setAttribute('value', originalInputs[i].value);
+        }
+
+        const originalChecks = originalPage.querySelectorAll('input[type="checkbox"]');
+        const cloneChecks = clonePage.querySelectorAll('input[type="checkbox"]');
+        for (let i = 0; i < originalChecks.length; i++) {
+            if (originalChecks[i].checked) {
+                cloneChecks[i].setAttribute('checked', 'checked');
+            } else {
+                cloneChecks[i].removeAttribute('checked');
+            }
+        }
+
+        // --- STYLE FIX CHO PDF ---
+        clonePage.querySelectorAll('.drop-slot').forEach(slot => {
+            slot.style.border = "1px solid #ccc"; 
+            slot.style.background = "#fff";
+        });
+
         const name = document.getElementById('student-name').value;
         const className = document.getElementById('student-class').value;
-        const content = document.querySelector('.page').innerHTML;
         const styles = document.querySelector('style').innerHTML;
+        
+        const pdfStyles = styles + `
+            .page { width: 100% !important; margin: 0 !important; padding: 20px !important; }
+            .question-block { page-break-inside: avoid; margin-bottom: 20px; }
+            input[type="text"] { border: 1px solid #333; background: #fff; color: #000; font-weight: bold; }
+            .controls { display: none !important; }
+        `;
 
-        // 5. Tạo nội dung HTML để gửi
-        const formData = new FormData();
         const fullHtml = `
             <!DOCTYPE html>
             <html>
             <head>
-                <style>${styles}</style>
+                <style>${pdfStyles}</style>
             </head>
             <body>
-                <div class="page" style="margin:0 auto;">
-                    <h2>Học sinh: ${name} - Lớp: ${className}</h2>
-                    <h3>Kết quả: ${result.score}/${result.total}</h3>
-                    <hr>
-                    ${content}
+                <div class="page">
+                    <div style="text-align:center; margin-bottom: 20px; border-bottom: 2px solid #000;">
+                        <h2>BÀI TẬP TIN HỌC 3</h2>
+                        <p><strong>Học sinh:</strong> ${name} - <strong>Lớp:</strong> ${className}</p>
+                        <p><strong>Kết quả:</strong> ${result.score}/${result.total} câu đúng</p>
+                    </div>
+                    ${clonePage.innerHTML}
                 </div>
             </body>
             </html>
         `;
-        
+
+        const formData = new FormData();
         formData.append('html', fullHtml);
-        formData.append('filename', `${name}_${className}_TinHoc3_${Date.now()}`);
+        formData.append('filename', `${convertViToEn(name)}_${className}_${Date.now()}`);
 
-        // --- ĐƯỜNG DẪN SCRIPT CỦA BẠN ---
-        const scriptURL = "https://script.google.com/macros/s/AKfycbyowCpYbshYmwQdfvvjEXJcpkbMOMji-ucuNwGoXr7UkB81u5TkVUWegjBaWKpiChtxpQ/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwhV4TrCYjrs1CfWcdv94ZvKIfFGC0S_BOWGSuaNAHhgdi3KTiY6y_9In-gKqnfjxUqWQ/exec";
 
-        // 6. Gửi yêu cầu (Fetch)
         fetch(scriptURL, {
             method: "POST",
             body: formData
-            // LƯU Ý: Không dùng no-cors để có thể đọc được thông báo lỗi từ server nếu có
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Lỗi mạng hoặc máy chủ không phản hồi (Mã lỗi: " + response.status + ")");
-            }
+            if (!response.ok) throw new Error("Lỗi kết nối Server");
             return response.text();
         })
         .then(text => {
-            // Kiểm tra nội dung phản hồi từ Script xem có phải Success không
-            if (!text.includes("Success")) {
-                throw new Error("Máy chủ phản hồi lỗi: " + text);
+            overlay.classList.remove('active');
+            if (text.includes("Success")) {
+                alert("✅ Đã nộp bài thành công!\nGiáo viên đã nhận được bài làm.");
+                const btn = document.getElementById('btn-drive');
+                btn.innerHTML = '<i class="fas fa-check"></i> Đã Nộp Xong';
+                btn.disabled = true;
+                btn.style.backgroundColor = "#27ae60";
+            } else {
+                throw new Error(text);
             }
-            
-            // Thành công
-            alert("✅ Đã gửi bài thành công!\nFile PDF đã được lưu vào thư mục trên Google Drive.");
-            btn.innerHTML = '<i class="fas fa-check"></i> Đã Nộp Xong';
         })
         .catch(err => {
-            console.error(err);
-            // Hiển thị thông báo lỗi chi tiết cho người dùng
-            alert("❌ KHÔNG THỂ NỘP BÀI!\n\nNguyên nhân: " + err.message + "\n\nVui lòng kiểm tra lại kết nối mạng hoặc thử lại sau.");
-            
-            // Trả lại trạng thái nút ban đầu để thử lại
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            overlay.classList.remove('active');
+            alert("❌ LỖI: " + err.message + "\nVui lòng thử lại!");
         });
+    }
+
+    function convertViToEn(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                  .replace(/đ/g, "d").replace(/Đ/g, "D")
+                  .replace(/\s+/g, "_");
     }
 </script>
 
