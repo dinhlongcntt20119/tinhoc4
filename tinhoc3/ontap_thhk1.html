@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* --- CSS GIAO DIỆN CHUNG --- */
+        /* --- COPY CSS TỪ INDEX.HTML (CHO HEADER & FOOTER) --- */
         :root {
             --primary-color: #0056b3; 
             --accent-color: #00a8ff; 
@@ -133,6 +133,7 @@
         /* --- HÌNH ẢNH --- */
         .question-img-container { text-align: center; margin: 15px 0; }
         .question-img { max-width: 100%; height: auto; border-radius: 5px; margin: 5px; }
+        /* Cập nhật style cho ảnh để tránh bị vỡ layout */
         .img-c1 { width: 75%; height: auto; display: block; margin: 0 auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; }
 
         /* --- LAYOUT BÀI 1 --- */
@@ -394,7 +395,7 @@
                 <div class="question-title">1. Hai anh em Bình và Minh sử dụng chung một tủ sách, được thể hiện ở sơ đồ hình cây bên dưới.</div>
                 
                 <div class="question-img-container">
-                    <img src="https://github.com/dinhlongcntt20119/tinhoc/raw/main/tinhoc3/c1.png" alt="Sơ đồ cây tủ sách" class="img-c1">
+                    <img src="https://raw.githubusercontent.com/dinhlongcntt20119/tinhoc/main/tinhoc3/c1.png" alt="Sơ đồ cây tủ sách" class="img-c1">
                 </div>
                 
                 <div class="instruction-text">Em hãy giúp Bình và Minh sắp xếp sách, vở, đồ dùng học tập của vào tủ sách:</div>
@@ -468,7 +469,7 @@
                     </div>
                     
                     <div class="q4-img">
-                        <img src="https://github.com/dinhlongcntt20119/tinhoc/raw/main/tinhoc3/c4.png" alt="Giá sách">
+                        <img src="https://raw.githubusercontent.com/dinhlongcntt20119/tinhoc/main/tinhoc3/c4.png" alt="Giá sách">
                     </div>
                     
                 </div>
@@ -499,7 +500,7 @@
                 <p><i>(Tích chọn vào ô đúng)</i></p>
                 
                 <div class="question-img-container">
-                    <img src="https://github.com/dinhlongcntt20119/tinhoc/raw/main/tinhoc3/c5.png" alt="Hình minh họa" class="question-img">
+                    <img src="https://raw.githubusercontent.com/dinhlongcntt20119/tinhoc/main/tinhoc3/c5.png" alt="Hình minh họa" class="question-img">
                 </div>
 
                 <div class="q5-grid">
@@ -778,7 +779,8 @@
         formData.append('html', fullHtml);
         formData.append('filename', `${convertViToEn(name)}_${className}_${Date.now()}`);
 
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwhV4TrCYjrs1CfWcdv94ZvKIfFGC0S_BOWGSuaNAHhgdi3KTiY6y_9In-gKqnfjxUqWQ/exec";
+        /* NHỚ CẬP NHẬT LẠI URL NẾU BẠN DEPLOY MỚI */
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxrHnY2B0vMfxPoyoR9a3qOn5sIyL_M09z30m7r8z_D6n_HNClQPL6qEOHgHqBBq0gVKQ/exec";
 
         fetch(scriptURL, {
             method: "POST",
