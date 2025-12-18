@@ -101,6 +101,14 @@
         .student-info input { 
             padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; width: 200px;
         }
+        /* Style riêng cho ô Lớp bị khóa */
+        #student-class {
+            background-color: #eee;
+            color: #555;
+            cursor: not-allowed;
+            font-weight: bold;
+        }
+
         .missing-alert-input { border: 2px solid #e74c3c !important; background-color: #fadbd8; }
 
         h1.page-title { font-size: 20pt; font-weight: bold; text-transform: uppercase; text-align: center; color: #d35400; margin: 10px 0; font-family: "Segoe UI", Arial, sans-serif; }
@@ -337,8 +345,8 @@
                     <input type="text" id="student-name" placeholder="Nhập họ tên...">
                 </div>
                 <div>
-                    <label>Lớp: 3D</label>
-                
+                    <label>Lớp: </label>
+                    <input type="text" id="student-class" value="3D" readonly>
                 </div>
             </div>
 
@@ -458,7 +466,7 @@
 
             <div class="controls">
                 <div id="result-msg" style="font-size: 16pt; margin-bottom: 15px; font-weight: bold; color: #2980b9;"></div>
-                <button class="btn-submit" id="btn-drive" onclick="saveToDrive()"><i class="fab fa-google-drive"></i> Lưu PDF & Nộp Bài</button>
+                <button class="btn-submit" id="btn-drive" onclick="saveToDrive()"><i class="fab fa-google-drive"></i> Nộp bài</button>
             </div>
         </div>
     </div>
@@ -515,11 +523,14 @@
         // 1. Kiểm tra Tên và Lớp
         const sName = document.getElementById('student-name');
         const sClass = document.getElementById('student-class');
+        
         if(!sName.value.trim()) {
             sName.classList.add('missing-alert-input');
             isComplete = false;
             if(!firstMissing) firstMissing = sName;
         }
+        
+        // Ô Lớp giờ đã điền sẵn nên thường sẽ không lỗi, nhưng vẫn giữ check cho an toàn
         if(!sClass.value.trim()) {
             sClass.classList.add('missing-alert-input');
             isComplete = false;
@@ -554,7 +565,7 @@
         }
 
         if(!isComplete) {
-            alert("Bạn chưa hoàn thành bài tập! Vui lòng điền họ tên, lớp và làm hết các câu hỏi (các ô màu đỏ).");
+            alert("Bạn chưa hoàn thành bài tập! Vui lòng điền tên và làm hết các câu hỏi (các ô màu đỏ).");
             if(firstMissing) firstMissing.scrollIntoView({behavior: "smooth", block: "center"});
             return false;
         }
