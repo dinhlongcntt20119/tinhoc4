@@ -101,7 +101,8 @@
         .student-info input { 
             padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; width: 200px;
         }
-        /* Style riêng cho ô Lớp bị khóa */
+        
+        /* Style cho ô lớp bị khóa */
         #student-class {
             background-color: #eee;
             color: #555;
@@ -530,7 +531,6 @@
             if(!firstMissing) firstMissing = sName;
         }
         
-        // Ô Lớp giờ đã điền sẵn nên thường sẽ không lỗi, nhưng vẫn giữ check cho an toàn
         if(!sClass.value.trim()) {
             sClass.classList.add('missing-alert-input');
             isComplete = false;
@@ -669,24 +669,25 @@
 
     /* --- HÀM LƯU DRIVE & PDF (GỌI GAS) --- */
     function saveToDrive() {
-        // Bắt buộc hoàn thành mới được nộp
+        // 1. Bắt buộc hoàn thành mới được nộp
         if(!checkCompletion()) return;
 
-        // Chấm điểm để hiện kết quả trong file lưu
+        // 2. Chấm điểm để hiện kết quả trong file lưu
         const result = chamDiem(true);
         
+        // 3. Hiệu ứng nút bấm đang xử lý
         const btn = document.getElementById('btn-drive');
         const originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
         btn.disabled = true;
 
+        // 4. Thu thập dữ liệu
         const name = document.getElementById('student-name').value;
         const className = document.getElementById('student-class').value;
-        // Lấy toàn bộ nội dung HTML của trang bài tập (bao gồm kết quả đã chấm)
         const content = document.querySelector('.page').innerHTML;
         const styles = document.querySelector('style').innerHTML;
 
-        // Tạo form data gửi lên GAS
+        // 5. Tạo nội dung HTML để gửi
         const formData = new FormData();
         const fullHtml = `
             <!DOCTYPE html>
@@ -708,18 +709,37 @@
         formData.append('html', fullHtml);
         formData.append('filename', `${name}_${className}_TinHoc3_${Date.now()}`);
 
-        // Gửi POST request (no-cors để tránh lỗi chặn trình duyệt, nhưng server vẫn nhận được)
-        fetch("https://script.google.com/macros/s/AKfycbyzQaM_mGvgWtBwT-c7YM3g_g-PNZR_g5sRL4Z69rL4Cupgm10Udz-xXLPWW6ugOEU/exec", {
+        // --- ĐƯỜNG DẪN SCRIPT CỦA BẠN ---
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyowCpYbshYmwQdfvvjEXJcpkbMOMji-ucuNwGoXr7UkB81u5TkVUWegjBaWKpiChtxpQ/exec";
+
+        // 6. Gửi yêu cầu (Fetch)
+        fetch(scriptURL, {
             method: "POST",
-            body: formData,
-            mode: 'no-cors' 
+            body: formData
+            // LƯU Ý: Không dùng no-cors để có thể đọc được thông báo lỗi từ server nếu có
         })
-        .then(() => {
-            alert("Đã gửi bài thành công! File PDF đang được tạo trên Google Drive của giáo viên.");
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Lỗi mạng hoặc máy chủ không phản hồi (Mã lỗi: " + response.status + ")");
+            }
+            return response.text();
+        })
+        .then(text => {
+            // Kiểm tra nội dung phản hồi từ Script xem có phải Success không
+            if (!text.includes("Success")) {
+                throw new Error("Máy chủ phản hồi lỗi: " + text);
+            }
+            
+            // Thành công
+            alert("✅ Đã gửi bài thành công!\nFile PDF đã được lưu vào thư mục trên Google Drive.");
             btn.innerHTML = '<i class="fas fa-check"></i> Đã Nộp Xong';
         })
         .catch(err => {
-            alert("Có lỗi khi gửi bài: " + err);
+            console.error(err);
+            // Hiển thị thông báo lỗi chi tiết cho người dùng
+            alert("❌ KHÔNG THỂ NỘP BÀI!\n\nNguyên nhân: " + err.message + "\n\nVui lòng kiểm tra lại kết nối mạng hoặc thử lại sau.");
+            
+            // Trả lại trạng thái nút ban đầu để thử lại
             btn.innerHTML = originalText;
             btn.disabled = false;
         });
