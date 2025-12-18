@@ -186,201 +186,194 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNfaBH5mDRDyUbwXgexVCT52w1laD5BQP7H5nvmePW1tQKzYbrkByBLnWu1rCr9PTK/exec"
         let student = { name: "", class: "" };
 
-        // --- CẤU HÌNH CÂU HỎI ĐÃ CHỈNH SỬA (Xóa chữ "Câu X:" trong nội dung) ---
+        // --- CẤU HÌNH CÂU HỎI ---
         const questions = [
-            // CÂU 1
-            {
-                q: "Bộ phận nào được ví như 'bộ não' của máy tính?",
-                a: [{ t: "Màn hình", i: "fa-desktop" }, { t: "Thùng điều khiển (CPU)", i: "fa-server" }, { t: "Bàn phím", i: "fa-keyboard" }],
-                c: 1
-            },
-            // CÂU 2
+            // --- NHÓM 1: CÁC CÂU HỎI TỪ FILE HTML CŨ (16 câu) ---
             {
                 q: "Thiết bị nào giúp em gõ chữ cái và số vào máy tính?",
                 a: [{ t: "Chuột", i: "fa-mouse" }, { t: "Bàn phím", i: "fa-keyboard" }, { t: "Loa", i: "fa-volume-up" }],
                 c: 1
             },
-            // CÂU 3
-            {
-                q: "Chuột máy tính thông thường có mấy nút bấm chính?",
-                a: [{ t: "1 nút" }, { t: "2 nút (Trái, Phải)" }, { t: "5 nút" }],
-                c: 1
-            },
-            // CÂU 4
             {
                 q: "Để nghe nhạc từ máy tính mà không làm phiền người khác, em dùng gì?",
                 a: [{ t: "Tai nghe", i: "fa-headphones" }, { t: "Loa ngoài", i: "fa-volume-up" }, { t: "Máy in", i: "fa-print" }],
                 c: 0
             },
-            // CÂU 5
             {
                 q: "Máy tính xách tay (Laptop) có bộ phận nào thay thế chuột?",
                 a: [{ t: "Vùng cảm ứng (Touchpad)", i: "fa-hand-pointer" }, { t: "Bàn phím", i: "fa-keyboard" }, { t: "Màn hình", i: "fa-desktop" }],
                 c: 0
             },
-            // CÂU 6
             {
                 q: "Tư thế ngồi máy tính nào là đúng?",
                 a: [{ t: "Ngồi cong lưng, cúi sát" }, { t: "Ngồi thẳng lưng, mắt ngang tầm màn hình" }, { t: "Nằm ra bàn" }],
                 c: 1
             },
-            // CÂU 7
             {
                 q: "Khoảng cách từ mắt đến màn hình nên là bao nhiêu?",
                 a: [{ t: "Rất gần (10cm)" }, { t: "Vừa phải (50-80cm)" }, { t: "Rất xa (2 mét)" }],
                 c: 1
             },
-            // CÂU 8
             {
                 q: "Ánh sáng trong phòng khi dùng máy tính cần thế nào?",
                 a: [{ t: "Tối om" }, { t: "Đủ sáng, không chói" }, { t: "Chiếu thẳng vào mắt" }],
                 c: 1
             },
-            // CÂU 9
-            {
-                q: "Ngón trỏ tay phải đặt lên nút nào của chuột?",
-                a: [{ t: "Nút Trái" }, { t: "Nút Phải" }, { t: "Bánh lăn" }],
-                c: 0
-            },
-            // CÂU 10
             {
                 q: "Thao tác 'Nhấp đúp chuột' là nhấn nút trái mấy lần?",
                 a: [{ t: "1 lần" }, { t: "2 lần liên tiếp nhanh" }, { t: "3 lần" }],
                 c: 1
             },
-            // CÂU 11
-            {
-                q: "Để mở một biểu tượng trên màn hình (ví dụ Game), em thường dùng thao tác gì?",
-                a: [{ t: "Nhấp đúp chuột" }, { t: "Kéo thả chuột" }, { t: "Nhấp chuột phải" }],
-                c: 0
-            },
-            // CÂU 12
             {
                 q: "Phím dài nhất trên bàn phím tên là gì?",
                 a: [{ t: "Phím Enter" }, { t: "Phím Cách (Space)" }, { t: "Phím Shift" }],
                 c: 1
             },
-            // CÂU 13
-            {
-                q: "Phím Enter dùng để làm gì?",
-                a: [
-                    { t: "Xóa chữ", i: "fa-backspace" },
-                    { t: "Xuống dòng", i: "fa-arrow-down" }, 
-                    { t: "Viết hoa", i: "fa-font" }
-                ],
-                c: 1
-            },
-            // CÂU 14
-            {
-                q: "Phím Backspace (mũi tên sang trái) dùng để làm gì?",
-                a: [{ t: "Xóa chữ bên trái" }, { t: "Cách một khoảng" }, { t: "Viết số" }],
-                c: 0
-            },
-            // CÂU 15
-            {
-                q: "Khu vực phím số thường nằm ở đâu trên bàn phím máy tính để bàn?",
-                a: [{ t: "Bên trái" }, { t: "Bên phải" }, { t: "Ở giữa" }],
-                c: 1
-            },
-            // CÂU 16
             {
                 q: "Biểu tượng dấu X góc trên cửa sổ dùng để làm gì?",
-                a: [
-                    { t: "Phóng to", i: "fa-window-maximize" },
-                    { t: "Thu nhỏ", i: "fa-window-minimize" },
-                    { t: "Đóng (Thoát)", i: "fa-window-close" } 
-                ],
+                a: [{ t: "Phóng to", i: "fa-window-maximize" }, { t: "Thu nhỏ", i: "fa-window-minimize" }, { t: "Đóng (Thoát)", i: "fa-window-close" }],
                 c: 2
             },
-            // CÂU 17
-            {
-                q: "Phần mềm Paint (hoặc Art) dùng để làm gì?",
-                a: [{ t: "Vẽ tranh", i: "fa-palette" }, { t: "Soạn thảo văn bản", i: "fa-file-word" }, { t: "Nghe nhạc", i: "fa-music" }],
-                c: 0
-            },
-            // CÂU 18
-            {
-                q: "Công cụ 'Thùng sơn' trong phần mềm vẽ giúp em làm gì?",
-                a: [
-                    { t: "Vẽ nét thẳng", i: "fa-pencil-alt" },
-                    { t: "Tô màu vùng khép kín", i: "fa-fill-drip" },
-                    { t: "Tẩy xóa", i: "fa-eraser" }
-                ],
-                c: 1
-            },
-            // CÂU 19
-            {
-                q: "Để vẽ hình tròn, hình vuông, em chọn công cụ nào?",
-                a: [{ t: "Công cụ Hình mẫu", i: "fa-shapes" }, { t: "Bút chì", i: "fa-pencil-alt" }, { t: "Cục tẩy", i: "fa-eraser" }],
-                c: 0
-            },
-            // CÂU 20
             {
                 q: "Khi vẽ sai, em dùng công cụ gì để sửa?",
                 a: [{ t: "Bút chì", i: "fa-pencil-alt" }, { t: "Cục tẩy (Gôm)", i: "fa-eraser" }, { t: "Thùng sơn", i: "fa-fill-drip" }],
                 c: 1
             },
-            // CÂU 21
-            {
-                q: "Trong trò chơi Clickomania, em nhấp chuột vào đâu để ghi điểm?",
-                a: [{ t: "Nhóm bóng cùng màu" }, { t: "Bất kỳ bóng nào" }, { t: "Khoảng trống" }],
-                c: 0
-            },
-            // CÂU 22
             {
                 q: "Biểu tượng trình duyệt web (Google Chrome) dùng để làm gì?",
                 a: [{ t: "Vào mạng Internet", i: "fa-globe" }, { t: "Vẽ tranh", i: "fa-palette" }, { t: "Tắt máy", i: "fa-power-off" }],
                 c: 0
             },
-            // CÂU 23
-            {
-                q: "Nút 'Quay lại' (Mũi tên trái) trên trình duyệt dùng để làm gì?",
-                a: [{ t: "Về trang trước đó", i: "fa-arrow-left" }, { t: "Đóng trình duyệt", i: "fa-times" }, { t: "Tải lại trang", i: "fa-redo" }],
-                c: 0
-            },
-            // CÂU 24
             {
                 q: "Em có nên vừa ăn bánh vừa gõ bàn phím không?",
                 a: [{ t: "Có" }, { t: "Không (Dễ bẩn, hỏng máy)" }, { t: "Thỉnh thoảng" }],
                 c: 1
             },
-            // CÂU 25
             {
                 q: "Khi tay ướt, em có được chạm vào ổ cắm điện máy tính không?",
                 a: [{ t: "Tuyệt đối không", i: "fa-exclamation-triangle" }, { t: "Được", i: "fa-check" }, { t: "Chạm nhẹ thôi", i: "fa-hand-sparkles" }],
                 c: 0
             },
-            // CÂU 26
             {
                 q: "Để máy tính bền đẹp, khi dùng xong em nên làm gì?",
                 a: [{ t: "Rút dây điện ngay", i: "fa-plug" }, { t: "Tắt máy đúng cách (Shut down)", i: "fa-power-off" }, { t: "Để nguyên đó", i: "fa-clock" }],
                 c: 1
             },
-            // CÂU 27
-            {
-                q: "Máy in giúp em làm công việc gì?",
-                a: [{ t: "In hình ảnh ra giấy", i: "fa-print" }, { t: "Chụp ảnh", i: "fa-camera" }, { t: "Quay phim", i: "fa-video" }],
-                c: 0
-            },
-            // CÂU 28
             {
                 q: "Thiết bị nào dùng để thu âm giọng nói của em?",
                 a: [{ t: "Loa", i: "fa-volume-up" }, { t: "Micro", i: "fa-microphone" }, { t: "Màn hình", i: "fa-desktop" }],
                 c: 1
             },
-            // CÂU 29
             {
                 q: "Nếu máy tính bị hỏng hoặc có khói, em nên làm gì?",
                 a: [{ t: "Tự sửa", i: "fa-tools" }, { t: "Báo ngay cho người lớn", i: "fa-user-shield" }, { t: "Đổ nước vào", i: "fa-tint" }],
                 c: 1
             },
-            // CÂU 30
-            {
-                q: "Học Tin học giúp em điều gì?",
-                a: [{ t: "Chỉ để chơi game", i: "fa-gamepad" }, { t: "Biết sử dụng máy tính hỗ trợ học tập", i: "fa-graduation-cap" }, { t: "Không giúp gì cả", i: "fa-times" }],
+
+            // --- NHÓM 2: CÁC CÂU HỎI TỪ FILE DOCX (14 câu) ---
+            { // Câu 1 Docx
+                q: "Bộ phận nào của máy tính được ví như 'bộ não' của máy tính?",
+                a: [
+                    { t: "<img src='c1a.png' style='height:120px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c1b.png' style='height:120px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c1c.png' style='height:120px; width:auto; display:block; margin:auto;'>" }
+                ],
+                c: 1 // c1b.png (Thùng CPU)
+            },
+            { // Câu 3 Docx
+                q: "Hoạt động nào sau đây không phải là công dụng của máy tính cá nhân?",
+                a: [{ t: "Gửi thư (email)" }, { t: "Tính toán" }, { t: "Tự động dọn dẹp nhà cửa" }],
+                c: 2
+            },
+            { // Câu 5 Docx
+                q: "Chuột máy tính thông thường có mấy nút bấm chính?",
+                a: [{ t: "1 nút" }, { t: "2 nút (nút trái, nút phải)" }, { t: "5 nút" }],
                 c: 1
+            },
+            { // Câu 7 Docx - CẬP NHẬT ẢNH C4
+                q: "Để thoát khỏi một website đang mở, ta thường nhấp chuột vào biểu tượng nào?",
+                a: [
+                    { t: "<img src='c4a.png' style='height:50px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c4b.png' style='height:50px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c4c.png' style='height:50px; width:auto; display:block; margin:auto;'>" }
+                ],
+                c: 1 // c4b.png
+            },
+            { // Câu 9 Docx - CẬP NHẬT ẢNH C5
+                q: "Em hãy cho biết đâu là máy tính xách tay?",
+                a: [
+                    { t: "<img src='c5a.png' style='height:100px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c5b.png' style='height:100px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c5c.png' style='height:100px; width:auto; display:block; margin:auto;'>" }
+                ],
+                c: 1 // c5b.png
+            },
+            { // Câu 11 Docx
+                q: "Khi cầm chuột máy tính bằng tay phải, ngón tay nào được đặt lên phím chuột trái?",
+                a: [{ t: "Ngón tay trỏ" }, { t: "Ngón tay cái" }, { t: "Ngón tay giữa" }],
+                c: 0
+            },
+            { // Câu 13 Docx
+                q: "Trong trò chơi rèn luyện Clickomania, thao tác cơ bản để lấy bóng đi là gì?",
+                a: [{ t: "Kéo thả bóng" }, { t: "Nhấp chuột vào nhóm bóng cùng màu nằm cạnh nhau" }, { t: "Nhấp đôi chuột trái" }],
+                c: 1
+            },
+            { // Câu 17 Docx - CẬP NHẬT ẢNH C8
+                q: "Khi di chuyển chuột, biểu tượng nào trên màn hình máy tính sẽ di chuyển?",
+                a: [
+                    { t: "<img src='c8a.png' style='height:80px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c8b.png' style='height:80px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c8c.png' style='height:80px; width:auto; display:block; margin:auto;'>" }
+                ],
+                c: 0 // c8a.png
+            },
+            { // Câu 19 Docx - CẬP NHẬT ẢNH C9
+                q: "Đâu là tư thế cầm chuột đúng cách?",
+                a: [
+                    { t: "<img src='c9a.png' style='height:100px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c9b.png' style='height:100px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c9c.png' style='height:100px; width:auto; display:block; margin:auto;'>" }
+                ],
+                c: 1 // c9b.png
+            },
+            { // Câu 21 Docx - CẬP NHẬT ẢNH C10
+                q: "Để vẽ hình trong phần mềm tô màu Art, em nhấp chuột vào nút lệnh nào?",
+                a: [
+                    { t: "<img src='c10a.png' style='height:100px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c10b.png' style='height:100px; width:auto; display:block; margin:auto;'>" }, 
+                    { t: "<img src='c10c.png' style='height:100px; width:auto; display:block; margin:auto;'>" }
+                ],
+                c: 1 // c10b.png
+            },
+            { // Câu 23 Docx
+                q: "Bộ phận Màn hình (Monitor) của máy tính dùng để làm gì?",
+                a: [{ t: "Giúp điều khiển máy tính" }, { t: "Dùng để quan sát công việc chúng ta làm" }, { t: "Giúp nhập chữ và số" }],
+                c: 1
+            },
+            { // Câu 27 Docx
+                q: "Để khởi động một chương trình ứng dụng như Computer trên màn hình, em cần thực hiện thao tác chuột nào?",
+                a: [{ t: "Nhấp trái chuột một lần" }, { t: "Nhấp chuột trái 2 lần liên tục" }, { t: "Nhấp phải chuột một lần" }],
+                c: 1
+            },
+            { // Câu 31 Docx
+                q: "Thao tác 'Kéo thả chuột' (Drag-and-drop) dùng để làm gì?",
+                a: [{ t: "Di chuyển con trỏ chuột" }, { t: "Di chuyển biểu tượng từ vị trí này sang vị trí khác" }, { t: "Mở một thư mục" }],
+                c: 1
+            },
+            { // Câu 35 Docx
+                q: "Mục tiêu của Bài 13- Vẽ hình cùng ART là giúp em làm được việc gì?",
+                a: [{ t: "Lắp ghép các mẫu tô màu" }, { t: "Chỉ tô màu tranh có sẵn" }, { t: "Sử dụng các hình có sẵn để vẽ và tô màu" }],
+                c: 2
             }
         ];
+
+        // --- Hàm trộn mảng (Shuffle) ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
         function startQuiz() {
             const name = document.getElementById('sName').value.trim();
@@ -394,6 +387,9 @@
             document.getElementById('backButtonArea').style.display = 'block';
             document.getElementById('quizContainer').style.display = 'block';
             document.getElementById('footerBar').style.display = 'flex';
+            
+            // Đảo câu hỏi trước khi hiển thị
+            shuffleArray(questions);
             renderQuiz();
         }
 
@@ -494,11 +490,9 @@
             document.getElementById('resultModal').style.display = 'flex';
         }
 
-        // --- Hàm đóng cửa sổ ---
         function closeWindow() {
             if(confirm("Con có muốn thoát chương trình không?")) {
                 window.close(); 
-                // Nếu trình duyệt chặn window.close(), nó sẽ chuyển sang trang trắng
                 window.location.href = "about:blank"; 
             }
         }
