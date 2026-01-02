@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bí Kíp Thi Đậu A1 - Dành Tặng Vợ Yêu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-pink: #ff6b81;
+            --light-pink: #ffeff3;
+            --deep-red: #d63031;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffdde1; 
+            background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* Container chính */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tiêu đề trang */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 129, 0.2);
+            border: 2px solid white;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--deep-red);
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+        }
+
+        h1 span {
+            color: var(--primary-pink);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #636e72;
+            margin-top: 10px;
+        }
+
+        /* Các thẻ nội dung (Card) */
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--primary-pink);
+            transition: transform 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 107, 129, 0.15);
+        }
+
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--deep-red);
+            font-size: 2rem;
+            margin-top: 0;
+            border-bottom: 2px dashed #ffeaa7;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: var(--primary-pink);
+            font-size: 1.3rem;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        h3::before {
+            content: '❤️';
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        li::before {
+            content: '✓';
+            color: var(--success-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: var(--primary-pink);
+        }
+
+        /* Điểm nhấn */
+        .highlight {
+            background-color: #fff0f0;
+            color: var(--deep-red);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .important-box {
+            background-color: #ffe6e6;
+            border: 1px solid #ffcccc;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        /* Nút quay lại */
+        .back-btn {
+            display: block;
+            width: 200px;
+            margin: 40px auto;
+            text-align: center;
+            background: var(--deep-red);
+            color: white;
+            padding: 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(214, 48, 49, 0.4);
+        }
+
+        .back-btn:hover {
+            background: #b33939;
+            transform: scale(1.05);
+        }
+
+        /* Hiệu ứng tim bay nền (copy từ index) */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.6);
+            animation: floatUp 10s linear infinite;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .section-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 5 + 's'; 
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 8000);
+        }
+        setInterval(createHeart, 400);
+    </script>
+
+    <div class="container">
+        <header>
+            <h1>Bí Kíp Thi A1 <span>Dành Tặng Vợ Yêu</span> 🛵</h1>
+            <div class="subtitle">Đọc kỹ mấy mẹo này là đậu chắc 100% nha bà xã!</div>
+        </header>
+
+        <div class="section-card">
+            <h2>📚 1. Mẹo Thi Lý Thuyết (Quan trọng)</h2>
+            <div class="important-box">
+                ⚠️ Lưu ý sống còn: Tuyệt đối không được sai câu ĐIỂM LIỆT. Sai câu này là trượt ngay lập tức dù đúng hết các câu còn lại!
+            </div>
+
+            <h3>Mẹo chọn nhanh đáp án (Nhìn là khoanh):</h3>
+            <ul>
+                <li>Thấy cụm từ <strong>"Bị nghiêm cấm"</strong> ➔ Chọn ngay!</li>
+                <li>Thấy <strong>"Không được..."</strong> (phép, quay đầu...) ➔ Thường là đúng (99%).</li>
+                <li>Thấy <strong>"UBND cấp tỉnh"</strong> hoặc <strong>"Cơ quan có thẩm quyền"</strong> ➔ Chọn ngay.</li>
+                <li>Hiệu lệnh CSGT: Giơ <strong>1 tay</strong> chọn ý <strong>3</strong>, Giơ <strong>2 tay</strong> chọn ý <strong>4</strong>. <br><em>(Thần chú: Một - Ba, Hai - Bốn).</em></li>
+            </ul>
+
+            <h3>Các con số cần nhớ:</h3>
+            <ul>
+                <li><strong>18 tuổi:</strong> Thi bằng lái xe máy (A1), ô tô.</li>
+                <li><strong>16 tuổi:</strong> Được lái xe dưới 50cc.</li>
+                <li><strong>50 km/h:</strong> Tốc độ tối đa xe máy trong khu dân cư.</li>
+                <li><strong>Còi xe:</strong> Chỉ được bấm từ 5h sáng đến 22h tối.</li>
+            </ul>
+
+            <h3>Thứ tự đi sa hình (Nhớ câu thần chú):</h3>
+            <p><em>"Nhất chớm - Nhì ưu - Tam đường - Tứ hướng"</em></p>
+            <ul>
+                <li><strong>1. Chớm:</strong> Xe nào vào giao lộ trước được đi trước.</li>
+                <li><strong>2. Ưu:</strong> Xe Cứu hỏa > Quân sự > Công an > Cứu thương.</li>
+                <li><strong>3. Đường:</strong> Xe trên đường ưu tiên (biển hình thoi) được đi trước.</li>
+                <li><strong>4. Hướng:</strong> Bên phải trống ➔ Rẽ phải ➔ Đi thẳng ➔ Rẽ trái.</li>
+            </ul>
+        </div>
+
+        <div class="section-card">
+            <h2>🛵 2. Mẹo Thi Thực Hành (Sân thi)</h2>
+            <div class="important-box" style="background-color: #e3f2fd; border-color: #bbdefb; color: #0d47a1;">
+                💡 Bí mật: Nên đi xe số (Wave/Dream) và để <strong>SỐ 3</strong> để chạy bài thi.
+            </div>
+            
+            <h3>Tại sao lại là Số 3?</h3>
+            <ul>
+                <li>Số 1, 2 rất mạnh, vặn ga nhẹ là xe giật ➔ Dễ chạm vạch.</li>
+                <li>Số 4 thì yếu, đi chậm dễ chết máy ➔ Chống chân là trừ điểm.</li>
+                <li><strong>Số 3</strong> là êm nhất, xe đầm, dễ điều khiển.</li>
+            </ul>
+
+            <h3>Bài thi Vòng số 8 (Khó nhất):</h3>
+            <ul>
+                <li><strong>Vào đúng chiều:</strong> Nhớ đi theo mũi tên vẽ trên sân.</li>
+                <li><strong>Tư thế:</strong> Ngồi thẳng, khép nách, đầu gối ép nhẹ bình xăng.</li>
+                <li><strong>Mắt nhìn:</strong> Nhìn xa về hướng muốn đến, đừng nhìn chằm chằm bánh xe.</li>
+                <li><strong>Xử lý:</strong> Giữ ga đều + Đạp nhẹ phanh chân (để ghìm xe lại). Tuyệt đối không dùng phanh tay.</li>
+                <li><strong>Lỡ cán vạch:</strong> KỆ NÓ, ĐI TIẾP NGAY! Cán 1 lần trừ 5 điểm. Đừng hoảng hốt dừng lại hay chống chân. Còn 80 điểm vẫn đậu!</li>
+            </ul>
+        </div>
+
+        <div class="section-card" style="text-align: center; border-left: none; border-top: 6px solid var(--deep-red);">
+            <h2>💌 Lời Nhắn Nhủ</h2>
+            <p style="font-size: 1.2rem;">
+                Bà xã cứ bình tĩnh ôn tập, làm đi làm lại mấy bộ đề trên web của chồng làm là thuộc làu ngay. <br>
+                Thi cử chỉ là chuyện nhỏ, quan trọng là vợ tự tin. <br>
+                <strong>Chúc vợ yêu thi một phát đậu ngay nhé! Yêu vợ nhiều! ❤️</strong>
+            </p>
+        </div>
+
+        <a href="index.html" class="back-btn">🔙 Quay lại trang chủ</a>
+    </div>
+
+</body>
+</html>
