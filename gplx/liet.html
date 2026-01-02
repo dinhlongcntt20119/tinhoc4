@@ -162,6 +162,7 @@
     <div class="btn-group">
         <button id="btn-submit" onclick="submitQuiz()">Nộp bài</button>
         <button id="btn-reset" onclick="initQuiz()">Làm lại đề mới</button>
+	<button id="btn-submit" onclick="home()">Quay lại trang chủ</button>
     </div>
 </div>
 
@@ -407,6 +408,9 @@
     }
 
     // Khởi tạo bài thi
+	function home() {
+window.location.href = 'index.html';
+}
     function initQuiz() {
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
