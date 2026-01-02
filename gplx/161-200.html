@@ -8,33 +8,32 @@
     
     <style>
         :root {
+            /* Màu chủ đạo cho thông báo bên trong */
             --primary-pink: #ff6b81;
-            --light-pink: #ffeff3;
             --deep-red: #d63031;
             --text-color: #2d3436;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            background-color: #ffdde1; 
-            background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            /* Bầu trời đêm màu đen xanh */
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center; /* Căn giữa dọc */
+            align-items: center;
             margin: 0;
-            padding: 50px 20px; /* Thêm padding trên dưới để không bị sát lề khi cuộn */
+            padding: 50px 20px;
             text-align: center;
-            /* QUAN TRỌNG: Cho phép cuộn dọc, ẩn cuộn ngang */
             overflow-y: auto; 
             overflow-x: hidden;
             box-sizing: border-box;
+            color: #fff; /* Màu chữ mặc định bên ngoài là trắng */
         }
 
-        /* Hiệu ứng trăng sao (Dùng fixed để đứng yên khi cuộn trang) */
+        /* Hiệu ứng trăng (vẫn giữ nguyên) */
         .moon {
-            position: fixed; /* Cố định vị trí */
+            position: fixed;
             top: 50px;
             right: 50px;
             width: 80px;
@@ -42,39 +41,44 @@
             background: #f1c40f;
             border-radius: 50%;
             box-shadow: 0 0 20px #f1c40f, 0 0 50px #f1c40f;
-            animation: glow 2s infinite alternate;
+            animation: glow 3s infinite alternate;
             z-index: 0;
         }
 
+        /* Hiệu ứng sao */
         .star {
-            position: fixed; /* Cố định vị trí */
+            position: fixed;
             background: white;
             border-radius: 50%;
-            animation: twinkle 1s infinite alternate;
+            /* Sao nhấp nháy với tốc độ và độ sáng khác nhau */
+            animation: twinkle var(--duration) infinite alternate;
             z-index: 0;
+            opacity: var(--opacity);
         }
 
         @keyframes glow {
             from { box-shadow: 0 0 10px #f1c40f, 0 0 30px #f1c40f; }
-            to { box-shadow: 0 0 20px #f1c40f, 0 0 50px #f1c40f; }
+            to { box-shadow: 0 0 25px #f1c40f, 0 0 60px #f1c40f; }
         }
 
         @keyframes twinkle {
-            from { opacity: 0.3; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1.2); }
+            from { opacity: 0.2; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
 
+        /* Khung thông báo chính (giữ nền trắng để dễ đọc) */
         .container {
             background: rgba(255, 255, 255, 0.95);
             padding: 40px;
             border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(255, 107, 129, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             max-width: 600px;
             width: 100%;
-            border: 4px solid #fff;
+            border: 4px solid rgba(255, 255, 255, 0.2);
             position: relative;
             z-index: 10;
-            margin: auto; /* Đảm bảo căn giữa */
+            margin: auto;
+            color: var(--text-color); /* Màu chữ bên trong quay về màu tối */
         }
 
         h1 {
@@ -128,7 +132,7 @@
             100% { transform: scale(1); }
         }
         
-        /* Style cho nút Home */
+        /* Nút Home */
         .home-btn {
             display: inline-block;
             margin-top: 30px;
@@ -157,15 +161,24 @@
     <div class="moon"></div>
     
     <script>
-        for(let i=0; i<50; i++) {
+        // Tăng số lượng sao lên 150
+        for(let i=0; i<150; i++) {
             let star = document.createElement('div');
             star.className = 'star';
-            star.style.width = Math.random() * 3 + 'px';
+            
+            // Random kích thước sao (nhỏ hơn để nhìn xa xăm)
+            star.style.width = Math.random() * 2 + 1 + 'px';
             star.style.height = star.style.width;
-            // Random vị trí trên toàn màn hình
+            
+            // Random vị trí
             star.style.top = Math.random() * 100 + 'vh';
             star.style.left = Math.random() * 100 + 'vw';
-            star.style.animationDelay = Math.random() + 's';
+            
+            // Random các thuộc tính hoạt hình cho tự nhiên hơn
+            star.style.setProperty('--duration', Math.random() * 3 + 1 + 's');
+            star.style.setProperty('--opacity', Math.random());
+            star.style.animationDelay = Math.random() * 2 + 's';
+            
             document.body.appendChild(star);
         }
     </script>
@@ -175,7 +188,7 @@
         <h1>Gửi Vợ Yêu Dấu! ❤️</h1>
         
         <p>
-            Vợ ơi, bây giờ đã là <span class="highlight">12 giờ khuya</span> rồi. <br>
+            Vợ ơi, bây giờ đã là <span class="highlight">12h30 giờ khuya</span> rồi. <br>
             Anh đã làm xong được phần <span class="highlight">80 câu đầu</span> cho vợ ôn tập rồi đó.
         </p>
 
