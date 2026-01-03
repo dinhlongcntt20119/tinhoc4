@@ -3,216 +3,691 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Báo Gửi Vợ Yêu ❤️</title>
+    <title>Ôn Tập Câu 51 - 75: Vợ Yêu Cố Lên 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Màu chủ đạo cho thông báo bên trong */
             --primary-pink: #ff6b81;
+            --light-pink: #ffeff3;
             --deep-red: #d63031;
             --text-color: #2d3436;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            /* Bầu trời đêm màu đen xanh */
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffdde1; 
+            background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
-            padding: 50px 20px;
-            text-align: center;
-            overflow-y: auto; 
-            overflow-x: hidden;
-            box-sizing: border-box;
-            color: #fff; /* Màu chữ mặc định bên ngoài là trắng */
-        }
-
-        /* Hiệu ứng trăng (vẫn giữ nguyên) */
-        .moon {
-            position: fixed;
-            top: 50px;
-            right: 50px;
-            width: 80px;
-            height: 80px;
-            background: #f1c40f;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #f1c40f, 0 0 50px #f1c40f;
-            animation: glow 3s infinite alternate;
-            z-index: 0;
-        }
-
-        /* Hiệu ứng sao */
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            /* Sao nhấp nháy với tốc độ và độ sáng khác nhau */
-            animation: twinkle var(--duration) infinite alternate;
-            z-index: 0;
-            opacity: var(--opacity);
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 10px #f1c40f, 0 0 30px #f1c40f; }
-            to { box-shadow: 0 0 25px #f1c40f, 0 0 60px #f1c40f; }
-        }
-
-        @keyframes twinkle {
-            from { opacity: 0.2; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Khung thông báo chính (giữ nền trắng để dễ đọc) */
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 100%;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            color: var(--text-color);
             position: relative;
-            z-index: 10;
-            margin: auto;
-            color: var(--text-color); /* Màu chữ bên trong quay về màu tối */
+        }
+
+        /* Hiệu ứng tim bay nền */
+        .bg-heart {
+            position: fixed;
+            top: 0; left: 0;
+            color: rgba(255, 255, 255, 0.6);
+            animation: floatUp 10s linear infinite;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 107, 129, 0.3);
+            position: relative;
+            z-index: 1;
+            border: 3px solid #fff;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             color: var(--deep-red);
+            text-align: center;
             font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        p {
-            font-size: 1.2rem;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .highlight {
+        .subtitle {
+            text-align: center;
             color: var(--primary-pink);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             font-weight: bold;
-            font-size: 1.3rem;
         }
 
-        .funny-note {
-            background-color: #fff0f6;
-            border-left: 5px solid var(--primary-pink);
-            padding: 15px;
-            border-radius: 5px;
-            font-style: italic;
-            margin-top: 20px;
-            color: #444;
+        /* Thẻ câu hỏi */
+        .question-card {
+            background: #fff;
+            border: 1px solid #ffccd5;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .signature {
-            font-family: 'Dancing Script', cursive;
-            margin-top: 30px;
-            font-size: 1.5rem;
+        .question-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 15px;
             color: var(--deep-red);
         }
 
-        .sleepy-icon {
-            font-size: 4rem;
+        .question-image {
             display: block;
-            margin: 0 auto 20px;
-            animation: sleep 2s infinite;
+            margin: 15px auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #ffccd5;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        @keyframes sleep {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
         }
-        
-        /* Nút Home */
-        .home-btn {
-            display: inline-block;
+
+        .option-item {
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background-color: var(--light-pink);
+            border-color: var(--primary-pink);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 15px;
+            accent-color: var(--deep-red);
+            transform: scale(1.2);
+        }
+
+        /* Kết quả đúng/sai */
+        .option-item.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option-item.wrong {
+            background-color: #f8d7da;
+            border-color: var(--error-color);
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff0f6;
+            border-left: 5px solid var(--deep-red);
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95em;
+            color: #444;
+        }
+
+        /* Nút điều khiển */
+        .controls {
+            text-align: center;
             margin-top: 30px;
-            padding: 12px 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        #submit-btn {
+            background-color: var(--deep-red);
+            color: white;
+            box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3);
+        }
+
+        #submit-btn:hover {
+            background-color: #b33939;
+            transform: translateY(-2px);
+        }
+
+        #home-btn {
+            background-color: #636e72;
+            color: white;
+        }
+
+        #retry-btn {
             background-color: var(--primary-pink);
             color: white;
-            text-decoration: none;
-            border-radius: 50px;
+            display: none;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.5em;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            border: 2px dashed var(--primary-pink);
+            color: var(--deep-red);
+            display: none;
         }
-
-        .home-btn:hover {
-            background-color: var(--deep-red);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(214, 48, 49, 0.5);
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="moon"></div>
-    
     <script>
-        // Tăng số lượng sao lên 150
-        for(let i=0; i<150; i++) {
-            let star = document.createElement('div');
-            star.className = 'star';
-            
-            // Random kích thước sao (nhỏ hơn để nhìn xa xăm)
-            star.style.width = Math.random() * 2 + 1 + 'px';
-            star.style.height = star.style.width;
-            
-            // Random vị trí
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            
-            // Random các thuộc tính hoạt hình cho tự nhiên hơn
-            star.style.setProperty('--duration', Math.random() * 3 + 1 + 's');
-            star.style.setProperty('--opacity', Math.random());
-            star.style.animationDelay = Math.random() * 2 + 's';
-            
-            document.body.appendChild(star);
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 5 + 's'; 
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 8000);
         }
+        setInterval(createHeart, 300);
     </script>
 
     <div class="container">
-        <div class="sleepy-icon">😴 💤</div>
-        <h1>Gửi Vợ Yêu Dấu! ❤️</h1>
+        <h1>Ôn Tập Câu 51 - 75 💖</h1>
+        <div class="subtitle">Anh soạn xong 25 câu tiếp theo cho vợ rồi nè. Cố lên nhé! 😘</div>
         
-        <p>
-            Vợ ơi, bây giờ đã là <span class="highlight">12h30 giờ khuya</span> rồi. <br>
-            Anh đã làm xong được <span class="highlight">vài phần</span> cho vợ ôn tập rồi đó.
-        </p>
+        <div id="score-board" class="score-board"></div>
 
-        <p>
-            Mấy phần còn lại, anh xin phép <span class="highlight">nợ lại đến khi rảnh</span> sẽ làm tiếp nha.
-        </p>
+        <div id="quiz-container">
+            </div>
 
-        <div class="funny-note">
-            ⚠️ <strong>Lý do tạm ngưng:</strong> <br>
-            Mắt anh đã díp lại, đầu hơi quay quay rồi. Nếu thức nữa là "Tiền Đình" nó ghé thăm thì khổ lắm! 😵‍💫
+        <div class="controls">
+            <button id="submit-btn" onclick="submitQuiz()">Nộp Bài Xem Điểm</button>
+            <button id="retry-btn" onclick="location.reload()">Làm Lại Đề Này</button>
+            <button id="home-btn" onclick="home()">🏡 Về Trang Chủ</button>
         </div>
-
-        <p>
-            Vợ cứ ôn kỹ mấy phần anh đã làm xong trước đi nhé. Mai mốt anh khỏe, anh lại cày tiếp phục vụ vợ thi đậu 100 điểm!
-        </p>
-
-        <div class="signature">
-            Chúc vợ ngủ ngon! Yêu vợ nhiều! 💖<br>
-            - Chồng Đình Long -
-        </div>
-        
-        <br>
-        <a href="home.html" class="home-btn">🏡 Về Trang Chủ</a>
     </div>
+
+<script>
+    // --- DỮ LIỆU CÂU HỎI TỪ FILE 51-75.xlsx ---
+    const rawQuestionData = [
+    {
+        "id": 51,
+        "question": "Câu hỏi 51*: Khi điều khiển xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy, những hành vi nào sau đây không được phép?",
+        "img": "",
+        "options": {
+            "A": "Buông cả hai tay; sử dụng xe để kéo, đẩy xe khác, vật khác; sử dụng chân chống hoặc vật khác quẹt xuống đường khi xe đang chạy.",
+            "B": "Sử dụng xe để chở người hoặc hàng hóa; để chân chạm xuống đất khi khởi hành.",
+            "C": "Đội mũ bảo hiểm; chạy xe đúng tốc độ quy định và chấp hành đúng quy tắc giao thông đường bộ.",
+            "D": "Chở người ngồi sau dưới 16 tuổi."
+        },
+        "correct": "A",
+        "explain": "Hành vi buông cả hai tay và kéo đẩy xe khác là vi phạm quy tắc an toàn giao thông."
+    },
+    {
+        "id": 52,
+        "question": "Câu hỏi 52: Người được chở trên xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy khi tham gia giao thông đường bộ không được thực hiện hành vi nào sau đây?",
+        "img": "",
+        "options": {
+            "A": "Mang, vác vật cồng kềnh.",
+            "B": "Bám, kéo hoặc đẩy các phương tiện khác.",
+            "C": "Dùng tay cầm điện thoại hoặc các thiết bị điện tử khác.",
+            "D": "Ý 1 và ý 2."
+        },
+        "correct": "D",
+        "explain": "Người ngồi sau không được mang vác vật cồng kềnh và không được bám, kéo, đẩy xe khác vì gây mất an toàn."
+    },
+    {
+        "id": 53,
+        "question": "Câu hỏi 53: Người được chở trên xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy khi tham gia giao thông đường bộ có được bám, kéo hoặc đẩy các phương tiện khác không?",
+        "img": "",
+        "options": {
+            "A": "Được phép.",
+            "B": "Được bám trong trường hợp phương tiện của mình bị hỏng.",
+            "C": "Được kéo, đẩy trong trường hợp phương tiện khác bị hỏng.",
+            "D": "Không được phép."
+        },
+        "correct": "D",
+        "explain": "Luật giao thông đường bộ nghiêm cấm hành vi bám, kéo hoặc đẩy các phương tiện khác khi đang tham gia giao thông."
+    },
+    {
+        "id": 54,
+        "question": "Câu hỏi 54*: Người lái xe, người được chở trên xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy phải thực hiện quy định nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "Đội mũ bảo hiểm theo đúng quy chuẩn kỹ thuật quốc gia và cài quai đúng quy cách.",
+            "B": "Người lái xe phải đội mũ bảo hiểm, người được chở trên xe không nhất thiết phải đội mũ bảo hiểm.",
+            "C": "Phải đội mũ bảo hiểm nhưng không nhất thiết phải cài quai."
+        },
+        "correct": "A",
+        "explain": "Cả người lái và người ngồi sau đều bắt buộc phải đội mũ bảo hiểm đạt chuẩn và cài quai đúng quy cách."
+    },
+    {
+        "id": 55,
+        "question": "Câu hỏi 55: Người lái xe mô tô hai bánh, xe gắn máy được phép chở tối đa hai người trong những trường hợp nào?",
+        "img": "",
+        "options": {
+            "A": "Chở người bệnh đi cấp cứu; áp giải người có hành vi vi phạm pháp luật; trẻ em dưới 12 tuổi; người già yếu hoặc người khuyết tật.",
+            "B": "Người đã uống rượu, bia; người trong cơ thể có chất ma tuý.",
+            "C": "Cả hai ý trên."
+        },
+        "correct": "A",
+        "explain": "Đây là các trường hợp đặc biệt được phép chở thêm người theo quy định của pháp luật."
+    },
+    {
+        "id": 56,
+        "question": "Câu hỏi 56*: Người lái xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy không được thực hiện các hành vi nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "Đi xe dàn hàng ngang; buông cả hai tay.",
+            "B": "Sử dụng xe để kéo, đẩy xe khác, vật khác, dẫn dắt vật nuôi, mang, vác và chở vật cồng kềnh; chở người đứng trên xe, giá đèo hàng hoặc ngồi trên tay lái; xếp hàng hóa trên xe quá giới hạn quy định.",
+            "C": "Ngồi về một bên điều khiển xe; đứng, nằm trên xe điều khiển xe; thay người lái xe khi xe đang chạy; quay người về phía sau để điều khiển xe hoặc bịt mắt điều khiển xe; sử dụng chân chống hoặc vật khác quẹt xuống đường khi xe đang chạy.",
+            "D": "Cả ba ý trên."
+        },
+        "correct": "D",
+        "explain": "Tất cả các hành vi nêu trên đều gây nguy hiểm và bị cấm khi điều khiển xe mô tô."
+    },
+    {
+        "id": 57,
+        "question": "Câu hỏi 57*: Người lái xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy không được thực hiện các hành vi nào sau đây?",
+        "img": "",
+        "options": {
+            "A": "Đi xe dàn hàng ngang; đi xe vào phần đường dành cho người đi bộ và phương tiện khác.",
+            "B": "Sử dụng ô, thiết bị âm thanh, trừ thiết bị trợ thính.",
+            "C": "Cả hai ý trên."
+        },
+        "correct": "C",
+        "explain": "Người lái xe mô tô không được đi dàn hàng ngang, đi vào đường đi bộ và không được sử dụng ô, thiết bị âm thanh."
+    },
+    {
+        "id": 58,
+        "question": "Câu hỏi 58*: Người lái xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy không được thực hiện hành vi nào sau đây?",
+        "img": "",
+        "options": {
+            "A": "Đi trên phần đường, làn đường quy định, chấp hành hiệu lệnh của người điều khiển giao thông, đèn tín hiệu giao thông.",
+            "B": "Đi xe dàn hàng ngang, đi xe vào phần đường dành cho người đi bộ.",
+            "C": "Cả hai ý trên"
+        },
+        "correct": "B",
+        "explain": "Đi dàn hàng ngang và đi vào phần đường dành cho người đi bộ là hành vi bị cấm."
+    },
+    {
+        "id": 59,
+        "question": "Câu hỏi 59: Người được chở trên xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy khi tham gia giao thông đường bộ có được sử dụng ô khi trời mưa hay không?",
+        "img": "",
+        "options": {
+            "A": "Được sử dụng.",
+            "B": "Chỉ người ngồi sau được sử dụng.",
+            "C": "Không được sử dụng.",
+            "D": "Được sử dụng nếu không có áo mưa."
+        },
+        "correct": "C",
+        "explain": "Người ngồi trên xe mô tô tuyệt đối không được sử dụng ô vì dễ gây tai nạn khi có gió hoặc che khuất tầm nhìn."
+    },
+    {
+        "id": 60,
+        "question": "Câu hỏi 60: Người được chở trên xe mô tô có được kéo theo người đang điều khiển xe đạp hay không?",
+        "img": "",
+        "options": {
+            "A": "Chỉ được phép nếu cả hai đội mũ bảo hiểm.",
+            "B": "Không được phép.",
+            "C": "Chỉ được thực hiện trên đường vắng."
+        },
+        "correct": "B",
+        "explain": "Hành vi kéo theo xe khác (xe đạp) là hành vi bị cấm để đảm bảo an toàn giao thông."
+    },
+    {
+        "id": 61,
+        "question": "Câu hỏi 61: Trường hợp người được chở trên xe mô tô, xe gắn máy... không đội “mũ bảo hiểm... hoặc không cài quai đúng quy cách (trừ trường hợp chở người bệnh đi cấp cứu, trẻ em dưới 06 tuổi, áp giải người có hành vi vi phạm pháp luật) thì việc xử phạt vi phạm hành chính được quy định như thế nào?",
+        "img": "",
+        "options": {
+            "A": "Không bị xử phạt chỉ bị nhắc nhở.",
+            "B": "Người được chở không bị xử phạt, chỉ xử phạt người điều khiển xe mô tô, xe gắn máy.",
+            "C": "Người được chở bị xử phạt, không xử phạt người điều khiển xe mô tô, xe gắn máy.",
+            "D": "Xử phạt cả người điều khiển và người được chở trên xe mô tô, xe gắn máy."
+        },
+        "correct": "D",
+        "explain": "Theo quy định, cả người điều khiển và người ngồi sau đều bị xử phạt nếu không đội mũ bảo hiểm hoặc cài quai không đúng cách."
+    },
+    {
+        "id": 62,
+        "question": "Câu hỏi 62: Trong các trường hợp dưới đây, để bảo đảm an toàn khi tham gia giao thông, người lái xe mô tô cần thực hiện như thế nào?",
+        "img": "",
+        "options": {
+            "A": "Phải đội mũ bảo hiểm theo đúng quy chuẩn kỹ thuật quốc gia và cài quai đúng quy cách, không sử dụng ô, điện thoại di động, thiết bị âm thanh (trừ thiết bị trợ thính).",
+            "B": "Phải đội mũ bảo hiểm khi trời mưa gió hoặc trời quá nắng; có thể sử dụng ô, điện thoại di động, thiết bị âm thanh nhưng phải bảo đảm an toàn.",
+            "C": "Phải đội mũ bảo hiểm khi cảm thấy mất an toàn giao thông hoặc khi chuẩn bị di chuyển quãng đường xa."
+        },
+        "correct": "A",
+        "explain": "Đây là các quy tắc cơ bản và bắt buộc để đảm bảo an toàn tối đa cho người lái xe mô tô."
+    },
+    {
+        "id": 63,
+        "question": "Câu hỏi 63: Thứ tự xuống phà như thế nào là đúng quy tắc giao thông?",
+        "img": "",
+        "options": {
+            "A": "Xe thô sơ, người đi bộ xuống trước, xe cơ giới, xe máy chuyên dùng xuống sau.",
+            "B": "Xe cơ giới, xe máy chuyên dùng xuống trước, xe thô sơ, người đi bộ xuống sau.",
+            "C": "Xe cơ giới, xe thô sơ xuống trước, xe máy chuyên dùng, người đi bộ xuống sau."
+        },
+        "correct": "B",
+        "explain": "Khi xuống phà, xe cơ giới và xe máy chuyên dùng được ưu tiên xuống trước để ổn định trọng tải phà."
+    },
+    {
+        "id": 64,
+        "question": "Câu hỏi 64: Khi lái xe trong đô thị và khu đông dân cư trong thời gian từ 22 giờ ngày hôm trước đến 05 giờ ngày hôm sau, nếu cần vượt một xe khác, người lái xe phải báo hiệu như thế nào là đúng quy tắc giao thông?",
+        "img": "",
+        "options": {
+            "A": "Chỉ được báo hiệu bằng còi.",
+            "B": "Phải báo hiệu bằng cả còi và đèn.",
+            "C": "Chỉ được báo hiệu bằng đèn."
+        },
+        "correct": "C",
+        "explain": "Trong khung giờ đêm khuya (22h-5h), chỉ được báo hiệu xin vượt bằng đèn để tránh gây tiếng ồn trong khu dân cư."
+    },
+    {
+        "id": 65,
+        "question": "Câu hỏi 65: Khi điều khiển xe chạy trên đường, biết có xe sau xin vượt, nếu đủ điều kiện an toàn người điều khiển phương tiện phải làm gì?",
+        "img": "",
+        "options": {
+            "A": "1. Tăng tốc độ và ra hiệu cho xe sau vượt, không được gây trở ngại cho xe xin vượt.",
+            "B": "2. Giảm tốc độ, có tín hiệu rẽ phải để báo hiệu cho người điều khiển phương tiện tham gia giao thông đường bộ phía sau biết được vượt và đi sát về bên phải của phần đường xe chạy cho đến khi xe sau đã vượt qua, không được cản trở đối với xe xin vượt.",
+            "C": "3. Cho xe đi sát về bên trái của phần đường xe chạy và ra hiệu cho xe sau vượt, không được gây trở ngại cho xe xin vượt."
+        },
+        "correct": "B",
+        "explain": "Khi có xe xin vượt, nếu đủ điều kiện an toàn, người lái xe phải giảm tốc độ, đi sát về bên phải và không gây cản trở xe xin vượt."
+    },
+    {
+        "id": 66,
+        "question": "Câu hỏi 66: Trên đường không phân chia thành hai chiều xe chạy riêng biệt, người điều khiển phương tiện tham gia giao thông đường bộ phải tránh xe đi ngược chiều như thế nào để bảo đảm an toàn?",
+        "img": "",
+        "options": {
+            "A": "1. Giảm tốc độ và cho xe đi về bên phải theo chiều xe chạy của mình.",
+            "B": "2. Một trong hai xe phải dừng lại cho xe kia đi qua mới được đi.",
+            "C": "3. Tăng tốc độ, cho xe đi về bên phải theo chiều xe chạy của mình để nhanh chóng vượt qua."
+        },
+        "correct": "A",
+        "explain": "Khi tránh xe ngược chiều trên đường hẹp không phân chia làn, cần giảm tốc độ và đi về bên phải theo chiều đi của mình."
+    },
+    {
+        "id": 67,
+        "question": "Câu hỏi 67: Khi tránh xe đi ngược chiều, các xe phải nhường đường như thế nào là đúng quy tắc giao thông?",
+        "img": "",
+        "options": {
+            "A": "1. Nơi đường hẹp chỉ đủ cho một xe chạy và có chỗ tránh xe thì xe nào ở gần chỗ tránh hơn phải vào vị trí tránh, nhường đường cho xe đi ngược chiều.",
+            "B": "2. Xe xuống dốc phải nhường đường cho xe lên dốc.",
+            "C": "3. Xe có chướng ngại vật phía trước phải nhường đường cho xe không có chướng ngại vật phía trước.",
+            "D": "4. Cả ba ý trên."
+        },
+        "correct": "D",
+        "explain": "Tất cả các quy tắc trên đều đúng khi tránh xe đi ngược chiều để đảm bảo an toàn giao thông."
+    },
+    {
+        "id": 68,
+        "question": "Câu hỏi 68: Người lái xe phải làm gì để bảo đảm an toàn khi lái xe trên đường cong có tầm nhìn bị hạn chế?",
+        "img": "",
+        "options": {
+            "A": "1. Quan sát, giảm tốc độ hoặc dừng lại để bảo đảm an toàn.",
+            "B": "2. Đi sang làn đường của xe ngược chiều để mở rộng tầm nhìn và vượt xe khác.",
+            "C": "3. Cho xe đi sát bên phải làn đường, bật tín hiệu báo hiệu để vượt bên phải xe khác."
+        },
+        "correct": "A",
+        "explain": "Khi tầm nhìn bị hạn chế ở đường cong, người lái xe cần quan sát kỹ và giảm tốc độ để kịp thời xử lý các tình huống bất ngờ."
+    },
+    {
+        "id": 69,
+        "question": "Câu hỏi 69: Tại nơi đường giao nhau, người lái xe đang đi trên đường không ưu tiên, đường nhánh phải nhường đường như thế nào là đúng quy tắc giao thông?",
+        "img": "",
+        "options": {
+            "A": "1. Nhường đường cho xe đi ở bên phải mình tới.",
+            "B": "2. Nhường đường cho xe đi ở bên trái mình tới.",
+            "C": "3. Nhường đường cho xe đi trên đường ưu tiên hoặc đường chính từ bất kỳ hướng nào tới."
+        },
+        "correct": "C",
+        "explain": "Xe đi từ đường không ưu tiên hoặc đường nhánh phải nhường đường cho xe trên đường ưu tiên hoặc đường chính từ bất kỳ hướng nào tới."
+    },
+    {
+        "id": 70,
+        "question": "Câu hỏi 70: Tại nơi đường giao nhau có báo hiệu đi theo vòng xuyến, người lái xe phải nhường đường như thế nào là đúng quy tắc giao thông?",
+        "img": "",
+        "options": {
+            "A": "1. Nhường đường cho xe đi đến từ bên phải.",
+            "B": "2. Nhường đường cho xe đi đến từ bên trái.",
+            "C": "3. Không phải nhường đường."
+        },
+        "correct": "B",
+        "explain": "Khi vào vòng xuyến có báo hiệu, người lái xe phải nhường đường cho xe đi đến từ bên trái."
+    },
+    {
+        "id": 71,
+        "question": "Câu hỏi 71: Tại nơi đường giao nhau không có báo hiệu đi theo vòng xuyến, người điều khiển phương tiện phải nhường đường như thế nào là đúng quy tắc giao thông?",
+        "img": "",
+        "options": {
+            "A": "1. Phải nhường đường cho xe đi đến từ bên phải.",
+            "B": "2. Xe báo hiệu xin đường trước, xe đó được đi trước.",
+            "C": "3. Phải nhường đường cho xe đi đến từ bên trái."
+        },
+        "correct": "A",
+        "explain": "Tại nơi đường giao nhau không có vòng xuyến, người lái xe phải nhường đường cho xe đi đến từ bên phải."
+    },
+    {
+        "id": 72,
+        "question": "Câu hỏi 72: Người lái xe phải nhanh chóng giảm tốc độ, đi sát lề đường bên phải hoặc dừng lại để nhường đường cho các loại xe nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe chữa cháy của Cảnh sát phòng cháy, chữa cháy và cứu nạn, cứu hộ và xe chữa cháy của các lực lượng khác; xe của lực lượng quân sự, công an và kiểm sát; đoàn xe có xe Cảnh sát giao thông dẫn đường; xe cứu thương; xe hộ đê không có tín hiệu ưu tiên theo quy định.",
+            "B": "2. Xe ưu tiên gồm xe chữa cháy của Cảnh sát phòng cháy, chữa cháy và cứu nạn, cứu hộ và xe chữa cháy của các lực lượng khác được huy động đi làm nhiệm vụ chữa cháy; xe của lực lượng quân sự, công an và kiểm sát đi làm nhiệm vụ khẩn cấp; đoàn xe có xe Cảnh sát giao thông dẫn đường; xe cứu thương đi làm nhiệm vụ cấp cứu; xe hộ đê đi làm nhiệm vụ hoặc xe đi làm nhiệm vụ trong tình trạng khẩn cấp theo quy định của pháp luật; đoàn xe tang.",
+            "C": "3. Xe ô tô, xe máy, đoàn xe đang diễu hành có tổ chức có báo tín hiệu xin vượt bằng còi và đèn."
+        },
+        "correct": "B",
+        "explain": "Phải nhường đường cho các xe ưu tiên (chữa cháy, quân sự, công an, cứu thương, hộ đê...) đang đi làm nhiệm vụ khẩn cấp và có phát tín hiệu ưu tiên theo quy định."
+    },
+    {
+        "id": 73,
+        "question": "Câu hỏi 73: Khi có tín hiệu của xe ưu tiên, người và phương tiện tham gia giao thông đường bộ phải tuân thủ quy định nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Giảm tốc độ, đi sát lề đường bên phải hoặc dừng lại để nhường đường.",
+            "B": "2. Tăng tốc độ và đi sát lề đường bên phải để nhường đường.",
+            "C": "3. Giảm tốc độ, đi sát lề đường bên trái để nhường đường."
+        },
+        "correct": "A",
+        "explain": "Khi có xe ưu tiên phát tín hiệu, người tham gia giao thông phải giảm tốc độ, đi sát lề đường bên phải hoặc dừng lại để nhường đường, không được gây cản trở."
+    },
+    {
+        "id": 74,
+        "question": "Câu hỏi 74: Khi đang lái xe, phía trước có một xe Cảnh sát giao thông không phát tín hiệu ưu tiên, người lái xe có được phép vượt hay không?",
+        "img": "",
+        "options": {
+            "A": "1. Không được vượt.",
+            "B": "2. Được phép vượt ở phần đường dành cho người đi bộ qua đường.",
+            "C": "3. Được vượt khi bảo đảm an toàn."
+        },
+        "correct": "C",
+        "explain": "Xe ưu tiên nhưng không phát tín hiệu ưu tiên thì được coi là phương tiện giao thông bình thường, người lái xe được phép vượt nếu đảm bảo an toàn."
+    },
+    {
+        "id": 75,
+        "question": "Câu hỏi 75: Khi đang lái xe, phía trước có một xe cứu thương đang phát tín hiệu ưu tiên, người lái xe có được phép vượt hay không?",
+        "img": "",
+        "options": {
+            "A": "1. Không được vượt.",
+            "B": "2. Được vượt khi đang đi trên cầu.",
+            "C": "3. Được phép vượt khi đi qua nơi giao nhau có ít phương tiện cùng tham gia giao thông.",
+            "D": "4. Được vượt khi bảo đảm an toàn."
+        },
+        "correct": "A",
+        "explain": "Tuyệt đối không được vượt xe ưu tiên khi xe đó đang phát tín hiệu ưu tiên đi làm nhiệm vụ."
+    }
+];
+
+    let currentQuestions = [];
+
+    // Hàm đảo câu hỏi (Shuffle)
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // Hàm điều hướng về trang chủ
+    function home() {
+        window.location.href = 'home.html';
+    }
+
+    // --- LOGIC XỬ LÝ TRẮC NGHIỆM ---
+    function initQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        document.getElementById('score-board').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'inline-block';
+        document.getElementById('retry-btn').style.display = 'none';
+
+        // Deep copy và xáo trộn câu hỏi
+        currentQuestions = JSON.parse(JSON.stringify(rawQuestionData));
+        shuffle(currentQuestions);
+
+        currentQuestions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question-${index}`;
+
+            // XỬ LÝ TIÊU ĐỀ CÂU HỎI
+            // Loại bỏ phần "Câu hỏi XX:" cũ để hiển thị số thứ tự mới (51-75)
+            let cleanQuestion = q.question.replace(/^Câu (hỏi )?\d+[\.\:\*]*\s*/i, "");
+            let displayIndex = 51 + index; 
+            let displayTitle = `Câu ${displayIndex}: ${cleanQuestion}`;
+
+            // XỬ LÝ HÌNH ẢNH
+            let imgHTML = '';
+            if (q.img && q.img.trim() !== "") {
+                imgHTML = `<img src="${q.img}" class="question-image" alt="Hình ảnh minh họa">`;
+            }
+
+            let optionsHTML = '';
+            const optionKeys = ['A', 'B', 'C', 'D'];
+            
+            optionKeys.forEach(key => {
+                if(q.options.hasOwnProperty(key) && q.options[key] !== null) {
+                    optionsHTML += `
+                        <li class="option-item" id="opt-${index}-${key}">
+                            <label style="width: 100%; cursor: pointer; display: flex; align-items: center;">
+                                <input type="radio" name="q${index}" value="${key}">
+                                <span style="margin-left: 10px;"><b>${key}.</b> ${q.options[key]}</span>
+                            </label>
+                        </li>
+                    `;
+                }
+            });
+
+            card.innerHTML = `
+                <div class="question-title">${displayTitle}</div>
+                ${imgHTML}
+                <ul class="options-list">
+                    ${optionsHTML}
+                </ul>
+                <div class="explanation" id="exp-${index}">
+                    <strong>💡 Giải thích:</strong> ${q.explain}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        let total = currentQuestions.length;
+
+        currentQuestions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const explanation = document.getElementById(`exp-${index}`);
+            
+            // Hiện giải thích
+            explanation.style.display = 'block';
+
+            const correctKey = q.correct;
+            const correctOptionElement = document.getElementById(`opt-${index}-${correctKey}`);
+            
+            // Tô màu đáp án đúng (Xanh)
+            if(correctOptionElement) correctOptionElement.classList.add('correct');
+
+            if (selected) {
+                if (selected.value === correctKey) {
+                    score++;
+                } else {
+                    // Tô màu đáp án sai (Đỏ)
+                    const wrongOptionElement = document.getElementById(`opt-${index}-${selected.value}`);
+                    if(wrongOptionElement) wrongOptionElement.classList.add('wrong');
+                }
+            }
+            
+            // Khóa không cho chọn lại
+            const radios = document.querySelectorAll(`input[name="q${index}"]`);
+            radios.forEach(r => r.disabled = true);
+        });
+
+        // Hiển thị điểm số
+        const scoreBoard = document.getElementById('score-board');
+        scoreBoard.style.display = 'block';
+        
+        let msg = "";
+        if(score === total) msg = "Tuyệt vời! Vợ quá xuất sắc!❤️";
+        else if(score >= 21) msg = "Giỏi lắm vợ yêu! Đậu rồi nè (>= 21/25). Cố lên xíu nữa cho điểm tuyệt đối nha!";
+        else msg = "Không sao đâu, vợ làm lại lần nữa là thuộc ngay thôi! Cố lên!";
+
+        scoreBoard.innerHTML = `Kết quả: ${score}/${total} câu đúng<br><small>${msg}</small>`;
+        
+        // Cuộn lên đầu
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Đổi nút
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('retry-btn').style.display = 'inline-block';
+    }
+
+    // Chạy khi tải trang
+    document.addEventListener('DOMContentLoaded', initQuiz);
+
+</script>
 
 </body>
 </html>

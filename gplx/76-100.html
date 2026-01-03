@@ -3,216 +3,687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Báo Gửi Vợ Yêu ❤️</title>
+    <title>Ôn Tập Câu 76 - 100: Vợ Yêu Cố Lên 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Màu chủ đạo cho thông báo bên trong */
             --primary-pink: #ff6b81;
+            --light-pink: #ffeff3;
             --deep-red: #d63031;
             --text-color: #2d3436;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            /* Bầu trời đêm màu đen xanh */
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffdde1; 
+            background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
-            padding: 50px 20px;
-            text-align: center;
-            overflow-y: auto; 
-            overflow-x: hidden;
-            box-sizing: border-box;
-            color: #fff; /* Màu chữ mặc định bên ngoài là trắng */
-        }
-
-        /* Hiệu ứng trăng (vẫn giữ nguyên) */
-        .moon {
-            position: fixed;
-            top: 50px;
-            right: 50px;
-            width: 80px;
-            height: 80px;
-            background: #f1c40f;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #f1c40f, 0 0 50px #f1c40f;
-            animation: glow 3s infinite alternate;
-            z-index: 0;
-        }
-
-        /* Hiệu ứng sao */
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            /* Sao nhấp nháy với tốc độ và độ sáng khác nhau */
-            animation: twinkle var(--duration) infinite alternate;
-            z-index: 0;
-            opacity: var(--opacity);
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 10px #f1c40f, 0 0 30px #f1c40f; }
-            to { box-shadow: 0 0 25px #f1c40f, 0 0 60px #f1c40f; }
-        }
-
-        @keyframes twinkle {
-            from { opacity: 0.2; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Khung thông báo chính (giữ nền trắng để dễ đọc) */
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 100%;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            color: var(--text-color);
             position: relative;
-            z-index: 10;
-            margin: auto;
-            color: var(--text-color); /* Màu chữ bên trong quay về màu tối */
+        }
+
+        /* Hiệu ứng tim bay nền */
+        .bg-heart {
+            position: fixed;
+            top: 0; left: 0;
+            color: rgba(255, 255, 255, 0.6);
+            animation: floatUp 10s linear infinite;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 107, 129, 0.3);
+            position: relative;
+            z-index: 1;
+            border: 3px solid #fff;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             color: var(--deep-red);
+            text-align: center;
             font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        p {
-            font-size: 1.2rem;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .highlight {
+        .subtitle {
+            text-align: center;
             color: var(--primary-pink);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             font-weight: bold;
-            font-size: 1.3rem;
         }
 
-        .funny-note {
-            background-color: #fff0f6;
-            border-left: 5px solid var(--primary-pink);
-            padding: 15px;
-            border-radius: 5px;
-            font-style: italic;
-            margin-top: 20px;
-            color: #444;
+        /* Thẻ câu hỏi */
+        .question-card {
+            background: #fff;
+            border: 1px solid #ffccd5;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .signature {
-            font-family: 'Dancing Script', cursive;
-            margin-top: 30px;
-            font-size: 1.5rem;
+        .question-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 15px;
             color: var(--deep-red);
         }
 
-        .sleepy-icon {
-            font-size: 4rem;
+        .question-image {
             display: block;
-            margin: 0 auto 20px;
-            animation: sleep 2s infinite;
+            margin: 15px auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #ffccd5;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        @keyframes sleep {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
         }
-        
-        /* Nút Home */
-        .home-btn {
-            display: inline-block;
+
+        .option-item {
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background-color: var(--light-pink);
+            border-color: var(--primary-pink);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 15px;
+            accent-color: var(--deep-red);
+            transform: scale(1.2);
+        }
+
+        /* Kết quả đúng/sai */
+        .option-item.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option-item.wrong {
+            background-color: #f8d7da;
+            border-color: var(--error-color);
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff0f6;
+            border-left: 5px solid var(--deep-red);
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95em;
+            color: #444;
+        }
+
+        /* Nút điều khiển */
+        .controls {
+            text-align: center;
             margin-top: 30px;
-            padding: 12px 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        #submit-btn {
+            background-color: var(--deep-red);
+            color: white;
+            box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3);
+        }
+
+        #submit-btn:hover {
+            background-color: #b33939;
+            transform: translateY(-2px);
+        }
+
+        #home-btn {
+            background-color: #636e72;
+            color: white;
+        }
+
+        #retry-btn {
             background-color: var(--primary-pink);
             color: white;
-            text-decoration: none;
-            border-radius: 50px;
+            display: none;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.5em;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            border: 2px dashed var(--primary-pink);
+            color: var(--deep-red);
+            display: none;
         }
-
-        .home-btn:hover {
-            background-color: var(--deep-red);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(214, 48, 49, 0.5);
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="moon"></div>
-    
     <script>
-        // Tăng số lượng sao lên 150
-        for(let i=0; i<150; i++) {
-            let star = document.createElement('div');
-            star.className = 'star';
-            
-            // Random kích thước sao (nhỏ hơn để nhìn xa xăm)
-            star.style.width = Math.random() * 2 + 1 + 'px';
-            star.style.height = star.style.width;
-            
-            // Random vị trí
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            
-            // Random các thuộc tính hoạt hình cho tự nhiên hơn
-            star.style.setProperty('--duration', Math.random() * 3 + 1 + 's');
-            star.style.setProperty('--opacity', Math.random());
-            star.style.animationDelay = Math.random() * 2 + 's';
-            
-            document.body.appendChild(star);
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 5 + 's'; 
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 8000);
         }
+        setInterval(createHeart, 300);
     </script>
 
     <div class="container">
-        <div class="sleepy-icon">😴 💤</div>
-        <h1>Gửi Vợ Yêu Dấu! ❤️</h1>
+        <h1>Ôn Tập Câu 76 - 100 💖</h1>
+        <div class="subtitle">Tiếp tục hành trình chinh phục bằng lái nào vợ yêu! 😘</div>
         
-        <p>
-            Vợ ơi, bây giờ đã là <span class="highlight">12h30 giờ khuya</span> rồi. <br>
-            Anh đã làm xong được <span class="highlight">vài phần</span> cho vợ ôn tập rồi đó.
-        </p>
+        <div id="score-board" class="score-board"></div>
 
-        <p>
-            Mấy phần còn lại, anh xin phép <span class="highlight">nợ lại đến khi rảnh</span> sẽ làm tiếp nha.
-        </p>
+        <div id="quiz-container">
+            </div>
 
-        <div class="funny-note">
-            ⚠️ <strong>Lý do tạm ngưng:</strong> <br>
-            Mắt anh đã díp lại, đầu hơi quay quay rồi. Nếu thức nữa là "Tiền Đình" nó ghé thăm thì khổ lắm! 😵‍💫
+        <div class="controls">
+            <button id="submit-btn" onclick="submitQuiz()">Nộp Bài Xem Điểm</button>
+            <button id="retry-btn" onclick="location.reload()">Làm Lại Đề Này</button>
+            <button id="home-btn" onclick="home()">🏡 Về Trang Chủ</button>
         </div>
-
-        <p>
-            Vợ cứ ôn kỹ mấy phần anh đã làm xong trước đi nhé. Mai mốt anh khỏe, anh lại cày tiếp phục vụ vợ thi đậu 100 điểm!
-        </p>
-
-        <div class="signature">
-            Chúc vợ ngủ ngon! Yêu vợ nhiều! 💖<br>
-            - Chồng Đình Long -
-        </div>
-        
-        <br>
-        <a href="home.html" class="home-btn">🏡 Về Trang Chủ</a>
     </div>
+
+<script>
+    // --- DỮ LIỆU CÂU HỎI TỪ FILE 76-100.xlsx ---
+    const rawQuestionData = [
+    {
+        "id": 76,
+        "question": "Câu hỏi 76: Khi tới đường ngang không có người gác, chắn đường bộ, chuông, đèn tín hiệu, người tham gia giao thông đường bộ phải làm gì để bảo đảm an toàn?",
+        "img": "",
+        "options": {
+            "A": "1. Dừng lại về bên phải đường của mình, trước vạch dừng xe và quan sát hai phía, khi không có phương tiện giao thông đường sắt tới mới được đi qua.",
+            "B": "2. Quan sát hai phía, khi không có phương tiện giao thông đường sắt tới thì nhanh chóng đi qua.",
+            "C": "3. Dừng lại khoảng cách tối thiểu 3 mét tính từ ray đường sắt gần nhất, khi không có phương tiện giao thông đường sắt tới thì nhanh chóng đi qua."
+        },
+        "correct": "A",
+        "explain": "Tại nơi giao cắt với đường sắt không có rào chắn hay tín hiệu, phải dừng lại bên phải đường trước vạch dừng, quan sát an toàn cả hai phía trước khi qua."
+    },
+    {
+        "id": 77,
+        "question": "Câu hỏi 77: Tại đường ngang, cầu chung đường sắt, khi có hiệu lệnh của nhân viên gác chắn, đèn đỏ sáng nhấp nháy, chuông kêu, chắn đường bộ đang dịch chuyển hoặc đã đóng, người tham gia giao thông đường bộ phải làm gì để bảo đảm an toàn?",
+        "img": "",
+        "options": {
+            "A": "1. Dừng lại về bên trái đường của mình, trước vạch dừng xe.",
+            "B": "2. Dừng lại giữa đường của mình, trước vạch dừng xe.",
+            "C": "3. Dừng lại về bên phải đường của mình, trước vạch dừng xe."
+        },
+        "correct": "C",
+        "explain": "Khi có tín hiệu dừng tại đường ngang đường sắt, người tham gia giao thông phải dừng lại về bên phải đường của mình và trước vạch dừng."
+    },
+    {
+        "id": 78,
+        "question": "Câu hỏi 78: Người tham gia giao thông đường bộ phải dừng lại về bên phải đường của mình trước vạch dừng xe tại đường ngang, cầu chung đường sắt khi có báo hiệu nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Hiệu lệnh của nhân viên gác chắn.",
+            "B": "2. Đèn đỏ sáng nhấp nháy, chuông kêu.",
+            "C": "3. Chắn đường bộ đang dịch chuyển hoặc đã đóng.",
+            "D": "4. Cả ba ý trên."
+        },
+        "correct": "D",
+        "explain": "Tất cả các báo hiệu trên đều yêu cầu người tham gia giao thông phải dừng lại để đảm bảo an toàn khi tàu hỏa sắp đi qua."
+    },
+    {
+        "id": 79,
+        "question": "Câu hỏi 79: Người điều khiển phương tiện tham gia giao thông trong hầm đường bộ ngoài việc phải tuân thủ các quy tắc giao thông còn phải thực hiện những quy định nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe cơ giới, xe máy chuyên dùng phải bật đèn chiếu gần; xe thô sơ phải bật đèn hoặc có vật phát sáng báo hiệu; chỉ được dừng xe, đỗ xe trong hầm đường bộ; trường hợp gặp sự cố kỹ thuật hoặc bất khả kháng khác buộc phải dừng xe, đỗ xe, người lái xe, người điều khiển xe máy chuyên dùng phải đưa xe vào vị trí dừng xe, đỗ xe khẩn cấp, nếu không di chuyển được, phải có báo hiệu bằng đèn khẩn cấp và đặt biển hoặc đèn cảnh báo về phía sau xe khoảng cách bảo đảm an toàn.",
+            "B": "2. Xe cơ giới, xe máy chuyên dùng phải bật đèn chiếu xa; được dừng xe, đỗ xe khi cần thiết.",
+            "C": "3. Phải cho xe chạy trên một làn đường và chỉ chuyển làn ở nơi được phép; được quay đầu xe, lùi xe khi cần thiết."
+        },
+        "correct": "A",
+        "explain": "Trong hầm đường bộ, xe cơ giới phải bật đèn chiếu gần, không được dừng đỗ tùy tiện, không được quay đầu hay lùi xe."
+    },
+    {
+        "id": 80,
+        "question": "Câu hỏi 80: Người điều khiển phương tiện tham gia giao thông đường bộ phải quan sát, giảm tốc độ hoặc dừng lại để bảo đảm an toàn trong các trường hợp nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Có báo hiệu cảnh báo nguy hiểm hoặc có chướng ngại vật trên đường; chuyển hướng xe chạy hoặc tầm nhìn bị hạn chế.",
+            "B": "2. Nơi cầu, cống hẹp, đập tràn, đường ngầm, hầm chui, hầm đường bộ; có vật nuôi đi trên đường hoặc chăn thả ở ven đường.",
+            "C": "3. Điểm dừng xe, đỗ xe trên đường bộ có khách đang lên, xuống xe.",
+            "D": "4. Cả ba ý trên."
+        },
+        "correct": "D",
+        "explain": "Người lái xe phải giảm tốc độ hoặc dừng lại trong tất cả các trường hợp có nguy cơ mất an toàn hoặc tầm nhìn hạn chế nêu trên."
+    },
+    {
+        "id": 81,
+        "question": "Câu hỏi 81: Người lái xe được phép vượt xe khác về bên phải trong trường hợp nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe phía trước có tín hiệu rẽ trái hoặc đang rẽ trái hoặc khi xe chuyên dùng đang làm việc trên đường mà không thể vượt bên trái.",
+            "B": "2. Xe phía trước đang đi sát lề đường bên trái.",
+            "C": "3. Cả hai ý trên."
+        },
+        "correct": "A",
+        "explain": "Theo Luật Giao thông đường bộ, thông thường phải vượt về bên trái, nhưng được phép vượt bên phải khi xe trước có tín hiệu rẽ trái hoặc xe chuyên dùng đang làm việc không thể vượt trái."
+    },
+    {
+        "id": 82,
+        "question": "Câu hỏi 82: Khi có xe xin vượt, người lái xe mô tô xử lý như thế nào nếu đủ điều kiện an toàn cho xe phía sau vượt?",
+        "img": "",
+        "options": {
+            "A": "1. Giảm tốc độ, có tín hiệu rẽ phải để báo hiệu cho người điều khiển phương tiện tham gia giao thông đường bộ phía sau biết được vượt và đi sát về bên phải của phần đường xe chạy cho đến khi xe sau đã vượt qua, không được cản trở đối với xe xin vượt.",
+            "B": "2. Lái xe vào lề đường bên trái và giảm tốc độ để xe phía sau vượt qua, không được gây trở ngại đối với xe xin vượt.",
+            "C": "3. Tăng tốc độ, đi sát về bên phải của phần đường xe chạy cho đến khi xe sau đã vượt qua."
+        },
+        "correct": "A",
+        "explain": "Khi đủ điều kiện an toàn, người lái xe phải giảm tốc độ, báo hiệu và đi sát lề phải để nhường đường cho xe sau vượt qua."
+    },
+    {
+        "id": 83,
+        "question": "Câu hỏi 83: Những trường hợp nào dưới đây không được đi trên đường cao tốc, trừ người, phương tiện giao thông đường bộ và thiết bị phục vụ việc quản lý, bảo trì đường cao tốc?",
+        "img": "",
+        "options": {
+            "A": "1. Xe máy chuyên dùng có tốc độ thiết kế nhỏ hơn tốc độ tối thiểu quy định đối với đường cao tốc, xe chở người bốn bánh có gắn động cơ, xe chở hàng bốn bánh có gắn động cơ, xe mô tô, xe gắn máy, các loại xe tương tự xe mô tô, xe gắn máy, xe thô sơ, người đi bộ.",
+            "B": "2. Xe máy chuyên dùng có tốc độ thiết kế lớn hơn tốc độ tối thiểu quy định đối với đường cao tốc.",
+            "C": "3. Xe ô tô và xe máy chuyên dùng có tốc độ thiết kế lớn hơn 80 km/h."
+        },
+        "correct": "A",
+        "explain": "Đường cao tốc cấm người đi bộ, xe thô sơ, xe mô tô, xe gắn máy và các loại xe máy chuyên dùng có tốc độ thiết kế thấp hơn quy định."
+    },
+    {
+        "id": 84,
+        "question": "Câu hỏi 84: Theo quy định về độ tuổi, người đủ bao nhiêu tuổi trở lên thì được cấp giấy phép lái xe mô tô hai bánh có dung tích xi lanh đến 125 cm³ và xe ô tô chở người đến 8 chỗ (không kể chỗ của người lái xe); xe ô tô tải và ô tô chuyên dùng có khối lượng toàn bộ theo thiết kế đến 3.500 kg?",
+        "img": "",
+        "options": {
+            "A": "1. 16 tuổi.",
+            "B": "2. 17 tuổi.",
+            "C": "3. 18 tuổi."
+        },
+        "correct": "C",
+        "explain": "Độ tuổi tối thiểu để được cấp giấy phép lái xe các hạng phổ thông như A1 (mới), B là 18 tuổi."
+    },
+    {
+        "id": 85,
+        "question": "Câu hỏi 85: Người đủ 16 tuổi đến dưới 18 tuổi chỉ được điều khiển các loại xe nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe mô tô hai bánh có dung tích xi-lanh đến 125 cm³.",
+            "B": "2. Xe gắn máy.",
+            "C": "3. Xe ô tô chở người đến 08 chỗ (không kể chỗ của người lái xe); xe ô tô tải và ô tô chuyên dùng có khối lượng lượng toàn bộ theo thiết kế đến 3.500 kg; các loại xe ô tô quy định cho giấy phép lái xe hạng B kéo rơ moóc có khối lượng toàn bộ theo thiết kế đến 750 kg.",
+            "D": "4. Cả ba ý trên."
+        },
+        "correct": "B",
+        "explain": "Người từ đủ 16 tuổi đến dưới 18 tuổi chỉ được phép điều khiển xe gắn máy có dung tích xi-lanh dưới 50 cm³."
+    },
+    {
+        "id": 86,
+        "question": "Câu hỏi 86: Người có Giấy phép lái xe mô tô hạng A1 không được phép điều khiển loại xe nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe mô tô hai bánh có dung tích xi-lanh 125 cm³ hoặc có công suất động cơ điện đến 11 kW.",
+            "B": "2. Xe mô tô ba bánh.",
+            "C": "3. Cả hai ý trên."
+        },
+        "correct": "B",
+        "explain": "Theo quy định mới, hạng A1 chỉ dành cho xe mô tô hai bánh, không bao gồm xe mô tô ba bánh."
+    },
+    {
+        "id": 87,
+        "question": "Câu hỏi 87: Người có Giấy phép lái xe mô tô hạng A1 được cấp sau ngày 01/01/2025 được phép điều khiển loại xe nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe mô tô hai bánh có dung tích xi-lanh đến 125 cm³ hoặc có công suất động cơ điện đến 11 kW.",
+            "B": "2. Xe mô tô ba bánh.",
+            "C": "3. Cả hai ý trên."
+        },
+        "correct": "A",
+        "explain": "Từ 01/01/2025, hạng A1 cấp cho người lái xe mô tô hai bánh có dung tích xi-lanh đến 125 cm³ hoặc công suất động cơ điện đến 11 kW."
+    },
+    {
+        "id": 88,
+        "question": "Câu hỏi 88: Người có Giấy phép lái xe mô tô hạng A được phép điều khiển loại xe nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Xe mô tô hai bánh có dung tích xi-lanh đến 125 cm³ hoặc có công suất động cơ điện đến 11 kW.",
+            "B": "2. Xe mô tô hai bánh có dung tích xi-lanh trên 125 cm³ hoặc có công suất động cơ điện trên 11 kW.",
+            "C": "3. Cả hai ý trên."
+        },
+        "correct": "C",
+        "explain": "Hạng A là hạng không giới hạn dung tích xi-lanh cho xe mô tô hai bánh, bao gồm cả các loại xe thuộc hạng A1."
+    },
+    {
+        "id": 89,
+        "question": "Câu hỏi 89: Người lái xe khi tham gia giao thông đường bộ phải đảm bảo các điều kiện nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "1. Phải đủ tuổi, sức khỏe theo quy định của pháp luật; có giấy phép lái xe đang còn điểm, còn hiệu lực phù hợp với loại xe đang điều khiển do cơ quan có thẩm quyền cấp (trừ người lái xe gắn máy).",
+            "B": "2. Phải là người đứng tên trong đăng ký xe.",
+            "C": "3. Cả hai ý trên."
+        },
+        "correct": "A",
+        "explain": "Người lái xe phải đáp ứng các tiêu chuẩn về độ tuổi, sức khỏe và có giấy phép lái xe phù hợp, còn hiệu lực."
+    },
+    {
+        "id": 90,
+        "question": "Câu hỏi 90: Khi tham gia giao thông đường bộ, người lái xe phải mang theo các giấy tờ gì?",
+        "img": "",
+        "options": {
+            "A": "1. Chứng nhận đăng ký xe hoặc bản sao Chứng nhận đăng ký xe có chứng thực kèm bản gốc giấy tờ xác nhận của tổ chức tín dụng, chi nhánh ngân hàng nước ngoài còn hiệu lực trong trường hợp xe đang được thế chấp tại tổ chức tín dụng, chi nhánh ngân hàng nước ngoài.",
+            "B": "2. Giấy phép lái xe phù hợp với loại xe đang điều khiển; chứng nhận kiểm định an toàn kỹ thuật và bảo vệ môi trường đối với xe cơ giới theo quy định của pháp luật; chứng nhận bảo hiểm bắt buộc trách nhiệm dân sự của chủ xe cơ giới.",
+            "C": "3. Trường hợp các giấy tờ nêu trên đã được tích hợp vào tài khoản định danh điện tử thì việc xuất trình, kiểm tra có thể thực hiện thông qua tài khoản định danh điện tử.",
+            "D": "4. Cả ba ý trên."
+        },
+        "correct": "D",
+        "explain": "Người lái xe phải mang đầy đủ giấy tờ xe, GPLX, đăng kiểm và bảo hiểm (bản giấy hoặc bản điện tử trên VNeID)."
+    },
+    {
+        "id": 91,
+        "question": "Câu hỏi 91: Người có giấy phép lái xe chưa bị trừ hết 12 điểm, được phục hồi điểm giấy phép lái xe trong trường hợp nào sau đây?",
+        "img": "",
+        "options": {
+            "A": "1. Không được phục hồi.",
+            "B": "2. Được phục hồi đủ 12 điểm, nếu không bị trừ điểm trong thời hạn 12 tháng từ ngày bị trừ điểm gần nhất."
+        },
+        "correct": "B",
+        "explain": "Nếu trong vòng 12 tháng kể từ lần bị trừ điểm gần nhất mà không vi phạm thêm, điểm giấy phép lái xe sẽ được phục hồi về 12 điểm."
+    },
+    {
+        "id": 92,
+        "question": "Câu hỏi 92: Người có giấy phép lái xe đã bị trừ hết điểm phải làm gì để phục hồi điểm giấy phép lái xe?",
+        "img": "",
+        "options": {
+            "A": "1. Không vi phạm pháp luật trật tự, an toàn giao thông đường bộ trong thời gian 12 tháng kể từ ngày bị trừ hết điểm.",
+            "B": "2. Sau thời hạn ít nhất là 06 tháng kể từ ngày bị trừ hết điểm, người có giấy phép lái xe được tham gia kiểm tra nội dung kiến thức pháp luật về trật tự, an toàn giao thông đường bộ theo quy định, có kết quả đạt yêu cầu thì được phục hồi đủ 12 điểm.",
+            "C": "3. Cả hai ý trên."
+        },
+        "correct": "B",
+        "explain": "Khi bị trừ hết điểm, người lái xe phải đợi ít nhất 6 tháng và thi lại kiến thức pháp luật để được phục hồi điểm."
+    },
+    {
+        "id": 93,
+        "question": "Câu hỏi 93: Trách nhiệm của tổ chức, cá nhân đứng tên trong giấy chứng nhận đăng ký xe khi chưa thực hiện thu hồi chứng nhận đăng ký xe, biển số xe được quy định như thế nào?",
+        "img": "",
+        "options": {
+            "A": "1. Tiếp tục chịu trách nhiệm của chủ xe.",
+            "B": "2. Không chịu trách nhiệm sau khi đã chuyển nhượng, trao đổi, tặng, cho."
+        },
+        "correct": "A",
+        "explain": "Chủ xe cũ vẫn phải chịu trách nhiệm pháp lý liên quan đến phương tiện nếu chưa làm thủ tục thu hồi đăng ký và biển số khi chuyển quyền sở hữu."
+    },
+    {
+        "id": 94,
+        "question": "Câu hỏi 94: Trên đường bộ, trong khu vực đông dân cư, đường đôi hoặc đường một chiều có từ hai làn xe cơ giới trở lên, xe mô tô hai bánh, ô tô chở người đến 28 chỗ không kể chỗ của người lái xe tham gia giao thông với tốc độ khai thác tối đa cho phép là bao nhiêu?",
+        "img": "",
+        "options": {
+            "A": "1. 60 km/h.",
+            "B": "2. 50 km/h.",
+            "C": "3. 40 km/h."
+        },
+        "correct": "A",
+        "explain": "Trong khu đông dân cư, trên đường đôi hoặc đường một chiều có từ 2 làn xe cơ giới trở lên, tốc độ tối đa là 60 km/h."
+    },
+    {
+        "id": 95,
+        "question": "Câu hỏi 95: Trên đường bộ (trừ đường cao tốc) trong khu vực đông dân cư, đường hai chiều hoặc đường một chiều có một làn xe cơ giới, xe mô tô hai bánh, ô tô chở người đến 28 chỗ không kể chỗ của người lái xe tham gia giao thông với tốc độ khai thác tối đa cho phép là bao nhiêu?",
+        "img": "",
+        "options": {
+            "A": "1. 60 km/h.",
+            "B": "2. 50 km/h.",
+            "C": "3. 40 km/h."
+        },
+        "correct": "B",
+        "explain": "Trong khu đông dân cư, trên đường hai chiều hoặc đường một chiều có 1 làn xe cơ giới, tốc độ tối đa là 50 km/h."
+    },
+    {
+        "id": 96,
+        "question": "Câu hỏi 96: Trên đường bộ ngoài khu vực đông dân cư, đường đôi hoặc đường một chiều có từ hai làn xe cơ giới trở lên (trừ đường cao tốc) loại xe nào dưới đây được tham gia giao thông với tốc độ khai thác tối đa cho phép là 70 km/h?",
+        "img": "",
+        "options": {
+            "A": "1. Xe ô tô chở người đến 28 chỗ không kể chỗ của người lái xe (trừ xe buýt); ô tô tải có trọng tải không lớn hơn 3,5 tấn.",
+            "B": "2. Xe ô tô chở người trên 28 chỗ không kể chỗ người lái xe (trừ xe buýt); ô tô tải có trọng tải trên 3,5 tấn (trừ ô tô xi téc).",
+            "C": "3. Xe buýt; ô tô đầu kéo kéo sơ mi rơ moóc (trừ ô tô đầu kéo kéo sơ mi rơ moóc xi téc); xe mô tô; ô tô chuyên dùng (trừ ô tô trộn vữa, ô tô trộn bê tông lưu động).",
+            "D": "4. Ô tô kéo rơ moóc; ô tô kéo xe khác; ô tô trộn vữa, ô tô trộn bê tông lưu động, ô tô xi téc, ô tô đầu kéo kéo sơ mi rơ moóc xi téc, ô tô kéo theo rơ moóc xi téc."
+        },
+        "correct": "C",
+        "explain": "Trên đường đôi ngoài khu đông dân cư, xe buýt, ô tô đầu kéo kéo sơ mi rơ moóc và xe mô tô được chạy tối đa 70 km/h."
+    },
+    {
+        "id": 97,
+        "question": "Trên đường bộ ngoài khu vực đông dân cư, đường hai chiều hoặc đường một chiều có một làn xe cơ giới (trừ đường cao tốc), loại xe nào dưới đây được tham gia giao thông với tốc độ khai thác tối đa cho phép là 60 km/h?",
+        "img": "",
+        "options": {
+            "A": "Xe ô tô chở người đến 30 chỗ ngồi (trừ ô tô buýt); ô tô tải có trọng tải đến 3,5 tấn.",
+            "B": "Xe ô tô chở người trên 30 chỗ ngồi (trừ ô tô buýt); ô tô tải có trọng tải trên 3,5 tấn (trừ ô tô xi téc).",
+            "C": "Xe buýt; ô tô đầu kéo kéo sơ mi rơ moóc; xe mô tô; ô tô chuyên dùng (trừ ô tô trộn vữa, ô tô trộn bê tông).",
+            "D": "Ô tô kéo rơ moóc; ô tô kéo xe khác; ô tô trộn vữa, ô tô trộn bê tông, ô tô xi téc; ô tô kéo theo rơ moóc xi téc."
+        },
+        "correct": "C",
+        "explain": "Theo quy định về tốc độ xe cơ giới, xe buýt, xe đầu kéo kéo sơ mi rơ moóc, xe mô tô, xe chuyên dùng (trừ ô tô trộn vữa, bê tông) được chạy tối đa 60km/h trên đường bộ ngoài khu vực đông dân cư (đối với đường hai chiều hoặc đường một chiều có một làn xe cơ giới)."
+    },
+    {
+        "id": 98,
+        "question": "Người lái xe phải giảm tốc độ thấp hơn tốc độ tối đa cho phép đến mức cần thiết, chú ý quan sát và chuẩn bị sẵn sàng những tình huống có thể xảy ra để phòng ngừa tai nạn trong các trường hợp nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "Gặp biển báo nguy hiểm và cảnh báo trên đường.",
+            "B": "Gặp biển chỉ dẫn trên đường.",
+            "C": "Gặp biển báo hết mọi lệnh cấm.",
+            "D": "Gặp biển báo hết hạn chế tốc độ tối đa cho phép."
+        },
+        "correct": "A",
+        "explain": "Khi gặp biển báo nguy hiểm, người lái xe cần giảm tốc độ để đảm bảo an toàn và sẵn sàng xử lý các tình huống bất ngờ."
+    },
+    {
+        "id": 99,
+        "question": "Khi gặp xe buýt đang dừng đón, trả khách, người điều khiển xe mô tô phải xử lý như thế nào dưới đây?",
+        "img": "",
+        "options": {
+            "A": "Tăng tốc độ để nhanh chóng vượt qua xe buýt.",
+            "B": "Quan sát, giảm tốc độ đi qua xe buýt hoặc dừng lại để bảo đảm an toàn."
+        },
+        "correct": "B",
+        "explain": "Cần giảm tốc độ và quan sát kỹ vì có thể có hành khách băng qua đường từ phía trước hoặc sau xe buýt."
+    },
+    {
+        "id": 100,
+        "question": "Việc sử dụng xe mô tô, xe gắn máy, xe thô sơ để vận chuyển hành khách, hàng hóa phải thực hiện các quy định nào dưới đây để đảm bảo an toàn giao thông?",
+        "img": "",
+        "options": {
+            "A": "Kiểm tra điều kiện bảo đảm an toàn của xe trước khi tham gia giao thông đường bộ; mang đủ giấy tờ theo quy định của pháp luật.",
+            "B": "Kiểm tra việc sắp xếp hàng hóa bảo đảm an toàn; không chở quá số người, chở hành lý, hàng hoá vượt quá khối lượng cho phép hoặc vượt quá khổ giới hạn của xe.",
+            "C": "Cả 2 ý trên."
+        },
+        "correct": "C",
+        "explain": "Cả hai phương án đều là những quy định bắt buộc để đảm bảo an toàn khi sử dụng xe mô tô, xe gắn máy vận chuyển người và hàng hóa."
+    }
+];
+
+    let currentQuestions = [];
+
+    // Hàm đảo câu hỏi (Shuffle)
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // Hàm điều hướng về trang chủ
+    function home() {
+        window.location.href = 'home.html';
+    }
+
+    // --- LOGIC XỬ LÝ TRẮC NGHIỆM ---
+    function initQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        document.getElementById('score-board').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'inline-block';
+        document.getElementById('retry-btn').style.display = 'none';
+
+        // Deep copy và xáo trộn câu hỏi
+        currentQuestions = JSON.parse(JSON.stringify(rawQuestionData));
+        shuffle(currentQuestions);
+
+        currentQuestions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question-${index}`;
+
+            // XỬ LÝ TIÊU ĐỀ CÂU HỎI
+            // Loại bỏ phần "Câu hỏi XX:" cũ để hiển thị số thứ tự mới (76-100)
+            let cleanQuestion = q.question.replace(/^Câu (hỏi )?\d+[\.\:\*]*\s*/i, "");
+            let displayIndex = 76 + index; 
+            let displayTitle = `Câu ${displayIndex}: ${cleanQuestion}`;
+
+            // XỬ LÝ HÌNH ẢNH
+            let imgHTML = '';
+            if (q.img && q.img.trim() !== "") {
+                imgHTML = `<img src="${q.img}" class="question-image" alt="Hình ảnh minh họa">`;
+            }
+
+            let optionsHTML = '';
+            const optionKeys = ['A', 'B', 'C', 'D'];
+            
+            optionKeys.forEach(key => {
+                if(q.options.hasOwnProperty(key) && q.options[key] !== null) {
+                    optionsHTML += `
+                        <li class="option-item" id="opt-${index}-${key}">
+                            <label style="width: 100%; cursor: pointer; display: flex; align-items: center;">
+                                <input type="radio" name="q${index}" value="${key}">
+                                <span style="margin-left: 10px;"><b>${key}.</b> ${q.options[key]}</span>
+                            </label>
+                        </li>
+                    `;
+                }
+            });
+
+            card.innerHTML = `
+                <div class="question-title">${displayTitle}</div>
+                ${imgHTML}
+                <ul class="options-list">
+                    ${optionsHTML}
+                </ul>
+                <div class="explanation" id="exp-${index}">
+                    <strong>💡 Giải thích:</strong> ${q.explain}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        let total = currentQuestions.length;
+
+        currentQuestions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const explanation = document.getElementById(`exp-${index}`);
+            
+            // Hiện giải thích
+            explanation.style.display = 'block';
+
+            const correctKey = q.correct;
+            const correctOptionElement = document.getElementById(`opt-${index}-${correctKey}`);
+            
+            // Tô màu đáp án đúng (Xanh)
+            if(correctOptionElement) correctOptionElement.classList.add('correct');
+
+            if (selected) {
+                if (selected.value === correctKey) {
+                    score++;
+                } else {
+                    // Tô màu đáp án sai (Đỏ)
+                    const wrongOptionElement = document.getElementById(`opt-${index}-${selected.value}`);
+                    if(wrongOptionElement) wrongOptionElement.classList.add('wrong');
+                }
+            }
+            
+            // Khóa không cho chọn lại
+            const radios = document.querySelectorAll(`input[name="q${index}"]`);
+            radios.forEach(r => r.disabled = true);
+        });
+
+        // Hiển thị điểm số
+        const scoreBoard = document.getElementById('score-board');
+        scoreBoard.style.display = 'block';
+        
+        let msg = "";
+        if(score === total) msg = "Tuyệt vời! Vợ quá xuất sắc! ❤️";
+        else if(score >= 21) msg = "Giỏi lắm vợ yêu! Đậu rồi nè (>= 21/25). Cố lên xíu nữa cho điểm tuyệt đối nha!";
+        else msg = "Không sao đâu, vợ làm lại lần nữa là thuộc ngay thôi! Cố lên!";
+
+        scoreBoard.innerHTML = `Kết quả: ${score}/${total} câu đúng<br><small>${msg}</small>`;
+        
+        // Cuộn lên đầu
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Đổi nút
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('retry-btn').style.display = 'inline-block';
+    }
+
+    // Chạy khi tải trang
+    document.addEventListener('DOMContentLoaded', initQuiz);
+
+</script>
 
 </body>
 </html>
