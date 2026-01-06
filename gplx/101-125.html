@@ -3,177 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Thi Lý Thuyết Cùng Vợ Yêu (101-125)</title>
+    <title>Ôn Thi Lý Thuyết Cùng Vợ Yêu (Câu 101 - 125)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap');
+        /* CSS COPY Y NGUYÊN TỪ FILE 76-100 */
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #ff9a9e;
+            --bg-color: #fff0f3;
+            --text-color: #4a4a4a;
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+        }
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            background-color: #ffe6e9;
-            color: #4a4a4a;
+            background-color: var(--bg-color);
+            background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* Hiệu ứng tim bay nền */
         .heart-bg {
             position: fixed;
-            color: #ffb6c1;
-            opacity: 0.3;
-            top: -10vh;
-            animation: fall linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
             z-index: -1;
+            overflow: hidden;
         }
 
-        @keyframes fall {
-            to { transform: translateY(110vh); }
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 107, 129, 0.2);
+            animation: fly 10s linear infinite;
+        }
+
+        @keyframes fly {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
         .container {
+            width: 90%;
             max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.4);
-            border: 2px solid #ffeff2;
+            margin: 20px auto;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            color: #ff4081;
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 0px #fff;
+            color: var(--primary-color);
+            font-size: 3rem;
+            margin: 10px 0;
+            text-shadow: 2px 2px 0 #fff;
         }
 
         .subtitle {
-            text-align: center;
-            color: #888;
-            margin-bottom: 30px;
+            color: #7f8c8d;
             font-style: italic;
         }
 
+        /* Nút Home */
+        .home-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 129, 0.3);
+        }
+
+        /* Danh sách câu hỏi */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
         .question-card {
-            background: #fff;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid #ff80ab;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.15);
             transition: transform 0.3s ease;
+            border: 2px solid transparent;
         }
 
         .question-card:hover {
             transform: translateY(-5px);
+            border-color: rgba(255, 107, 129, 0.2);
         }
 
         .question-text {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
         }
 
-        .options-grid {
-            display: grid;
-            gap: 10px;
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .option-btn {
-            padding: 12px 15px;
-            border: 2px solid #ffeff2;
-            background: #fff;
-            border-radius: 10px;
-            text-align: left;
+        .option {
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1em;
-            color: #555;
+            transition: all 0.2s ease;
             position: relative;
+            overflow: hidden;
         }
 
-        .option-btn:hover {
-            background: #fff0f5;
-            border-color: #ff80ab;
+        .option:hover {
+            background-color: #fff5f7;
+            border-color: var(--secondary-color);
         }
 
-        .option-btn.correct {
-            background: #d4edda;
-            border-color: #28a745;
-            color: #155724;
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
         }
 
-        .option-btn.wrong {
-            background: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
+        .option.correct {
+            background-color: #e8f5e9;
+            border-color: var(--correct-color);
+            color: #2d7d32;
+            font-weight: 600;
         }
 
+        .option.wrong {
+            background-color: #ffebee;
+            border-color: var(--wrong-color);
+            color: #c62828;
+            opacity: 0.7;
+        }
+
+        /* Giải thích */
         .explanation {
             margin-top: 15px;
             padding: 15px;
-            background: #fff5f8;
-            border-radius: 10px;
-            color: #d63384;
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
             display: none;
-            font-style: italic;
-            border: 1px dashed #ffb6c1;
+            animation: slideDown 0.3s ease;
         }
 
-        .love-note {
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Thanh điều khiển */
+        .control-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit {
+            background: linear-gradient(45deg, #ff6b81, #ff9a9e);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 129, 0.6);
+        }
+
+        .btn-reset {
+            background: #f1f2f6;
+            color: #7f8c8d;
+        }
+
+        .btn-reset:hover {
+            background: #e4e6eb;
+        }
+
+        /* Modal Kết quả */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
             text-align: center;
-            margin-top: 40px;
-            font-family: 'Dancing Script', cursive;
-            color: #ff4081;
-            font-size: 1.5em;
+            max-width: 400px;
+            width: 90%;
+            animation: zoomIn 0.3s ease;
+            border: 4px solid var(--secondary-color);
         }
 
-        /* Ẩn hiện các câu hỏi */
-        .hidden { display: none; }
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .score-display {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
 
-    <div id="hearts-container"></div>
+    <div class="heart-bg" id="heartBg"></div>
 
     <div class="container">
-        <h1>Ôn Thi Cùng Vợ Yêu ❤️</h1>
-        <p class="subtitle">Phần câu hỏi từ 101 đến 125 - Cố lên vợ ơi!</p>
+        <header>
+            <a href="home.html" class="home-btn">🏠 Trang chủ</a>
+            <h1>Luyện Thi Lý Thuyết ❤️</h1>
+            <p class="subtitle">Phần câu hỏi từ 101 đến 125 - Chúc vợ yêu làm bài thật tốt!</p>
+        </header>
 
-        <div id="quiz-container">
+        <div class="quiz-container" id="quizContainer">
             </div>
+    </div>
 
-        <div class="love-note">
-            Chồng luôn ủng hộ vợ! Yêu vợ nhiều lắm! ❤️
+    <div class="control-bar">
+        <button class="btn btn-reset" onclick="location.reload()">🔄 Làm lại</button>
+        <button class="btn btn-submit" onclick="submitQuiz()">✨ Nộp bài ✨</button>
+    </div>
+
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal-content">
+            <h2>Kết Quả Của Vợ Yêu</h2>
+            <div class="score-display" id="scoreValue">0/25</div>
+            <p class="message" id="scoreMessage">Cố lên nhé!</p>
+            <button class="btn btn-submit" onclick="closeModal()">Xem lại bài sai</button>
         </div>
     </div>
 
     <script>
-        // Tạo hiệu ứng tim bay
+        // Hiệu ứng tim bay
         function createHearts() {
-            const container = document.getElementById('hearts-container');
-            for(let i=0; i<15; i++) {
+            const container = document.getElementById('heartBg');
+            for(let i=0; i<20; i++) {
                 const heart = document.createElement('div');
-                heart.innerHTML = '❤';
-                heart.className = 'heart-bg';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
-                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heart.classList.add('heart');
+                heart.innerHTML = ['❤️', '💖', '💕', '🥰'][Math.floor(Math.random()*4)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 10) + 's';
                 container.appendChild(heart);
             }
         }
         createHearts();
 
-        // Dữ liệu câu hỏi từ file Excel 101-125
-        const quizData = [
+        // Dữ liệu câu hỏi 101-125 (Đã làm sạch text thừa)
+        const questions = [
             {
-                stt: "1",
+                id: 1,
                 question: "Những hành vi nào sau đây thể hiện là người có văn hóa giao thông?",
                 options: [
                     "Luôn tuân thủ pháp luật về trật tự, an toàn giao thông đường bộ, nhường nhịn và giúp đỡ người khác.",
@@ -181,64 +337,64 @@
                     "Bấm còi và nháy đèn liên tục để cảnh báo xe khác.",
                     "Tránh nhường đường để đi nhanh hơn."
                 ],
-                correct: 0, // A là 0
+                correct: 0,
                 explain: "Văn hóa giao thông thể hiện qua việc tự giác chấp hành pháp luật và có thái độ ứng xử văn minh, nhường nhịn."
             },
             {
-                stt: "2",
+                id: 2,
                 question: "Khái niệm về văn hóa giao thông được hiểu như thế nào là đúng?",
                 options: [
                     "Là sự hiểu biết và chấp hành nghiêm chỉnh pháp luật về giao thông, là ý thức trách nhiệm với cộng đồng khi tham gia giao thông.",
                     "Là sự tôn trọng, nhường nhịn, giúp đỡ và ứng xử có văn hóa giữa những người tham gia giao thông với nhau.",
                     "Cả hai ý trên."
                 ],
-                correct: 2, // C là 2
+                correct: 2,
                 explain: "Văn hóa giao thông bao gồm cả khía cạnh chấp hành luật pháp và khía cạnh đạo đức, ứng xử giữa người với người."
             },
             {
-                stt: "3",
+                id: 3,
                 question: "Người lái xe không điều khiển xe đi đúng làn đường quy định, phóng nhanh, vượt ẩu, vượt đèn đỏ, đi vào đường cấm được coi là hành vi nào trong các hành vi dưới đây?",
                 options: [
                     "Là thiếu văn hóa giao thông, vi phạm pháp luật về trật tự, an toàn giao thông đường bộ.",
                     "Là thiếu văn hóa giao thông."
                 ],
-                correct: 0, // A là 0
+                correct: 0,
                 explain: "Các hành vi này vừa vi phạm nghiêm trọng luật giao thông vừa thể hiện sự thiếu văn hóa, coi thường tính mạng bản thân và người khác."
             },
             {
-                stt: "4",
+                id: 4,
                 question: "Người lái xe có văn hóa giao thông khi tham gia giao thông đường bộ phải đáp ứng các điều kiện nào dưới đây?",
                 options: [
                     "Hiểu biết và chấp hành nghiêm chỉnh pháp luật về giao thông đường bộ; có ý thức trách nhiệm với cộng đồng khi tham gia giao thông; tôn trọng, nhường nhịn, giúp đỡ và ứng xử có văn hóa với những người cùng tham gia giao thông.",
                     "Điều khiển xe vượt quá tốc độ, đi không đúng làn đường."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Người có văn hóa giao thông phải hội đủ cả kiến thức pháp luật và ý thức đạo đức khi tham gia giao thông."
             },
             {
-                stt: "5",
+                id: 5,
                 question: "Người lái xe mô tô có văn hóa giao thông khi tham gia giao thông phải tuân thủ những quy định nào dưới đây?",
                 options: [
                     "Điều khiển xe đi bên phải theo chiều đi của mình; đi đúng phần đường, làn đường quy định; đội mũ bảo hiểm đúng quy chuẩn kỹ thuật quốc gia, cài quai đúng quy cách.",
                     "Điều khiển xe đi trên phần đường, làn đường có ít phương tiện tham gia giao thông.",
                     "Điều khiển xe và đội mũ bảo hiểm ở nơi có biển báo bắt buộc đội mũ bảo hiểm."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Đi đúng làn đường, phần đường và đội mũ bảo hiểm đúng quy cách là những quy định cơ bản nhất của người lái xe mô tô có văn hóa."
             },
             {
-                stt: "6",
+                id: 6,
                 question: "Trong các hành vi dưới đây, người lái xe có văn hóa giao thông phải ứng xử như thế nào?",
                 options: [
                     "Điều khiển xe đi bên phải theo chiều đi của mình; đi đúng phần đường, làn đường quy định; dừng, đỗ xe đúng nơi quy định; đã uống rượu, bia thì không lái xe.",
                     "Điều khiển xe đi trên phần đường, làn đường có ít phương tiện giao thông; dừng xe, đỗ xe ở nơi thuận tiện hoặc theo yêu cầu của hành khách, của người thân.",
                     "Dừng và đỗ xe ở nơi thuận tiện cho việc chuyên chở hành khách và giao nhận hàng hóa; sử dụng ít rượu, bia thì có thể lái xe."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Ứng xử có văn hóa bao gồm việc tuân thủ quy tắc giao thông và tuyệt đối không lái xe khi đã sử dụng đồ uống có cồn."
             },
             {
-                stt: "7",
+                id: 7,
                 question: "Khi tham gia giao thông việc sử dụng còi xe nên dùng như thế nào để thể hiện là người có văn hóa giao thông?",
                 options: [
                     "Chỉ bấm còi khi thật sự cần thiết, không bấm còi liên tục hoặc kéo dài, sử dụng còi với mức âm lượng theo quy định.",
@@ -246,11 +402,11 @@
                     "Bấm còi to khi đi qua khu vực đông dân cư.",
                     "Không cần dùng còi, tránh gây tiếng ồn là văn minh."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Sử dụng còi đúng mục đích, đúng lúc và đúng âm lượng là biểu hiện của sự văn minh và tôn trọng cộng đồng."
             },
             {
-                stt: "8",
+                id: 8,
                 question: "Người điều khiển phương tiện tham gia giao thông đường bộ gây tai nạn giao thông đường bộ, người liên quan đến vụ tai nạn giao thông đường bộ có trách nhiệm gì dưới đây?",
                 options: [
                     "Dừng ngay phương tiện, cảnh báo nguy hiểm, giữ nguyên hiện trường, trợ giúp người bị nạn và báo tin cho cơ quan Công an, cơ sở khám bệnh, chữa bệnh.",
@@ -258,257 +414,306 @@
                     "Cung cấp thông tin xác định danh tính về bản thân, người liên quan đến vụ tai nạn giao thông đường bộ và thông tin liên quan của vụ tai nạn giao thông đường bộ cho cơ quan có thẩm quyền.",
                     "Cả ba ý trên."
                 ],
-                correct: 3, // D
+                correct: 3,
                 explain: "Tất cả các hành động trên đều là trách nhiệm pháp lý và đạo đức của người gây tai nạn hoặc liên quan đến tai nạn."
             },
             {
-                stt: "9",
+                id: 9,
                 question: "Người có mặt tại nơi xảy ra vụ tai nạn giao thông đường bộ có trách nhiệm gì dưới đây?",
                 options: [
                     "Giúp đỡ, cứu chữa kịp thời người bị nạn; báo tin ngay cho cơ quan Công an, cơ sở khám bệnh, chữa bệnh hoặc Ủy ban nhân dân nơi gần nhất; tham gia bảo vệ hiện trường; tham gia bảo vệ tài sản của người bị nạn; cung cấp thông tin liên quan về vụ tai nạn theo yêu cầu của cơ quan có thẩm quyền.",
                     "Chụp lại hình ảnh vụ tai nạn (nếu có thiết bị ghi hình) và nhanh chóng rời khỏi hiện trường vụ tai nạn."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Người chứng kiến tai nạn có trách nhiệm hỗ trợ cứu người, bảo vệ hiện trường và cung cấp thông tin cho cơ quan chức năng."
             },
             {
-                stt: "10",
+                id: 10,
                 question: "Trong đoạn đường hai chiều tại khu đông dân cư đang ùn tắc, người điều khiển xe mô tô có văn hóa giao thông sẽ lựa chọn cách xử lý tình huống nào dưới đây?",
                 options: [
                     "Cho xe lấn sang làn ngược chiều để nhanh chóng thoát khỏi nơi ùn tắc.",
                     "Điều khiển xe trên vỉa hè để nhanh chóng thoát khỏi nơi ùn tắc.",
                     "Kiên nhẫn tuân thủ hướng dẫn của người điều khiển giao thông hoặc tín hiệu đèn giao thông, di chuyển trên đúng phần đường bên phải theo chiều đi, nhường đường cho các phương tiện đi ngược chiều."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Khi ùn tắc, việc kiên nhẫn đi đúng làn đường và tuân thủ chỉ dẫn là cách xử lý văn minh nhất, tránh làm tình trạng ùn tắc thêm trầm trọng."
             },
             {
-                stt: "11",
-                question: "Câu hỏi 111: Khi điều khiển xe mô tô tay ga xuống đường dốc dài, độ dốc cao, người lái xe cần thực hiện các thao tác nào dưới đây để bảo đảm an toàn?",
+                id: 11,
+                question: "Khi điều khiển xe mô tô tay ga xuống đường dốc dài, độ dốc cao, người lái xe cần thực hiện các thao tác nào dưới đây để bảo đảm an toàn?",
                 options: [
                     "Giữ tay ga ở mức độ phù hợp, sử dụng phanh trước và phanh sau để giảm tốc độ.",
                     "Nhả hết tay ga, tắt động cơ, sử dụng phanh trước và phanh sau để giảm tốc độ.",
                     "Sử dụng phanh trước để giảm tốc độ kết hợp với tắt chìa khóa điện của xe."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Khi xuống dốc, cần giữ tay ga để động cơ hỗ trợ hãm xe (phanh bằng động cơ), tuyệt đối không tắt máy vì sẽ mất kiểm soát."
             },
             {
-                stt: "12",
-                question: "Câu hỏi 112: Khi điều khiển xe trên đường vòng người lái xe cần phải làm gì để bảo đảm an toàn?",
+                id: 12,
+                question: "Khi điều khiển xe trên đường vòng người lái xe cần phải làm gì để bảo đảm an toàn?",
                 options: [
                     "Quan sát cẩn thận các chướng ngại vật và báo hiệu bằng còi, đèn; giảm tốc độ tới mức cần thiết, về số thấp và thực hiện quay vòng với tốc độ phù hợp với bán kính cong của đường vòng.",
                     "Quan sát cẩn thận các chướng ngại vật và báo hiệu bằng còi, đèn; tăng tốc để nhanh chóng qua đường vòng và giảm tốc độ sau khi qua đường vòng."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Giảm tốc độ và về số thấp giúp xe ổn định và an toàn hơn khi vào cua."
             },
             {
-                stt: "13",
-                question: "Câu hỏi 113: Khi điều khiển xe qua đường sắt, người lái xe cần phải thực hiện các thao tác nào dưới đây để bảo đảm an toàn?",
+                id: 13,
+                question: "Khi điều khiển xe qua đường sắt, người lái xe cần phải thực hiện các thao tác nào dưới đây để bảo đảm an toàn?",
                 options: [
                     "Khi có chuông báo hoặc thanh chắn đã hạ xuống, người lái xe phải dừng xe tạm thời đúng khoảng cách an toàn, kéo phanh tay nếu đường dốc hoặc phải chờ lâu.",
                     "Khi không có chuông báo hoặc thanh chắn không hạ xuống, người lái xe cần phải quan sát nếu thấy đủ điều kiện an toàn thì về số thấp, tăng ga nhẹ và không thay đổi số trong quá trình vượt qua đường sắt để tránh động cơ chết máy khi xe cho vượt qua.",
                     "Cả hai ý trên."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Cả hai phương án đều là các quy tắc an toàn bắt buộc khi đi qua nơi giao nhau với đường sắt."
             },
             {
-                stt: "14",
-                question: "Câu hỏi 114: Trong các loại nhiên liệu dưới đây, loại nhiên liệu nào giảm thiểu ô nhiễm môi trường?",
+                id: 14,
+                question: "Trong các loại nhiên liệu dưới đây, loại nhiên liệu nào giảm thiểu ô nhiễm môi trường?",
                 options: [
                     "Xăng và dầu diesel.",
                     "Xăng sinh học và khí sinh học.",
                     "Ý 1 và ý 2."
                 ],
-                correct: 1, // B
+                correct: 1,
                 explain: "Xăng sinh học và khí sinh học là các nguồn năng lượng tái tạo, thải ra ít khí độc hại hơn nhiên liệu hóa thạch."
             },
             {
-                stt: "15",
-                question: "Câu hỏi 115: Các biện pháp tiết kiệm nhiên liệu khi chạy xe?",
+                id: 15,
+                question: "Các biện pháp tiết kiệm nhiên liệu khi chạy xe?",
                 options: [
                     "Bảo dưỡng xe theo định kỳ và có kế hoạch lộ trình trước khi xe chạy.",
                     "Kiểm tra áp suất lốp theo quy định và chạy xe với tốc độ phù hợp với tình trạng mặt đường và mật độ giao thông trên đường.",
                     "Cả hai ý trên."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Bảo dưỡng xe định kỳ và duy trì áp suất lốp đúng chuẩn giúp động cơ hoạt động hiệu quả nhất, từ đó tiết kiệm nhiên liệu."
             },
             {
-                stt: "16",
-                question: "Câu hỏi 116: Khi tầm nhìn bị hạn chế bởi sương mù hoặc mưa to, người lái xe phải thực hiện các thao tác nào để bảo đảm an toàn?",
+                id: 16,
+                question: "Khi tầm nhìn bị hạn chế bởi sương mù hoặc mưa to, người lái xe phải thực hiện các thao tác nào để bảo đảm an toàn?",
                 options: [
                     "Tăng tốc độ, chạy gần xe trước, nhìn đèn hậu để định hướng.",
                     "Giảm tốc độ, chạy cách xa xe trước với khoảng cách an toàn, bật đèn sương mù và đèn chiếu gần.",
                     "Tăng tốc độ, bật đèn pha vượt qua xe chạy trước."
                 ],
-                correct: 1, // B
+                correct: 1,
                 explain: "Khi tầm nhìn kém, cần giảm tốc độ và bật đèn chiếu gần để quan sát đường tốt hơn và giúp xe khác nhận diện mình."
             },
             {
-                stt: "17",
-                question: "Câu hỏi 117: Khi đèn pha của xe đi ngược chiều gây chói mắt, làm giảm khả năng quan sát trên đường, người lái xe xử lý như thế nào dưới đây để bảo đảm an toàn?",
+                id: 17,
+                question: "Khi đèn pha của xe đi ngược chiều gây chói mắt, làm giảm khả năng quan sát trên đường, người lái xe xử lý như thế nào dưới đây để bảo đảm an toàn?",
                 options: [
                     "Giảm tốc độ, giữ vững tay lái, nhìn chếch sang lề đường bên phải.",
                     "Bật đèn pha chiếu xa và giữ nguyên tốc độ.",
                     "Tăng tốc độ, bật đèn pha đối diện xe phía trước."
                 ],
-                correct: 0, // A
+                correct: 0,
                 explain: "Nhìn chếch sang phải giúp tránh bị lóa mắt trực tiếp từ đèn pha xe ngược chiều và vẫn giữ được hướng đi theo lề đường."
             },
             {
-                stt: "18",
-                question: "Câu hỏi 118: Để đạt được hiệu quả phanh cao nhất, người lái xe mô tô phải sử dụng các kỹ năng như thế nào dưới đây?",
+                id: 18,
+                question: "Để đạt được hiệu quả phanh cao nhất, người lái xe mô tô phải sử dụng các kỹ năng như thế nào dưới đây?",
                 options: [
                     "Sử dụng phanh trước.",
                     "Sử dụng phanh sau.",
                     "Giảm hết ga, sử dụng đồng thời cả phanh sau và phanh trước."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Kết hợp cả hai phanh cùng lúc sau khi đã giảm ga sẽ tạo ra lực phanh lớn nhất và giữ xe cân bằng."
             },
             {
-                stt: "19",
-                question: "Câu hỏi 119: Khi đang lái xe mô tô hoặc ô tô, nếu có nhu cầu sử dụng điện thoại để nhắn tin hoặc gọi điện, người lái xe phải thực hiện như thế nào trong các tình huống nêu dưới đây?",
+                id: 19,
+                question: "Khi đang lái xe mô tô hoặc ô tô, nếu có nhu cầu sử dụng điện thoại để nhắn tin hoặc gọi điện, người lái xe phải thực hiện như thế nào trong các tình huống nêu dưới đây?",
                 options: [
                     "Giảm tốc độ để bảo đảm an toàn với xe phía trước và sử dụng điện thoại để liên lạc.",
                     "Giảm tốc độ để dừng xe ở nơi cho phép sau đó sử dụng điện thoại để liên lạc.",
                     "Tăng tốc độ để cách xa xe phía sau và sử dụng điện thoại để liên lạc."
                 ],
-                correct: 1, // B
+                correct: 1,
                 explain: "Luật giao thông nghiêm cấm sử dụng điện thoại khi đang điều khiển xe. Phải dừng xe tại nơi quy định mới được sử dụng."
             },
             {
-                stt: "20",
-                question: "Câu hỏi 120: Những thói quen nào dưới đây khi điều khiển xe mô tô tay ga tham gia giao thông dễ gây tai nạn nguy hiểm?",
+                id: 20,
+                question: "Những thói quen nào dưới đây khi điều khiển xe mô tô tay ga tham gia giao thông dễ gây tai nạn nguy hiểm?",
                 options: [
                     "Sử dụng còi.",
                     "Phanh đồng thời cả phanh trước và phanh sau.",
                     "Chỉ sử dụng phanh trước."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Chỉ sử dụng phanh trước trên xe ga rất dễ gây trượt bánh dẫn hướng và ngã xe do bánh trước bị bó cứng đột ngột."
             },
             {
-                stt: "21",
-                question: "Câu hỏi 121: Khi điều khiển xe mô tô quay đầu, người lái xe cần thực hiện như thế nào để bảo đảm an toàn?",
+                id: 21,
+                question: "Khi điều khiển xe mô tô quay đầu, người lái xe cần thực hiện như thế nào để bảo đảm an toàn?",
                 options: [
                     "Bật tín hiệu báo rẽ trước khi quay đầu, từ từ giảm tốc độ đến mức có thể dừng lại.",
                     "Chỉ quay đầu xe tại những nơi được phép quay đầu.",
                     "Quan sát an toàn các phương tiện tới từ phía trước, phía sau, hai bên đồng thời nhường đường cho xe từ bên phải và phía trước đi tới.",
                     "Cả ba ý trên."
                 ],
-                correct: 3, // D
+                correct: 3,
                 explain: "Đây là quy trình đầy đủ bao gồm báo hiệu, chọn vị trí đúng luật và quan sát nhường đường khi quay đầu."
             },
             {
-                stt: "22",
-                question: "Câu hỏi 122: Tay ga trên xe mô tô hai bánh có tác dụng gì dưới đây?",
+                id: 22,
+                question: "Tay ga trên xe mô tô hai bánh có tác dụng gì dưới đây?",
                 options: [
                     "Để điều khiển xe chạy về phía trước.",
                     "Để điều tiết công suất động cơ qua đó điều khiển tốc độ của xe.",
                     "Để điều khiển xe chạy lùi.",
                     "Ý 1 và ý 2."
                 ],
-                correct: 3, // D
+                correct: 3,
                 explain: "Tay ga dùng để tăng/giảm công suất động cơ để thay đổi tốc độ và giúp xe tiến về phía trước. Xe mô tô 2 bánh không có số lùi."
             },
             {
-                stt: "23",
-                question: "Câu hỏi 123: Gương chiếu hậu của xe mô tô hai bánh có tác dụng gì dưới đây?",
+                id: 23,
+                question: "Gương chiếu hậu của xe mô tô hai bánh có tác dụng gì dưới đây?",
                 options: [
                     "Để quan sát an toàn phía bên trái khi chuẩn bị rẽ trái.",
                     "Để quan sát an toàn phía bên phải khi chuẩn bị rẽ phải.",
                     "Để quan sát an toàn phía sau của bên trái và bên phải trước khi chuyển hướng.",
                     "Để quan sát an toàn phía trước cả bên trái và bên phải trước khi chuyển hướng."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Gương chiếu hậu giúp người lái quan sát tình hình giao thông phía sau ở cả hai bên để chuyển hướng an toàn."
             },
             {
-                stt: "24",
-                question: "Câu hỏi 124: Để bảo đảm an toàn khi tham gia giao thông, người lái xe mô tô hai bánh cần điều khiển tay ga như thế nào?",
+                id: 24,
+                question: "Để bảo đảm an toàn khi tham gia giao thông, người lái xe mô tô hai bánh cần điều khiển tay ga như thế nào?",
                 options: [
                     "Tăng ga thật mạnh, giảm ga từ từ.",
                     "Tăng ga thật mạnh, giảm ga thật nhanh.",
                     "Tăng ga từ từ, giảm ga thật nhanh.",
                     "Tăng ga từ từ, giảm ga từ từ."
                 ],
-                correct: 2, // C
+                correct: 2,
                 explain: "Tăng ga từ từ để xe không bị vọt mất kiểm soát, giảm ga nhanh để động cơ hỗ trợ phanh xe khi cần thiết."
             },
             {
-                stt: "25",
-                question: "Câu hỏi 125: Để tránh đổ, ngã khi điều khiển xe mô tô hai bánh ở nơi đường xấu, nhỏ và hẹp, người lái xe cần xử lý như thế nào?",
+                id: 25,
+                question: "Để tránh đổ, ngã khi điều khiển xe mô tô hai bánh ở nơi đường xấu, nhỏ và hẹp, người lái xe cần xử lý như thế nào?",
                 options: [
                     "Đi ở tốc độ thấp, quan sát liên tục khoảng cách từ 05 m đến 10 m phía trước để điều chỉnh sớm hướng di chuyển.",
                     "Trong quá trình di chuyển không nên dùng phanh trước tránh làm khóa bánh dẫn hướng.",
                     "Không được lắc người sang trái hoặc phải nhiều, trọng tâm cơ thể cần trùng với trọng tâm của xe.",
                     "Cả ba ý trên."
                 ],
-                correct: 3, // D
+                correct: 3,
                 explain: "Kết hợp các kỹ năng: quan sát xa, hạn chế phanh trước trên đường xấu và giữ thăng bằng cơ thể giúp lái xe an toàn."
             }
         ];
 
-        const container = document.getElementById('quiz-container');
+        let shuffledQuestions = [];
+        let userAnswers = {};
+        let isSubmitted = false;
 
-        // Hàm render câu hỏi
-        quizData.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'question-card';
-            
-            // Xử lý tạo nút lựa chọn
-            let optionsHtml = '';
-            item.options.forEach((opt, optIndex) => {
-                const labels = ['A', 'B', 'C', 'D'];
-                optionsHtml += `
-                    <div class="option-btn" onclick="checkAnswer(this, ${index}, ${optIndex})">
-                        <strong>${labels[optIndex]}.</strong> ${opt}
-                    </div>
+        // Đảo câu hỏi
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Render Quiz
+        function renderQuiz() {
+            shuffledQuestions = shuffleArray([...questions]);
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            shuffledQuestions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.classList.add('question-card');
+                card.setAttribute('data-id', q.id);
+
+                let optionsHtml = '';
+                q.options.forEach((opt, i) => {
+                    optionsHtml += `<div class="option" onclick="selectOption(${q.id}, ${i}, this)">${String.fromCharCode(65 + i)}. ${opt}</div>`;
+                });
+
+                // TÍNH TOÁN SỐ THỨ TỰ (Quan trọng: Luôn hiển thị từ 101 - 125)
+                const displayIndex = 101 + index;
+
+                card.innerHTML = `
+                    <div class="question-text">Câu ${displayIndex}: ${q.question}</div>
+                    <div class="options-list">${optionsHtml}</div>
+                    <div class="explanation" id="explain-${q.id}">💡 ${q.explain}</div>
                 `;
+                container.appendChild(card);
             });
+        }
 
-            card.innerHTML = `
-                <div class="question-text">Câu ${item.stt}: ${item.question}</div>
-                <div class="options-grid">
-                    ${optionsHtml}
-                </div>
-                <div class="explanation" id="explain-${index}">
-                    <strong>💡 Giải thích:</strong> ${item.explain}
-                </div>
-            `;
-            container.appendChild(card);
-        });
+        // Chọn đáp án
+        function selectOption(qId, optIndex, element) {
+            if (isSubmitted) return;
 
-        // Hàm kiểm tra đáp án
-        function checkAnswer(btn, questionIndex, choiceIndex) {
-            const currentData = quizData[questionIndex];
-            const parent = btn.parentElement;
-            const explanation = document.getElementById(`explain-${questionIndex}`);
-            const allBtns = parent.querySelectorAll('.option-btn');
+            userAnswers[qId] = optIndex;
+            
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+        }
 
-            // Chặn click lại nếu đã chọn
-            if (parent.getAttribute('data-answered') === 'true') return;
-            parent.setAttribute('data-answered', 'true');
-
-            if (choiceIndex === currentData.correct) {
-                btn.classList.add('correct');
-                btn.innerHTML += ' <span style="color: #155724; font-weight: bold;">(Vợ giỏi quá! ❤️)</span>';
-            } else {
-                btn.classList.add('wrong');
-                btn.innerHTML += ' <span style="color: #721c24; font-weight: bold;">(Tiếc quá, thử lại nha vợ!)</span>';
-                
-                // Hiện đáp án đúng
-                allBtns[currentData.correct].classList.add('correct');
-                allBtns[currentData.correct].innerHTML += ' <span style="color: #155724; font-weight: bold;">(Đáp án đúng đây nè!)</span>';
+        // Nộp bài
+        function submitQuiz() {
+            if (isSubmitted) return;
+            
+            if (Object.keys(userAnswers).length < questions.length) {
+                if(!confirm("Vợ yêu chưa làm xong hết đâu, có chắc muốn nộp luôn hông? 🥺")) return;
             }
 
-            // Hiện giải thích
-            explanation.style.display = 'block';
+            isSubmitted = true;
+            let score = 0;
+
+            shuffledQuestions.forEach(q => {
+                const card = document.querySelector(`.question-card[data-id="${q.id}"]`);
+                const options = card.querySelectorAll('.option');
+                const explain = card.querySelector('.explanation');
+                
+                explain.style.display = 'block';
+                options[q.correct].classList.add('correct');
+
+                if (userAnswers[q.id] !== undefined) {
+                    if (userAnswers[q.id] === q.correct) {
+                        score++;
+                    } else {
+                        options[userAnswers[q.id]].classList.add('wrong');
+                    }
+                }
+            });
+
+            // Hiện kết quả
+            const modal = document.getElementById('resultModal');
+            const scoreVal = document.getElementById('scoreValue');
+            const msg = document.getElementById('scoreMessage');
+
+            scoreVal.textContent = `${score}/${questions.length}`;
+            modal.style.display = 'flex';
+
+            if (score === questions.length) {
+                msg.textContent = "Xuất sắc! Vợ yêu quá giỏi luôn! ❤️❤️❤️";
+            } else if (score >= 20) {
+                msg.textContent = "Giỏi lắm vợ ơi! Cố thêm tí nữa là điểm tuyệt đối! 🥰";
+            } else {
+                msg.textContent = "Vợ ôn lại mấy câu sai xíu nha! Yêu vợ! 😘";
+            }
         }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // Chạy khi load
+        renderQuiz();
+
     </script>
 </body>
 </html>
