@@ -3,216 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Báo Gửi Vợ Yêu ❤️</title>
+    <title>Ôn Tập Câu 126 - 150: Vợ Yêu Cố Lên 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Màu chủ đạo cho thông báo bên trong */
             --primary-pink: #ff6b81;
+            --light-pink: #ffeff3;
             --deep-red: #d63031;
             --text-color: #2d3436;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            /* Bầu trời đêm màu đen xanh */
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffdde1; 
+            background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
-            padding: 50px 20px;
-            text-align: center;
-            overflow-y: auto; 
-            overflow-x: hidden;
-            box-sizing: border-box;
-            color: #fff; /* Màu chữ mặc định bên ngoài là trắng */
-        }
-
-        /* Hiệu ứng trăng (vẫn giữ nguyên) */
-        .moon {
-            position: fixed;
-            top: 50px;
-            right: 50px;
-            width: 80px;
-            height: 80px;
-            background: #f1c40f;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #f1c40f, 0 0 50px #f1c40f;
-            animation: glow 3s infinite alternate;
-            z-index: 0;
-        }
-
-        /* Hiệu ứng sao */
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            /* Sao nhấp nháy với tốc độ và độ sáng khác nhau */
-            animation: twinkle var(--duration) infinite alternate;
-            z-index: 0;
-            opacity: var(--opacity);
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 10px #f1c40f, 0 0 30px #f1c40f; }
-            to { box-shadow: 0 0 25px #f1c40f, 0 0 60px #f1c40f; }
-        }
-
-        @keyframes twinkle {
-            from { opacity: 0.2; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Khung thông báo chính (giữ nền trắng để dễ đọc) */
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 100%;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            color: var(--text-color);
             position: relative;
-            z-index: 10;
-            margin: auto;
-            color: var(--text-color); /* Màu chữ bên trong quay về màu tối */
+        }
+
+        /* Hiệu ứng tim bay nền */
+        .bg-heart {
+            position: fixed;
+            top: 0; left: 0;
+            color: rgba(255, 255, 255, 0.6);
+            animation: floatUp 10s linear infinite;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 107, 129, 0.3);
+            position: relative;
+            z-index: 1;
+            border: 3px solid #fff;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             color: var(--deep-red);
+            text-align: center;
             font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        p {
-            font-size: 1.2rem;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .highlight {
+        .subtitle {
+            text-align: center;
             color: var(--primary-pink);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             font-weight: bold;
-            font-size: 1.3rem;
         }
 
-        .funny-note {
-            background-color: #fff0f6;
-            border-left: 5px solid var(--primary-pink);
-            padding: 15px;
-            border-radius: 5px;
-            font-style: italic;
-            margin-top: 20px;
-            color: #444;
+        /* Thẻ câu hỏi */
+        .question-card {
+            background: #fff;
+            border: 1px solid #ffccd5;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .signature {
-            font-family: 'Dancing Script', cursive;
-            margin-top: 30px;
-            font-size: 1.5rem;
+        .question-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 15px;
             color: var(--deep-red);
         }
 
-        .sleepy-icon {
-            font-size: 4rem;
+        .question-image {
             display: block;
-            margin: 0 auto 20px;
-            animation: sleep 2s infinite;
+            margin: 15px auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #ffccd5;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        @keyframes sleep {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
         }
-        
-        /* Nút Home */
-        .home-btn {
-            display: inline-block;
+
+        .option-item {
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background-color: var(--light-pink);
+            border-color: var(--primary-pink);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 15px;
+            accent-color: var(--deep-red);
+            transform: scale(1.2);
+        }
+
+        /* Kết quả đúng/sai */
+        .option-item.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option-item.wrong {
+            background-color: #f8d7da;
+            border-color: var(--error-color);
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff0f6;
+            border-left: 5px solid var(--deep-red);
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95em;
+            color: #444;
+        }
+
+        /* Nút điều khiển */
+        .controls {
+            text-align: center;
             margin-top: 30px;
-            padding: 12px 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        #submit-btn {
+            background-color: var(--deep-red);
+            color: white;
+            box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3);
+        }
+
+        #submit-btn:hover {
+            background-color: #b33939;
+            transform: translateY(-2px);
+        }
+
+        #home-btn {
+            background-color: #636e72;
+            color: white;
+        }
+
+        #retry-btn {
             background-color: var(--primary-pink);
             color: white;
-            text-decoration: none;
-            border-radius: 50px;
+            display: none;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.5em;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            border: 2px dashed var(--primary-pink);
+            color: var(--deep-red);
+            display: none;
         }
-
-        .home-btn:hover {
-            background-color: var(--deep-red);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(214, 48, 49, 0.5);
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="moon"></div>
-    
     <script>
-        // Tăng số lượng sao lên 150
-        for(let i=0; i<150; i++) {
-            let star = document.createElement('div');
-            star.className = 'star';
-            
-            // Random kích thước sao (nhỏ hơn để nhìn xa xăm)
-            star.style.width = Math.random() * 2 + 1 + 'px';
-            star.style.height = star.style.width;
-            
-            // Random vị trí
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            
-            // Random các thuộc tính hoạt hình cho tự nhiên hơn
-            star.style.setProperty('--duration', Math.random() * 3 + 1 + 's');
-            star.style.setProperty('--opacity', Math.random());
-            star.style.animationDelay = Math.random() * 2 + 's';
-            
-            document.body.appendChild(star);
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 5 + 's'; 
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 8000);
         }
+        setInterval(createHeart, 300);
     </script>
 
     <div class="container">
-        <div class="sleepy-icon">😴 💤</div>
-        <h1>Gửi Vợ Yêu Dấu! ❤️</h1>
+        <h1>Ôn Tập Câu 126 - 150 💖</h1>
+        <div class="subtitle">Phần biển báo này quan trọng lắm, vợ xem kỹ hình nha! 😘</div>
         
-        <p>
-            Vợ ơi, bây giờ đã là <span class="highlight">12h30 giờ khuya</span> rồi. <br>
-            Anh đã làm xong được <span class="highlight">vài phần</span> cho vợ ôn tập rồi đó.
-        </p>
+        <div id="score-board" class="score-board"></div>
 
-        <p>
-            Mấy phần còn lại, anh xin phép <span class="highlight">nợ lại đến khi rảnh</span> sẽ làm tiếp nha.
-        </p>
+        <div id="quiz-container">
+            </div>
 
-        <div class="funny-note">
-            ⚠️ <strong>Lý do tạm ngưng:</strong> <br>
-            Mắt anh đã díp lại, đầu hơi quay quay rồi. Nếu thức nữa là "Tiền Đình" nó ghé thăm thì khổ lắm! 😵‍💫
+        <div class="controls">
+            <button id="submit-btn" onclick="submitQuiz()">Nộp Bài Xem Điểm</button>
+            <button id="retry-btn" onclick="location.reload()">Làm Lại Đề Này</button>
+            <button id="home-btn" onclick="home()">🏡 Về Trang Chủ</button>
         </div>
-
-        <p>
-            Vợ cứ ôn kỹ mấy phần anh đã làm xong trước đi nhé. Mai mốt anh khỏe, anh lại cày tiếp phục vụ vợ thi đậu 100 điểm!
-        </p>
-
-        <div class="signature">
-            Chúc vợ ngủ ngon! Yêu vợ nhiều! 💖<br>
-            - Chồng Đình Long -
-        </div>
-        
-        <br>
-        <a href="home.html" class="home-btn">🏡 Về Trang Chủ</a>
     </div>
+
+<script>
+    // --- DỮ LIỆU CÂU HỎI TỪ FILE 126-150.xlsx (Full) ---
+    const rawQuestionData = [
+    {
+        "id": 126,
+        "question": "Biển nào cấm máy kéo?",
+        "img": "126.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2 và biển 3.",
+            "C": "Biển 1 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "B",
+        "explain": "Biển 2 cấm xe tải thì cấm luôn máy kéo. Biển 3 là biển báo cấm máy kéo. Do đó, cả biển 2 và biển 3 đều cấm máy kéo."
+    },
+    {
+        "id": 127,
+        "question": "Biển nào báo hiệu cấm xe mô tô ba bánh chở hàng đi qua?",
+        "img": "127.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 cấm xe mô tô 2 bánh thì cấm luôn xe mô tô 3 bánh. Biển 2 cấm xe ô tô con thì cũng cấm luôn xe mô tô 3 bánh có động cơ."
+    },
+    {
+        "id": 128,
+        "question": "Biển nào dưới đây xe gắn máy được phép đi?",
+        "img": "128.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả hai biển."
+        },
+        "correct": "C",
+        "explain": "Biển 1 cấm xe mô tô (xe máy), không cấm xe gắn máy. Biển 2 cấm xe ô tô, không cấm xe gắn máy. Vì vậy xe gắn máy được phép đi vào cả hai biển."
+    },
+    {
+        "id": 129,
+        "question": "Biển nào báo hiệu cấm xe mô tô đi vào?",
+        "img": "129.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 là biển báo cấm xe mô tô đi vào."
+    },
+    {
+        "id": 130,
+        "question": "Khi gặp biển nào thì xe mô tô hai bánh được đi vào?",
+        "img": "130.jpg",
+        "options": {
+            "A": "Không biển nào.",
+            "B": "Biển 1 và biển 2.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "C",
+        "explain": "Biển 1 cấm mô tô nên không được đi vào. Biển 2 cấm ô tô và biển 3 cấm xe tải không có tác dụng cấm xe mô tô hai bánh."
+    },
+    {
+        "id": 131,
+        "question": "Biển nào cấm quay đầu xe?",
+        "img": "131.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Không biển nào.",
+            "D": "Cả hai biển."
+        },
+        "correct": "B",
+        "explain": "Biển 2 là biển báo cấm quay đầu xe. Theo quy chuẩn hiện hành, biển cấm rẽ trái (biển 1) không còn cấm quay đầu xe."
+    },
+    {
+        "id": 132,
+        "question": "Biển nào cấm xe rẽ trái?",
+        "img": "132.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả hai biển."
+        },
+        "correct": "A",
+        "explain": "Biển 1 là biển báo cấm rẽ trái."
+    },
+    {
+        "id": 133,
+        "question": "Khi gặp biển nào xe được rẽ trái?",
+        "img": "133.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Không biển nào."
+        },
+        "correct": "B",
+        "explain": "Biển 1 cấm rẽ trái nên không được rẽ. Biển 2 cấm quay đầu xe nhưng không cấm rẽ trái, nên xe được phép rẽ trái."
+    },
+    {
+        "id": 134,
+        "question": "Biển nào cấm các phương tiện rẽ phải?",
+        "img": "134.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "A",
+        "explain": "Biển 1 (cấm rẽ phải) và Biển 2 (cấm rẽ phải và quay đầu) có hiệu lực cấm đối với mọi phương tiện cơ giới và thô sơ. Biển 3 chỉ cấm xe ô tô rẽ phải và quay đầu."
+    },
+    {
+        "id": 135,
+        "question": "Biển nào cấm các phương tiện rẽ trái?",
+        "img": "135.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "A",
+        "explain": "Biển 1 (cấm rẽ trái) và Biển 2 (cấm rẽ trái và quay đầu) áp dụng cho mọi phương tiện. Biển 3 chỉ áp dụng cho xe ô tô."
+    },
+    {
+        "id": 136,
+        "question": "Biển nào xe được phép rẽ trái?",
+        "img": "136.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Không biển nào."
+        },
+        "correct": "B",
+        "explain": "Biển 1 là biển cấm rẽ trái. Biển 2 là biển chỉ dẫn khu vực quay xe, tại đây xe được phép quay đầu và rẽ trái."
+    },
+    {
+        "id": 137,
+        "question": "Biển nào xe quay đầu không bị cấm?",
+        "img": "137.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả hai biển."
+        },
+        "correct": "C",
+        "explain": "Biển 1 cấm rẽ trái nhưng không cấm quay đầu. Biển 2 là biển chỉ dẫn khu vực quay xe nên đương nhiên được quay đầu."
+    },
+    {
+        "id": 138,
+        "question": "Biển nào xe được phép quay đầu nhưng không được rẽ trái?",
+        "img": "138.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả hai biển."
+        },
+        "correct": "A",
+        "explain": "Biển 1 cấm rẽ trái nhưng cho phép quay đầu. Biển 2 là biển chỉ dẫn nơi quay xe, không có tác dụng cấm rẽ trái."
+    },
+    {
+        "id": 139,
+        "question": "Biển nào là biển “Cấm đi ngược chiều”?",
+        "img": "139.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả ba biển."
+        },
+        "correct": "B",
+        "explain": "Biển 1 là biển đường cấm. Biển 2 là biển cấm đi ngược chiều. Biển 3 là biển cấm đỗ xe."
+    },
+    {
+        "id": 140,
+        "question": "Biển nào dưới đây các phương tiện không được phép đi vào?",
+        "img": "140.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 1 và biển 2."
+        },
+        "correct": "C",
+        "explain": "Biển 1 (đường cấm) và Biển 2 (cấm đi ngược chiều) đều là những biển báo hiệu đường mà các phương tiện không được phép đi vào."
+    },
+    {
+        "id": 141,
+        "question": "Khi gặp biển nào xe ưu tiên theo luật định vẫn phải dừng lại?",
+        "img": "141.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả ba biển."
+        },
+        "correct": "B",
+        "explain": "Biển 2 là biển 'STOP', khi gặp biển này mọi loại xe (kể cả xe ưu tiên) đều phải dừng lại."
+    },
+    {
+        "id": 142,
+        "question": "Biển nào cấm tất cả các loại xe cơ giới và thô sơ đi lại trên đường, trừ xe ưu tiên theo luật định (nếu đường vẫn cho xe chạy được)?",
+        "img": "142.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả hai biển."
+        },
+        "correct": "A",
+        "explain": "Biển 1 là biển 'Đường cấm', cấm tất cả các loại phương tiện (cơ giới và thô sơ) đi lại theo cả hai hướng, trừ các xe được ưu tiên theo quy định. Biển 2 là biển 'Dừng lại', buộc các loại xe phải dừng lại."
+    },
+    {
+        "id": 143,
+        "question": "Biển báo này có ý nghĩa như thế nào?",
+        "img": "143.jpg",
+        "options": {
+            "A": "Tốc độ tối đa cho phép về ban đêm cho các phương tiện là 70 km/h.",
+            "B": "Tốc độ tối thiểu cho phép về ban đêm cho các phương tiện là 70 km/h."
+        },
+        "correct": "A",
+        "explain": "Biển báo có vòng tròn đỏ, số 70 và bảng phụ ghi thời gian '22:00 - 5:00' cùng chữ 'ĐÊM' quy định tốc độ tối đa cho phép các phương tiện lưu thông vào ban đêm."
+    },
+    {
+        "id": 144,
+        "question": "Biển này có hiệu lực đối với xe mô tô hai bánh, ba bánh chở hàng không?",
+        "img": "144.jpg",
+        "options": {
+            "A": "Có.",
+            "B": "Không."
+        },
+        "correct": "A",
+        "explain": "Biển báo cấm kết hợp với biển phụ vẽ hình xe ô tô và xe mô tô có hiệu lực cấm đối với cả xe ô tô và xe mô tô hai bánh, ba bánh."
+    },
+    {
+        "id": 145,
+        "question": "Biển này có ý nghĩa như thế nào?",
+        "img": "145.jpg",
+        "options": {
+            "A": "Cấm xe cơ giới (trừ xe ưu tiên theo luật định) đi thẳng.",
+            "B": "Cấm các loại xe cơ giới và xe mô tô (trừ xe ưu tiên theo luật định) đi về bên trái và bên phải.",
+            "C": "Hướng trái và phải không cấm xe cơ giới."
+        },
+        "correct": "B",
+        "explain": "Biển báo cấm xe ô tô và xe mô tô kết hợp biển phụ chỉ hướng rẽ trái và phải có nghĩa là cấm các loại xe này rẽ sang hai hướng đó."
+    },
+    {
+        "id": 146,
+        "question": "Biển phụ đặt dưới biển cấm bóp còi có ý nghĩa như thế nào?",
+        "img": "146.jpg",
+        "options": {
+            "A": "Báo khoảng cách đến nơi cấm bóp còi.",
+            "B": "Chiều dài đoạn đường cấm bóp còi từ nơi đặt biển.",
+            "C": "Báo cấm dùng còi có độ vang xa 500m."
+        },
+        "correct": "B",
+        "explain": "Biển phụ có con số kèm hai mũi tên hướng lên trên chỉ chiều dài đoạn đường mà biển báo chính có tác dụng."
+    },
+    {
+        "id": 147,
+        "question": "Chiều dài đoạn đường 500 m từ nơi đặt biển này, người lái xe có được phép bấm còi không?",
+        "img": "147.jpg",
+        "options": {
+            "A": "Được phép.",
+            "B": "Không được phép."
+        },
+        "correct": "B",
+        "explain": "Biển báo cấm bóp còi kết hợp biển phụ chỉ chiều dài 500m có nghĩa là cấm bóp còi trên toàn bộ đoạn đường 500m kể từ vị trí đặt biển."
+    },
+    {
+        "id": 148,
+        "question": "Biển nào xe mô tô hai bánh được đi vào?",
+        "img": "148.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3."
+        },
+        "correct": "B",
+        "explain": "Biển 1 cấm ô tô, biển 3 cấm xe tải; cả hai biển này không cấm xe mô tô hai bánh. Biển 2 là biển cấm xe mô tô hai bánh."
+    },
+    {
+        "id": 149,
+        "question": "Biển nào xe mô tô hai bánh không được đi vào?",
+        "img": "149.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "B",
+        "explain": "Biển 2 có hình xe mô tô hai bánh bên trong vòng tròn đỏ là biển báo cấm xe mô tô hai bánh đi vào."
+    },
+    {
+        "id": 150,
+        "question": "Ba biển này có hiệu lực như thế nào?",
+        "img": "150.jpg",
+        "options": {
+            "A": "Cấm các loại xe ở biển phụ đi vào.",
+            "B": "Cấm các loại xe cơ giới đi vào trừ loại xe ở biển phụ."
+        },
+        "correct": "A",
+        "explain": "Biển phụ đặt dưới biển cấm để chỉ rõ loại xe bị cấm đi vào."
+    }
+];
+
+    let currentQuestions = [];
+
+    // Hàm đảo câu hỏi (Shuffle)
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // Hàm điều hướng về trang chủ
+    function home() {
+        window.location.href = 'home.html';
+    }
+
+    // --- LOGIC XỬ LÝ TRẮC NGHIỆM ---
+    function initQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        document.getElementById('score-board').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'inline-block';
+        document.getElementById('retry-btn').style.display = 'none';
+
+        // Deep copy và xáo trộn câu hỏi
+        currentQuestions = JSON.parse(JSON.stringify(rawQuestionData));
+        shuffle(currentQuestions);
+
+        currentQuestions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question-${index}`;
+
+            // XỬ LÝ TIÊU ĐỀ CÂU HỎI
+            // Hiển thị số thứ tự luôn là 126 - 150
+            let cleanQuestion = q.question.replace(/^Câu (hỏi )?\d+[\.\:\*]*\s*/i, "");
+            let displayIndex = 126 + index; 
+            let displayTitle = `Câu ${displayIndex}: ${cleanQuestion}`;
+
+            // XỬ LÝ HÌNH ẢNH
+            let imgHTML = '';
+            if (q.img && q.img.trim() !== "") {
+                imgHTML = `<img src="${q.img}" class="question-image" alt="Hình ảnh minh họa">`;
+            }
+
+            let optionsHTML = '';
+            const optionKeys = ['A', 'B', 'C', 'D'];
+            
+            optionKeys.forEach(key => {
+                if(q.options.hasOwnProperty(key) && q.options[key] !== null) {
+                    optionsHTML += `
+                        <li class="option-item" id="opt-${index}-${key}">
+                            <label style="width: 100%; cursor: pointer; display: flex; align-items: center;">
+                                <input type="radio" name="q${index}" value="${key}">
+                                <span style="margin-left: 10px;"><b>${key}.</b> ${q.options[key]}</span>
+                            </label>
+                        </li>
+                    `;
+                }
+            });
+
+            card.innerHTML = `
+                <div class="question-title">${displayTitle}</div>
+                ${imgHTML}
+                <ul class="options-list">
+                    ${optionsHTML}
+                </ul>
+                <div class="explanation" id="exp-${index}">
+                    <strong>💡 Giải thích:</strong> ${q.explain}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        let total = currentQuestions.length;
+
+        currentQuestions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const explanation = document.getElementById(`exp-${index}`);
+            
+            // Hiện giải thích
+            explanation.style.display = 'block';
+
+            const correctKey = q.correct;
+            const correctOptionElement = document.getElementById(`opt-${index}-${correctKey}`);
+            
+            // Tô màu đáp án đúng (Xanh)
+            if(correctOptionElement) correctOptionElement.classList.add('correct');
+
+            if (selected) {
+                if (selected.value === correctKey) {
+                    score++;
+                } else {
+                    // Tô màu đáp án sai (Đỏ)
+                    const wrongOptionElement = document.getElementById(`opt-${index}-${selected.value}`);
+                    if(wrongOptionElement) wrongOptionElement.classList.add('wrong');
+                }
+            }
+            
+            // Khóa không cho chọn lại
+            const radios = document.querySelectorAll(`input[name="q${index}"]`);
+            radios.forEach(r => r.disabled = true);
+        });
+
+        // Hiển thị điểm số
+        const scoreBoard = document.getElementById('score-board');
+        scoreBoard.style.display = 'block';
+        
+        let msg = "";
+        if(score === total) msg = "Tuyệt vời! Vợ quá xuất sắc! ❤️";
+        else if(score >= 21) msg = "Giỏi lắm vợ yêu! Đậu rồi nè (>= 21/25). Cố lên xíu nữa cho điểm tuyệt đối nha!";
+        else msg = "Không sao đâu, vợ làm lại lần nữa là thuộc ngay thôi! Cố lên!";
+
+        scoreBoard.innerHTML = `Kết quả: ${score}/${total} câu đúng<br><small>${msg}</small>`;
+        
+        // Cuộn lên đầu
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Đổi nút
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('retry-btn').style.display = 'inline-block';
+    }
+
+    // Chạy khi tải trang
+    document.addEventListener('DOMContentLoaded', initQuiz);
+
+</script>
 
 </body>
 </html>
