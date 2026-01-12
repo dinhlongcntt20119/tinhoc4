@@ -3,216 +3,690 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Báo Gửi Vợ Yêu ❤️</title>
+    <title>Ôn Tập Câu 151 - 175: Vợ Yêu Cố Lên 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Màu chủ đạo cho thông báo bên trong */
             --primary-pink: #ff6b81;
+            --light-pink: #ffeff3;
             --deep-red: #d63031;
             --text-color: #2d3436;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            /* Bầu trời đêm màu đen xanh */
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffdde1; 
+            background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             margin: 0;
-            padding: 50px 20px;
-            text-align: center;
-            overflow-y: auto; 
-            overflow-x: hidden;
-            box-sizing: border-box;
-            color: #fff; /* Màu chữ mặc định bên ngoài là trắng */
-        }
-
-        /* Hiệu ứng trăng (vẫn giữ nguyên) */
-        .moon {
-            position: fixed;
-            top: 50px;
-            right: 50px;
-            width: 80px;
-            height: 80px;
-            background: #f1c40f;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #f1c40f, 0 0 50px #f1c40f;
-            animation: glow 3s infinite alternate;
-            z-index: 0;
-        }
-
-        /* Hiệu ứng sao */
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            /* Sao nhấp nháy với tốc độ và độ sáng khác nhau */
-            animation: twinkle var(--duration) infinite alternate;
-            z-index: 0;
-            opacity: var(--opacity);
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 10px #f1c40f, 0 0 30px #f1c40f; }
-            to { box-shadow: 0 0 25px #f1c40f, 0 0 60px #f1c40f; }
-        }
-
-        @keyframes twinkle {
-            from { opacity: 0.2; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Khung thông báo chính (giữ nền trắng để dễ đọc) */
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 100%;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            color: var(--text-color);
             position: relative;
-            z-index: 10;
-            margin: auto;
-            color: var(--text-color); /* Màu chữ bên trong quay về màu tối */
+        }
+
+        /* Hiệu ứng tim bay nền */
+        .bg-heart {
+            position: fixed;
+            top: 0; left: 0;
+            color: rgba(255, 255, 255, 0.6);
+            animation: floatUp 10s linear infinite;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 107, 129, 0.3);
+            position: relative;
+            z-index: 1;
+            border: 3px solid #fff;
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             color: var(--deep-red);
+            text-align: center;
             font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        p {
-            font-size: 1.2rem;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .highlight {
+        .subtitle {
+            text-align: center;
             color: var(--primary-pink);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             font-weight: bold;
-            font-size: 1.3rem;
         }
 
-        .funny-note {
-            background-color: #fff0f6;
-            border-left: 5px solid var(--primary-pink);
-            padding: 15px;
-            border-radius: 5px;
-            font-style: italic;
-            margin-top: 20px;
-            color: #444;
+        /* Thẻ câu hỏi */
+        .question-card {
+            background: #fff;
+            border: 1px solid #ffccd5;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .signature {
-            font-family: 'Dancing Script', cursive;
-            margin-top: 30px;
-            font-size: 1.5rem;
+        .question-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            margin-bottom: 15px;
             color: var(--deep-red);
         }
 
-        .sleepy-icon {
-            font-size: 4rem;
+        .question-image {
             display: block;
-            margin: 0 auto 20px;
-            animation: sleep 2s infinite;
+            margin: 15px auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #ffccd5;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        @keyframes sleep {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .options-list {
+            list-style-type: none;
+            padding: 0;
         }
-        
-        /* Nút Home */
-        .home-btn {
-            display: inline-block;
+
+        .option-item {
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background-color: var(--light-pink);
+            border-color: var(--primary-pink);
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 15px;
+            accent-color: var(--deep-red);
+            transform: scale(1.2);
+        }
+
+        /* Kết quả đúng/sai */
+        .option-item.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option-item.wrong {
+            background-color: #f8d7da;
+            border-color: var(--error-color);
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff0f6;
+            border-left: 5px solid var(--deep-red);
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95em;
+            color: #444;
+        }
+
+        /* Nút điều khiển */
+        .controls {
+            text-align: center;
             margin-top: 30px;
-            padding: 12px 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        #submit-btn {
+            background-color: var(--deep-red);
+            color: white;
+            box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3);
+        }
+
+        #submit-btn:hover {
+            background-color: #b33939;
+            transform: translateY(-2px);
+        }
+
+        #home-btn {
+            background-color: #636e72;
+            color: white;
+        }
+
+        #retry-btn {
             background-color: var(--primary-pink);
             color: white;
-            text-decoration: none;
-            border-radius: 50px;
+            display: none;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 1.5em;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            border: 2px dashed var(--primary-pink);
+            color: var(--deep-red);
+            display: none;
         }
-
-        .home-btn:hover {
-            background-color: var(--deep-red);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(214, 48, 49, 0.5);
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="moon"></div>
-    
     <script>
-        // Tăng số lượng sao lên 150
-        for(let i=0; i<150; i++) {
-            let star = document.createElement('div');
-            star.className = 'star';
-            
-            // Random kích thước sao (nhỏ hơn để nhìn xa xăm)
-            star.style.width = Math.random() * 2 + 1 + 'px';
-            star.style.height = star.style.width;
-            
-            // Random vị trí
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            
-            // Random các thuộc tính hoạt hình cho tự nhiên hơn
-            star.style.setProperty('--duration', Math.random() * 3 + 1 + 's');
-            star.style.setProperty('--opacity', Math.random());
-            star.style.animationDelay = Math.random() * 2 + 's';
-            
-            document.body.appendChild(star);
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 5 + 's'; 
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 8000);
         }
+        setInterval(createHeart, 300);
     </script>
 
     <div class="container">
-        <div class="sleepy-icon">😴 💤</div>
-        <h1>Gửi Vợ Yêu Dấu! ❤️</h1>
+        <h1>Ôn Tập Câu 151 - 175 💖</h1>
+        <div class="subtitle">Tiếp tục chủ đề Biển Báo - Vợ yêu cố lên nào! 😘</div>
         
-        <p>
-            Vợ ơi, bây giờ đã là <span class="highlight">12h30 giờ khuya</span> rồi. <br>
-            Anh đã làm xong được <span class="highlight">vài phần</span> cho vợ ôn tập rồi đó.
-        </p>
+        <div id="score-board" class="score-board"></div>
 
-        <p>
-            Mấy phần còn lại, anh xin phép <span class="highlight">nợ lại đến khi rảnh</span> sẽ làm tiếp nha.
-        </p>
+        <div id="quiz-container">
+            </div>
 
-        <div class="funny-note">
-            ⚠️ <strong>Lý do tạm ngưng:</strong> <br>
-            Mắt anh đã díp lại, đầu hơi quay quay rồi. Nếu thức nữa là "Tiền Đình" nó ghé thăm thì khổ lắm! 😵‍💫
+        <div class="controls">
+            <button id="submit-btn" onclick="submitQuiz()">Nộp Bài Xem Điểm</button>
+            <button id="retry-btn" onclick="location.reload()">Làm Lại Đề Này</button>
+            <button id="home-btn" onclick="home()">🏡 Về Trang Chủ</button>
         </div>
-
-        <p>
-            Vợ cứ ôn kỹ mấy phần anh đã làm xong trước đi nhé. Mai mốt anh khỏe, anh lại cày tiếp phục vụ vợ thi đậu 100 điểm!
-        </p>
-
-        <div class="signature">
-            Chúc vợ ngủ ngon! Yêu vợ nhiều! 💖<br>
-            - Chồng Đình Long -
-        </div>
-        
-        <br>
-        <a href="home.html" class="home-btn">🏡 Về Trang Chủ</a>
     </div>
+
+<script>
+    // --- DỮ LIỆU CÂU HỎI TỪ FILE 151-175.xlsx ---
+    const rawQuestionData = [
+    {
+        "id": 151,
+        "question": "Biển này có ý nghĩa như thế nào?",
+        "img": "151.jpg",
+        "options": {
+            "A": "Cấm dừng xe về hướng bên trái.",
+            "B": "Cấm dừng và đỗ xe theo hướng bên phải.",
+            "C": "Được phép đỗ xe và dừng xe theo hướng bên phải."
+        },
+        "correct": "B",
+        "explain": "Biển báo cấm dừng và đỗ xe kết hợp với biển phụ hình mũi tên chỉ hướng sang phải có nghĩa là lệnh cấm áp dụng cho hướng bên phải của biển."
+    },
+    {
+        "id": 152,
+        "question": "Biển nào là biển \"Tốc độ tối đa cho phép về ban đêm\"?",
+        "img": "152.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Cả hai biển."
+        },
+        "correct": "A",
+        "explain": "Biển 1 có biển phụ ghi khung giờ từ 22:00 - 5:00, đây là khoảng thời gian ban đêm."
+    },
+    {
+        "id": 153,
+        "question": "Biển nào báo hiệu hạn chế tốc độ của phương tiện không vượt quá trị số ghi trên biển?",
+        "img": "153.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2."
+        },
+        "correct": "B",
+        "explain": "Biển 2 là biển báo tốc độ tối đa cho phép (vòng tròn đỏ), yêu cầu phương tiện không được chạy quá tốc độ ghi trên biển."
+    },
+    {
+        "id": 154,
+        "question": "Số 50 ghi trên biển báo dưới đây có ý nghĩa như thế nào?",
+        "img": "154.jpg",
+        "options": {
+            "A": "Tốc độ tối đa các xe cơ giới được phép chạy.",
+            "B": "Tốc độ tối thiểu các xe cơ giới được phép chạy."
+        },
+        "correct": "A",
+        "explain": "Biển báo hình tròn viền đỏ, nền trắng có ghi số là biển báo tốc độ tối đa cho phép."
+    },
+    {
+        "id": 155,
+        "question": "Biển báo dưới đây có ý nghĩa như thế nào?",
+        "img": "155.jpg",
+        "options": {
+            "A": "Báo hiệu tốc độ tối đa cho phép các xe cơ giới chạy.",
+            "B": "Báo hiệu tốc độ tối thiểu cho phép các xe cơ giới chạy."
+        },
+        "correct": "B",
+        "explain": "Biển báo hình tròn nền xanh có ghi số trắng là biển báo tốc độ tối thiểu cho phép."
+    },
+    {
+        "id": 156,
+        "question": "Gặp biển nào người lái xe phải nhường đường cho người đi bộ?",
+        "img": "156.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 là biển cảnh báo nguy hiểm 'Đường người đi bộ cắt ngang', khi gặp biển này lái xe phải giảm tốc độ và nhường đường cho người đi bộ."
+    },
+    {
+        "id": 157,
+        "question": "Biển nào chỉ đường dành cho người đi bộ, các loại xe không được đi vào khi gặp biển này?",
+        "img": "157.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "C",
+        "explain": "Biển 3 là biển hiệu lệnh 'Đường dành cho người đi bộ', chỉ cho phép người đi bộ sử dụng, các loại xe cơ giới và thô sơ không được phép đi vào."
+    },
+    {
+        "id": 158,
+        "question": "Biển nào báo hiệu \"Đường dành cho xe thô sơ\"?",
+        "img": "158.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 là biển báo hiệu đường dành cho xe thô sơ (xe đạp, xe súc vật kéo)."
+    },
+    {
+        "id": 159,
+        "question": "Biển nào báo hiệu sắp đến chỗ giao nhau nguy hiểm?",
+        "img": "159.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 1 và biển 2.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "D",
+        "explain": "Cả ba biển đều thuộc nhóm biển báo nguy hiểm tại nơi giao nhau (với đường sắt, với đường ưu tiên, có tín hiệu đèn)."
+    },
+    {
+        "id": 160,
+        "question": "Biển nào báo hiệu \"Giao nhau với đường sắt có rào chắn\"?",
+        "img": "160.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2 và 3.",
+            "C": "Biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 có hình hàng rào, báo hiệu giao nhau với đường sắt có rào chắn."
+    },
+    {
+        "id": 161,
+        "question": "Biển nào báo hiệu \"Giao nhau có tín hiệu đèn\"?",
+        "img": "161.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "C",
+        "explain": "Biển 3 có hình đèn giao thông xanh, vàng, đỏ, báo hiệu giao nhau có tín hiệu đèn."
+    },
+    {
+        "id": 162,
+        "question": "Biển nào báo hiệu nguy hiểm giao nhau với đường sắt?",
+        "img": "162.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "B",
+        "explain": "Biển 1 (giao có rào chắn) và biển 3 (giao vuông góc không rào chắn) đều báo hiệu nguy hiểm giao nhau với đường sắt."
+    },
+    {
+        "id": 163,
+        "question": "Biển nào báo hiệu đường bộ giao nhau với đường sắt không có rào chắn?",
+        "img": "163.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "C",
+        "explain": "Biển 2 (hình xe lửa) và biển 3 (hình chữ X) báo hiệu giao nhau với đường sắt không có rào chắn."
+    },
+    {
+        "id": 164,
+        "question": "Biển nào báo hiệu sắp đến chỗ giao nhau giữa đường bộ và đường sắt?",
+        "img": "164.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3.",
+            "D": "Biển 1 và biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 báo hiệu giao nhau với đường sắt không có rào chắn."
+    },
+    {
+        "id": 165,
+        "question": "Biển nào báo hiệu \"Cửa chui\"?",
+        "img": "165.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "B",
+        "explain": "Biển 2 là biển báo hiệu cửa chui."
+    },
+    {
+        "id": 166,
+        "question": "Hai biển này có ý nghĩa như thế nào?",
+        "img": "166.jpg",
+        "options": {
+            "A": "Để chỉ nơi đường sắt giao vuông góc với đường bộ không có rào chắn.",
+            "B": "Để báo trước sắp đến vị trí giao cắt đường bộ với đường sắt cùng mức, không vuông góc và không có người gác, không có rào chắn.",
+            "C": "Nơi đường sắt giao nhau với đường bộ."
+        },
+        "correct": "A",
+        "explain": "Biển hình chữ X (biển 1 và biển 2) báo hiệu nơi đường sắt giao vuông góc với đường bộ không có rào chắn."
+    },
+    {
+        "id": 167,
+        "question": "Biển nào báo hiệu \"Hết đoạn đường ưu tiên\"?",
+        "img": "167.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "C",
+        "explain": "Biển 3 là biển báo hết đoạn đường ưu tiên."
+    },
+    {
+        "id": 168,
+        "question": "Biển nào báo hiệu, chỉ dẫn xe đi trên đường này được quyền ưu tiên qua nơi giao nhau?",
+        "img": "168.jpg",
+        "options": {
+            "A": "Biển 1 và biển 2.",
+            "B": "Biển 1 và biển 3.",
+            "C": "Biển 2 và biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "B",
+        "explain": "Biển 1 (giao với đường không ưu tiên) và biển 3 (đường ưu tiên) cho phép xe được quyền ưu tiên qua nơi giao nhau."
+    },
+    {
+        "id": 169,
+        "question": "Biển nào báo hiệu \"Giao nhau với đường không ưu tiên\"?",
+        "img": "169.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3.",
+            "D": "Biển 2 và biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 báo hiệu giao nhau với đường không ưu tiên."
+    },
+    {
+        "id": 170,
+        "question": "Biển nào báo hiệu \"Giao nhau với đường ưu tiên\"?",
+        "img": "170.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3.",
+            "D": "Cả ba biển."
+        },
+        "correct": "C",
+        "explain": "Biển 3 (hình tam giác ngược) báo hiệu giao nhau với đường ưu tiên."
+    },
+    {
+        "id": 171,
+        "question": "Biển nào báo hiệu \"Đường giao nhau\" của các tuyến đường cùng cấp?",
+        "img": "171.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 có hình dấu cộng báo hiệu đường giao nhau cùng cấp."
+    },
+    {
+        "id": 172,
+        "question": "Biển nào báo hiệu \"Đường hai chiều\"?",
+        "img": "172.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "A",
+        "explain": "Biển 1 có hai mũi tên ngược chiều đứng song song báo hiệu đường hai chiều."
+    },
+    {
+        "id": 173,
+        "question": "Biển nào báo hiệu phải giảm tốc độ, nhường đường cho xe cơ giới đi ngược chiều qua đường hẹp?",
+        "img": "173.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "B",
+        "explain": "Biển 2 báo hiệu phải nhường đường cho xe cơ giới đi ngược chiều qua đường hẹp."
+    },
+    {
+        "id": 174,
+        "question": "Biển nào chỉ dẫn \"Được ưu tiên qua đường hẹp\"?",
+        "img": "174.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3.",
+            "D": "Biển 2 và biển 3."
+        },
+        "correct": "C",
+        "explain": "Biển 3 (hình vuông xanh) chỉ dẫn được ưu tiên qua đường hẹp."
+    },
+    {
+        "id": 175,
+        "question": "Biển nào báo hiệu \"Đường đôi\"?",
+        "img": "175.jpg",
+        "options": {
+            "A": "Biển 1.",
+            "B": "Biển 2.",
+            "C": "Biển 3."
+        },
+        "correct": "C",
+        "explain": "Biển 3 báo hiệu sắp đến đoạn đường đôi."
+    }
+];
+
+    let currentQuestions = [];
+
+    // Hàm đảo câu hỏi (Shuffle)
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // Hàm điều hướng về trang chủ
+    function home() {
+        window.location.href = 'home.html';
+    }
+
+    // --- LOGIC XỬ LÝ TRẮC NGHIỆM ---
+    function initQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        document.getElementById('score-board').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'inline-block';
+        document.getElementById('retry-btn').style.display = 'none';
+
+        // Deep copy và xáo trộn câu hỏi
+        currentQuestions = JSON.parse(JSON.stringify(rawQuestionData));
+        shuffle(currentQuestions);
+
+        currentQuestions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question-${index}`;
+
+            // XỬ LÝ TIÊU ĐỀ CÂU HỎI
+            // Hiển thị số thứ tự luôn là 151 - 175
+            let cleanQuestion = q.question.replace(/^Câu (hỏi )?\d+[\.\:\*]*\s*/i, "");
+            let displayIndex = 151 + index; 
+            let displayTitle = `Câu ${displayIndex}: ${cleanQuestion}`;
+
+            // XỬ LÝ HÌNH ẢNH
+            let imgHTML = '';
+            if (q.img && q.img.trim() !== "") {
+                imgHTML = `<img src="${q.img}" class="question-image" alt="Hình ảnh minh họa">`;
+            }
+
+            let optionsHTML = '';
+            const optionKeys = ['A', 'B', 'C', 'D'];
+            
+            optionKeys.forEach(key => {
+                if(q.options.hasOwnProperty(key) && q.options[key] !== null) {
+                    optionsHTML += `
+                        <li class="option-item" id="opt-${index}-${key}">
+                            <label style="width: 100%; cursor: pointer; display: flex; align-items: center;">
+                                <input type="radio" name="q${index}" value="${key}">
+                                <span style="margin-left: 10px;"><b>${key}.</b> ${q.options[key]}</span>
+                            </label>
+                        </li>
+                    `;
+                }
+            });
+
+            card.innerHTML = `
+                <div class="question-title">${displayTitle}</div>
+                ${imgHTML}
+                <ul class="options-list">
+                    ${optionsHTML}
+                </ul>
+                <div class="explanation" id="exp-${index}">
+                    <strong>💡 Giải thích:</strong> ${q.explain}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        let total = currentQuestions.length;
+
+        currentQuestions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const explanation = document.getElementById(`exp-${index}`);
+            
+            // Hiện giải thích
+            explanation.style.display = 'block';
+
+            const correctKey = q.correct;
+            const correctOptionElement = document.getElementById(`opt-${index}-${correctKey}`);
+            
+            // Tô màu đáp án đúng (Xanh)
+            if(correctOptionElement) correctOptionElement.classList.add('correct');
+
+            if (selected) {
+                if (selected.value === correctKey) {
+                    score++;
+                } else {
+                    // Tô màu đáp án sai (Đỏ)
+                    const wrongOptionElement = document.getElementById(`opt-${index}-${selected.value}`);
+                    if(wrongOptionElement) wrongOptionElement.classList.add('wrong');
+                }
+            }
+            
+            // Khóa không cho chọn lại
+            const radios = document.querySelectorAll(`input[name="q${index}"]`);
+            radios.forEach(r => r.disabled = true);
+        });
+
+        // Hiển thị điểm số
+        const scoreBoard = document.getElementById('score-board');
+        scoreBoard.style.display = 'block';
+        
+        let msg = "";
+        if(score === total) msg = "Tuyệt vời! Vợ quá xuất sắc! ❤️";
+        else if(score >= 21) msg = "Giỏi lắm vợ yêu! Đậu rồi nè (>= 21/25). Cố lên xíu nữa cho điểm tuyệt đối nha!";
+        else msg = "Không sao đâu, vợ làm lại lần nữa là thuộc ngay thôi! Cố lên!";
+
+        scoreBoard.innerHTML = `Kết quả: ${score}/${total} câu đúng<br><small>${msg}</small>`;
+        
+        // Cuộn lên đầu
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Đổi nút
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('retry-btn').style.display = 'inline-block';
+    }
+
+    // Chạy khi tải trang
+    document.addEventListener('DOMContentLoaded', initQuiz);
+
+</script>
 
 </body>
 </html>
